@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme (Light Premium) -->
+    <style name="Theme.FCMCallApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/accent</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- Light status bar, dark icons -->
+        <item name="android:navigationBarColor">@color/background</item>
+
+        <item name="android:windowBackground">@color/background</item>
+        <!-- Ensure text colors are picked up -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:fontFamily">@font/outfit</item>
+    </style>
+
+    <!-- Full screen theme for incoming call (Light clean) -->
+    <style name="Theme.FCMCallApp.FullScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+    <!-- DYNAMIC THEMES -->
+
+    <!-- 1. Luxury -->
+    <style name="Theme.FCMCallApp.Luxury" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#004D40</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:windowBackground">#FFF8EE</item>
+        <item name="android:statusBarColor">#FFF8EE</item>
+        <item name="android:navigationBarColor">#FFF8EE</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- 2. Vedic -->
+    <style name="Theme.FCMCallApp.Vedic" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#FF9933</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:windowBackground">#800000</item>
+        <item name="android:statusBarColor">#800000</item>
+        <item name="android:navigationBarColor">#800000</item>
+    </style>
+
+    <!-- 3. Cosmic -->
+    <style name="Theme.FCMCallApp.Cosmic" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#00E5FF</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:windowBackground">#050510</item>
+        <item name="android:statusBarColor">#050510</item>
+        <item name="android:navigationBarColor">#050510</item>
+    </style>
+
+    <!-- 4. Solar -->
+    <style name="Theme.FCMCallApp.Solar" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#FFFFEA00</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:windowBackground">#BF360C</item>
+        <item name="android:statusBarColor">#BF360C</item>
+        <item name="android:navigationBarColor">#BF360C</item>
+    </style>
+
+    <!-- 5. Lunar -->
+    <style name="Theme.FCMCallApp.Lunar" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#C0C0C0</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:windowBackground">#263238</item>
+        <item name="android:statusBarColor">#263238</item>
+        <item name="android:navigationBarColor">#263238</item>
+    </style>
+
+    <!-- 6. Forest -->
+    <style name="Theme.FCMCallApp.Forest" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#C6FF00</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:windowBackground">#1B5E20</item>
+        <item name="android:statusBarColor">#1B5E20</item>
+        <item name="android:navigationBarColor">#1B5E20</item>
+    </style>
+
+    <!-- 7. Ocean -->
+    <style name="Theme.FCMCallApp.Ocean" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#E1F5FE</item>
+        <item name="colorOnPrimary">#01579B</item>
+        <item name="android:windowBackground">#01579B</item>
+        <item name="android:statusBarColor">#01579B</item>
+        <item name="android:navigationBarColor">#01579B</item>
+    </style>
+
+    <!-- 8. Royal -->
+    <style name="Theme.FCMCallApp.Royal" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#FFD700</item>
+        <item name="colorOnPrimary">#4A148C</item>
+        <item name="android:windowBackground">#4A148C</item>
+        <item name="android:statusBarColor">#4A148C</item>
+        <item name="android:navigationBarColor">#4A148C</item>
+    </style>
+
+    <!-- 9. Mystic -->
+    <style name="Theme.FCMCallApp.Mystic" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#F48FB1</item>
+        <item name="colorOnPrimary">#311B92</item>
+        <item name="android:windowBackground">#311B92</item>
+        <item name="android:statusBarColor">#311B92</item>
+        <item name="android:navigationBarColor">#311B92</item>
+    </style>
+
+    <!-- 10. Midnight -->
+    <style name="Theme.FCMCallApp.Midnight" parent="Theme.FCMCallApp">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+    </style>
+</resources>

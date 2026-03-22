@@ -1,0 +1,321 @@
+Initialized native services in: /Users/wohozo/.gradle/native
+Initialized jansi services in: /Users/wohozo/.gradle/native
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.12/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Starting process 'Gradle build daemon'. Working directory: /Users/wohozo/.gradle/daemon/8.12 Command: /Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED -Xmx2048m -Dfile.encoding=UTF-8 -Duser.country=IN -Duser.language=en -Duser.variant -cp /Users/wohozo/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12/lib/gradle-daemon-main-8.12.jar -javaagent:/Users/wohozo/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12/lib/agents/gradle-instrumentation-agent-8.12.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.12
+Successfully started process 'Gradle build daemon'
+An attempt to start the daemon took 0.972 secs.
+The client will now receive all logging from the daemon (pid: 26958). The daemon log file: /Users/wohozo/.gradle/daemon/8.12/daemon-26958.out.log
+Daemon will be stopped at the end of the build
+Using 8 worker leases.
+Received JVM installation metadata from '/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home': {JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home, JAVA_VERSION=19.0.2, JAVA_VENDOR=Oracle Corporation, RUNTIME_NAME=Java(TM) SE Runtime Environment, RUNTIME_VERSION=19.0.2+7-44, VM_NAME=Java HotSpot(TM) 64-Bit Server VM, VM_VERSION=19.0.2+7-44, VM_VENDOR=Oracle Corporation, OS_ARCH=aarch64}
+Watching the file system is configured to be enabled if available
+Now considering [/Users/wohozo/Documents/astrolunat/astroapp/android] as hierarchies to watch
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/Users/wohozo/Documents/astrolunat/astroapp/android/settings.gradle.kts'.
+Using local directory build cache for the root build (location = /Users/wohozo/.gradle/caches/build-cache-1, remove unused entries = after 7 days).
+Projects loaded. Root project using build file '/Users/wohozo/Documents/astrolunat/astroapp/android/build.gradle.kts'.
+Included projects: [root project 'AstroApp', project ':app']
+
+> Configure project :
+Evaluating root project 'AstroApp' using build file '/Users/wohozo/Documents/astrolunat/astroapp/android/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.5.2', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.20', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.20', apply: false]
+Resolved plugin [id: 'com.google.gms.google-services', version: '4.4.2', apply: false]
+
+> Configure project :app
+Evaluating project ':app' using build file '/Users/wohozo/Documents/astrolunat/astroapp/android/app/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application']
+Resolved plugin [id: 'org.jetbrains.kotlin.android']
+Resolved plugin [id: 'com.google.gms.google-services']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose']
+Resolved plugin [id: 'kotlin-kapt']
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+All projects evaluated.
+Task path 'app:compileReleaseKotlin' matched project ':app'
+Task name matched 'compileReleaseKotlin'
+Selected primary task 'compileReleaseKotlin' from project :app
+Tasks to be executed: [task ':app:checkKotlinGradlePluginConfigurationErrors', task ':app:preBuild', task ':app:preReleaseBuild', task ':app:dataBindingMergeDependencyArtifactsRelease', task ':app:generateReleaseResValues', task ':app:generateReleaseResources', task ':app:processReleaseGoogleServices', task ':app:mergeReleaseResources', task ':app:packageReleaseResources', task ':app:parseReleaseLocalResources', task ':app:dataBindingGenBaseClassesRelease', task ':app:checkReleaseAarMetadata', task ':app:mapReleaseSourceSetPaths', task ':app:createReleaseCompatibleScreenManifests', task ':app:extractDeepLinksRelease', task ':app:processReleaseMainManifest', task ':app:processReleaseManifest', task ':app:processReleaseManifestForPackage', task ':app:processReleaseResources', task ':app:kaptGenerateStubsReleaseKotlin', task ':app:kaptReleaseKotlin', task ':app:compileReleaseKotlin']
+Tasks that were excluded: []
+Resolve mutations for :app:checkKotlinGradlePluginConfigurationErrors (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:checkKotlinGradlePluginConfigurationErrors (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':app:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :app:preBuild (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:preBuild (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:preBuild UP-TO-DATE
+Skipping task ':app:preBuild' as it has no actions.
+Resolve mutations for :app:preReleaseBuild (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:preReleaseBuild (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:preReleaseBuild UP-TO-DATE
+Skipping task ':app:preReleaseBuild' as it has no actions.
+Resolve mutations for :app:dataBindingMergeDependencyArtifactsRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:dataBindingMergeDependencyArtifactsRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:dataBindingMergeDependencyArtifactsRelease UP-TO-DATE
+Registered task dependencies: app:releaseCompileClasspath
+Skipping misunderstood TO dep string: com.google.firebase:firebase-messaging
+Skipping misunderstood TO dep string: com.google.firebase:firebase-analytics
+Skipping misunderstood TO dep string: androidx.compose.ui:ui
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-graphics
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-tooling-preview
+Skipping misunderstood TO dep string: androidx.compose.material3:material3
+Skipping misunderstood TO dep string: androidx.compose.runtime:runtime-livedata
+Starting dependency analysis
+Caching disabled for task ':app:dataBindingMergeDependencyArtifactsRelease' because:
+  Caching has been disabled for the task
+Skipping task ':app:dataBindingMergeDependencyArtifactsRelease' as it is up-to-date.
+Resolve mutations for :app:generateReleaseResValues (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:generateReleaseResValues (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:generateReleaseResValues UP-TO-DATE
+Build cache key for task ':app:generateReleaseResValues' is a3de17bf6832766342e31dd369011f71
+Skipping task ':app:generateReleaseResValues' as it is up-to-date.
+Resolve mutations for :app:generateReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:generateReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:generateReleaseResources UP-TO-DATE
+Build cache key for task ':app:generateReleaseResources' is 2aacda4c936b49567d9be14cc474ee5a
+Skipping task ':app:generateReleaseResources' as it is up-to-date.
+Resolve mutations for :app:processReleaseGoogleServices (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:processReleaseGoogleServices (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:processReleaseGoogleServices UP-TO-DATE
+Build cache key for task ':app:processReleaseGoogleServices' is 52eb34a2e79fa40e0de3f623e7e0cfd2
+Skipping task ':app:processReleaseGoogleServices' as it is up-to-date.
+Resolve mutations for :app:mergeReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:mergeReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:mergeReleaseResources UP-TO-DATE
+Build cache key for task ':app:mergeReleaseResources' is cd619a0bb5c547b29ca7cad2d265cb5c
+Skipping task ':app:mergeReleaseResources' as it is up-to-date.
+Resolve mutations for :app:packageReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:packageReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:packageReleaseResources UP-TO-DATE
+Build cache key for task ':app:packageReleaseResources' is 40fd7b43f74819fc5fc25c4efbf9250a
+Skipping task ':app:packageReleaseResources' as it is up-to-date.
+Resolve mutations for :app:parseReleaseLocalResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:parseReleaseLocalResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+Build cache key for task ':app:parseReleaseLocalResources' is 8da532ec8bb3a38d9af90a2a471cc04c
+Skipping task ':app:parseReleaseLocalResources' as it is up-to-date.
+Resolve mutations for :app:dataBindingGenBaseClassesRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:dataBindingGenBaseClassesRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:dataBindingGenBaseClassesRelease UP-TO-DATE
+Build cache key for task ':app:dataBindingGenBaseClassesRelease' is ed9727d163c675e345025178f2f9bda1
+Skipping task ':app:dataBindingGenBaseClassesRelease' as it is up-to-date.
+Resolve mutations for :app:checkReleaseAarMetadata (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:checkReleaseAarMetadata (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+Caching disabled for task ':app:checkReleaseAarMetadata' because:
+  Caching has been disabled for the task
+Skipping task ':app:checkReleaseAarMetadata' as it is up-to-date.
+Resolve mutations for :app:mapReleaseSourceSetPaths (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:mapReleaseSourceSetPaths (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+Caching disabled for task ':app:mapReleaseSourceSetPaths' because:
+  Caching has been disabled for the task
+Skipping task ':app:mapReleaseSourceSetPaths' as it is up-to-date.
+Resolve mutations for :app:createReleaseCompatibleScreenManifests (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:createReleaseCompatibleScreenManifests (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+Caching disabled for task ':app:createReleaseCompatibleScreenManifests' because:
+  Caching has been disabled for the task
+Skipping task ':app:createReleaseCompatibleScreenManifests' as it is up-to-date.
+Resolve mutations for :app:extractDeepLinksRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:extractDeepLinksRelease (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+Build cache key for task ':app:extractDeepLinksRelease' is b19e9ea076d7203d9e7cd2dedeb231b6
+Skipping task ':app:extractDeepLinksRelease' as it is up-to-date.
+Resolve mutations for :app:processReleaseMainManifest (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:processReleaseMainManifest (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:processReleaseMainManifest UP-TO-DATE
+Build cache key for task ':app:processReleaseMainManifest' is 45c02a29c8b6a8274b4e96f37eabc63c
+Skipping task ':app:processReleaseMainManifest' as it is up-to-date.
+Resolve mutations for :app:processReleaseManifest (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:processReleaseManifest (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:processReleaseManifest UP-TO-DATE
+Build cache key for task ':app:processReleaseManifest' is 819a6f6ba81750a9f7905fefe3240d30
+Skipping task ':app:processReleaseManifest' as it is up-to-date.
+Resolve mutations for :app:processReleaseManifestForPackage (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:processReleaseManifestForPackage (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+Custom actions are attached to task ':app:processReleaseManifestForPackage'.
+Build cache key for task ':app:processReleaseManifestForPackage' is 138bc53e92cb2fffd6e6485ce80064c1
+Skipping task ':app:processReleaseManifestForPackage' as it is up-to-date.
+Resolve mutations for :app:processReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:processReleaseResources (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:processReleaseResources UP-TO-DATE
+Build cache key for task ':app:processReleaseResources' is 91c395760d50a6207e1ba371dad84a37
+Skipping task ':app:processReleaseResources' as it is up-to-date.
+Resolve mutations for :app:kaptGenerateStubsReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:kaptGenerateStubsReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:kaptGenerateStubsReleaseKotlin UP-TO-DATE
+Registered task dependencies: app:kotlinCompilerClasspath
+Starting dependency analysis
+Registered task dependencies: app:kotlinCompilerPluginClasspathRelease
+Starting dependency analysis
+Build cache key for task ':app:kaptGenerateStubsReleaseKotlin' is 2ba7e95ebd17b6f11af919c4c3fd9dc9
+Skipping task ':app:kaptGenerateStubsReleaseKotlin' as it is up-to-date.
+Resolve mutations for :app:kaptReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:kaptReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:kaptReleaseKotlin UP-TO-DATE
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+Build cache key for task ':app:kaptReleaseKotlin' is c85c18af982d612c58452f509ea2b44a
+Skipping task ':app:kaptReleaseKotlin' as it is up-to-date.
+Resolve mutations for :app:compileReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+:app:compileReleaseKotlin (Thread[#81,Execution worker Thread 2,5,main]) started.
+
+> Task :app:compileReleaseKotlin
+Build cache key for task ':app:compileReleaseKotlin' is 6f9acb1e9829642b64fc916803afb057
+Task ':app:compileReleaseKotlin' is not up-to-date because:
+  Input property 'sources' file /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt has changed.
+  Input property 'sources' file /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt has changed.
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/release/java', not found
+Kotlin source files: /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/settings/SettingsActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/settings/ThemeSettingsActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/city/CitySearchActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/city/CityViewModel.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatViewModel.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/auth/OtpVerificationActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/auth/LoginActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/payment/PaymentActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/VipChartActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/MatchDisplayActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/ChartDisplayActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/admin/SuperPowerAdminDashboardActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/academy/AcademyActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/intake/IntakeActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/dashboard/RasiDetailDialog.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/rasipalan/RasipalanActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/theme/ThemeModels.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/theme/Colors.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/theme/Theme.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/theme/Type.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/guest/GuestDashboardActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/wallet/PaymentStatusActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/wallet/WalletActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerDashboardActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerHistoryActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/MainActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/IncomingCallActivity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/AstrologerApp.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/utils/Localization.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/utils/ViewUtils.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/utils/PageThemeManager.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/utils/Constants.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/utils/SoundManager.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/FCMService.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/CallForegroundService.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/repository/ChatRepository.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/repository/CSCRepository.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/repository/AuthRepository.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/CSCDatabaseHelper.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/ThemeManager.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/entity/ChatMessageEntity.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/dao/ChatDao.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/AppDatabase.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/local/TokenManager.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/model/AuthModels.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/model/Astrologer.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/model/PaymentModels.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/model/RasipalanModel.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/api/ApiInterface.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/api/ApiService.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/api/ApiClient.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/remote/nominatim/CityRepository.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/remote/nominatim/NominatimApi.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/remote/nominatim/NominatimModels.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/data/remote/SocketManager.kt
+Java source files: /Users/wohozo/Documents/astrolunat/astroapp/android/app/build/generated/source/kapt/release/com.astroluna.app/data/local/AppDatabase_Impl.java, /Users/wohozo/Documents/astrolunat/astroapp/android/app/build/generated/source/kapt/release/com.astroluna.app/data/local/dao/ChatDao_Impl.java
+Script source files:
+Script file extensions:
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+i: starting the daemon as: /Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home/bin/java -cp /Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compiler-embeddable/2.0.20/244b603e8c729f98baaf9088d90b5b9350c68af8/kotlin-compiler-embeddable-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.20/7388d355f7cceb002cd387ccb7ab3850e4e0a07f/kotlin-stdlib-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/2.0.20/4aea042b39014e0a924c2e1d4a21b6fff7e4d35/kotlin-script-runtime-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.10/1cbe9c92c12a94eea200d23c2bbaedaf3daf5132/kotlin-reflect-1.6.10.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.0.20/9eb02dce62f058efe6a121cf00cf5da9779e2746/kotlin-daemon-embeddable-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.intellij.deps/trove4j/1.0.20200330/3afb14d5f9ceb459d724e907a21145e8ff394f02/trove4j-1.0.20200330.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/1.6.4/2c997cd1c0ef33f3e751d3831929aeff1390cb30/kotlinx-coroutines-core-jvm-1.6.4.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 -Xmx2048m -XX:ReservedCodeCacheSize=320m -Dkotlin.environment.keepalive -ea -XX:+UseCodeCacheFlushing -XX:+UseParallelGC --add-exports java.base/sun.nio.ch=ALL-UNNAMED org.jetbrains.kotlin.daemon.KotlinCompileDaemon --daemon-runFilesPath /Users/wohozo/Library/Application Support/kotlin/daemon --daemon-autoshutdownIdleSeconds=7200 --daemon-compilerClasspath /Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compiler-embeddable/2.0.20/244b603e8c729f98baaf9088d90b5b9350c68af8/kotlin-compiler-embeddable-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.20/7388d355f7cceb002cd387ccb7ab3850e4e0a07f/kotlin-stdlib-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/2.0.20/4aea042b39014e0a924c2e1d4a21b6fff7e4d35/kotlin-script-runtime-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.10/1cbe9c92c12a94eea200d23c2bbaedaf3daf5132/kotlin-reflect-1.6.10.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.0.20/9eb02dce62f058efe6a121cf00cf5da9779e2746/kotlin-daemon-embeddable-2.0.20.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.intellij.deps/trove4j/1.0.20200330/3afb14d5f9ceb459d724e907a21145e8ff394f02/trove4j-1.0.20200330.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/1.6.4/2c997cd1c0ef33f3e751d3831929aeff1390cb30/kotlinx-coroutines-core-jvm-1.6.4.jar:/Users/wohozo/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar
+i: #1 retrying connecting to the daemon
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=true, modifiedFiles=[/Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt, /Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt], deletedFiles=[], classpathChanges=NoChanges, workingDir=/Users/wohozo/Documents/astrolunat/astroapp/android/app/build/kotlin/compileReleaseKotlin/cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=/Users/wohozo/Documents/astrolunat/astroapp/android/app/build/kotlin/compileReleaseKotlin/local-state/build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, icFeatures=IncrementalCompilationFeatures(withAbiSnapshot=false, preciseCompilationResultsBackup=true, keepIncrementalCompilationCachesInMemory=true, enableUnsafeIncrementalCompilationForMultiplatform=false), outputFiles=[/Users/wohozo/Documents/astrolunat/astroapp/android/app/build/tmp/kotlin-classes/release, /Users/wohozo/Documents/astrolunat/astroapp/android/app/build/kotlin/compileReleaseKotlin/cacheable, /Users/wohozo/Documents/astrolunat/astroapp/android/app/build/kotlin/compileReleaseKotlin/local-state])
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt:656:37 Unresolved reference 'context'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt:667:17 Unresolved reference 'context'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:244:78 Unresolved reference 'VideoCall'.
+Finished executing kotlin compiler using DAEMON strategy
+Restoring task outputs to pre-compilation state
+
+> Task :app:compileReleaseKotlin FAILED
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astrolunat/astroapp/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 18s
+19 actionable tasks: 1 executed, 18 up-to-date
+Watched directory hierarchies: [/Users/wohozo/Documents/astrolunat/astroapp/android]

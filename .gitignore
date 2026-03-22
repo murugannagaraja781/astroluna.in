@@ -1,6 +1,30 @@
 # Dependencies
 node_modules/
-astroapp
+
+# Android build artifacts and local config
+**/build/
+**/build_*/
+.gradle/
+.idea/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+*.p12
+*.jks.gpg
+google-services.json
+
+# Specific to astroapp/android
+astroapp/android/.gradle/
+astroapp/android/app/build/
+astroapp/android/build/
+astroapp/android/local.properties
+astroapp/android/.idea/
+astroapp/android/*.apk
+astroapp/android/*.aab
+astroapp/android/keystore.properties
+
 # Logs
 *.log
 logs/

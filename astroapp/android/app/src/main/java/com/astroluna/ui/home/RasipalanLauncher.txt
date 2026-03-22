@@ -1,0 +1,4 @@
+
+// Add this logic where you want to launch it, typically a click listener on a "Daily Horoscope" card.
+// For now, I'll update HomeActivity to launch it when a specific item is clicked.
+// Assuming there is a "Daily Rasipalan" item in the dashboard list or I'll add a temporary FAB or Menu Item.

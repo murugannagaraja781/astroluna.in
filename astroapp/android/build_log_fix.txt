@@ -1,0 +1,132 @@
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kaptGenerateStubsDebugKotlin UP-TO-DATE
+> Task :app:kaptDebugKotlin UP-TO-DATE
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:24:35 Unresolved reference 'rememberDismissState'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:200:8 Unresolved reference 'ExperimentalMaterial3Api'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:200:8 Annotation argument must be a compile-time constant.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:237:5 Unresolved reference 'Scaffold'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:238:18 Unresolved reference 'TopAppBar'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:239:13 Unresolved reference 'TopAppBar'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:241:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:242:25 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:243:25 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:246:34 Unresolved reference 'IconButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:246:36 Unresolved reference 'IconButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:246:65 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:246:67 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:247:27 Unresolved reference 'TextButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:248:21 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:250:24 Unresolved reference 'IconButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:250:59 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:250:61 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:250:80 Unresolved reference 'Edit'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:252:21 Unresolved reference 'TextButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:252:53 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:252:55 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:254:26 Unresolved reference 'TopAppBarDefaults'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:261:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:295:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:296:9 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:312:29 Unresolved reference 'OutlinedButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:314:42 Unresolved reference 'ButtonDefaults'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:319:31 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:320:33 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:325:33 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:326:33 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:337:30 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:355:8 Unresolved reference 'ExperimentalMaterial3Api'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:355:8 Annotation argument must be a compile-time constant.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:366:24 Unresolved reference 'rememberDismissState'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:368:17 Unresolved reference 'it'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:368:23 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:368:36 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:380:9 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:382:26 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:382:26 Argument type mismatch: actual type is 'kotlin.collections.Set<androidx.compose.material3.DismissDirection>', but 'kotlin.collections.Set<androidx.compose.material3.SwipeToDismissBoxValue>' was expected.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:382:32 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:382:49 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:385:17 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:392:53 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:392:66 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:393:26 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:393:45 Unresolved reference 'Send'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:398:18 Unresolved reference 'Surface'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:404:26 This foundation API is experimental and is likely to change or be removed in the future.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:409:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:421:33 Unresolved reference 'Surface'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:428:37 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:438:45 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:440:57 Unresolved reference 'MaterialTheme'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:444:45 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:446:57 Unresolved reference 'MaterialTheme'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:456:25 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:464:61 Unresolved reference 'DoneAll'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:465:66 Unresolved reference 'DoneAll'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:466:59 Unresolved reference 'Check'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:470:33 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:482:5 Unresolved reference 'Surface'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:486:7 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:487:9 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:500:5 Unresolved reference 'Surface'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:501:9 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:508:20 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:509:20 Unresolved reference 'IconButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:509:89 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:510:24 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:510:43 Unresolved reference 'Close'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:519:21 Unresolved reference 'IconButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:519:55 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:520:25 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:520:30 @Composable invocations can only happen from the context of a @Composable function
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:523:17 Unresolved reference 'OutlinedTextField'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:528:35 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:528:37 Unresolved reference 'Text'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:529:30 Unresolved reference 'TextFieldDefaults'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:536:17 Unresolved reference 'FloatingActionButton'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:542:19 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:543:21 Unresolved reference 'Icon'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:543:40 Unresolved reference 'Send'.
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astrolunat/astroapp/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 19s
+19 actionable tasks: 1 executed, 18 up-to-date

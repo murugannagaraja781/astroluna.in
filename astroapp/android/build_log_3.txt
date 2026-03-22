@@ -1,0 +1,108 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeDebugStartupProfile UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+
+> Task :app:kaptGenerateStubsDebugKotlin
+w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
+
+> Task :app:kaptDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/CallForegroundService.kt:63:13 'fun stopForeground(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/CallForegroundService.kt:159:13 'fun stopForeground(p0: Boolean): Unit' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/FCMService.kt:292:30 'static field FULL_WAKE_LOCK: Int' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/FCMService.kt:293:38 'static field ACQUIRE_CAUSES_WAKEUP: Int' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/academy/AcademyActivity.kt:77:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerDashboardActivity.kt:186:54 'val Icons.Filled.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerDashboardActivity.kt:252:69 'val Icons.Filled.ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerDashboardActivity.kt:329:26 'fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/astro/AstrologerDashboardActivity.kt:341:41 'val Icons.Filled.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt:245:22 'var isSpeakerphoneOn: Boolean' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt:283:18 This declaration overrides a deprecated member but is not marked as deprecated itself. Please add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt:284:15 'fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray): Unit' is deprecated. This method has been deprecated in favor of using the Activity Result API
+      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt
+      contracts for common intents available in
+      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for
+      testing, and allow receiving results in separate, testable classes independent from your
+      activity. Use
+      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)} passing
+      in a {@link RequestMultiplePermissions} object for the {@link ActivityResultContract} and
+      handling the result in the {@link ActivityResultCallback#onActivityResult(Object) callback}.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt:829:93 'val Icons.Filled.VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/call/CallActivity.kt:829:121 'val Icons.Filled.VolumeOff: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeOff.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/VipChartActivity.kt:117:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/VipChartActivity.kt:209:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chart/VipChartActivity.kt:241:13 'fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:334:86 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:499:45 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/chat/ChatActivity.kt:649:40 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/city/CitySearchActivity.kt:118:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt:713:80 'val Icons.Rounded.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt:730:74 'val Icons.Rounded.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/home/HomeScreen.kt:1195:78 'val Icons.Rounded.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/intake/IntakeActivity.kt:662:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/payment/PaymentActivity.kt:20:8 'class PhonePe : Any' is deprecated. Deprecated in Java.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/payment/PaymentActivity.kt:303:35 'fun startTransaction(activity: Activity, request: TransactionRequest, requestCode: Int): Unit' is deprecated. Use startTransaction(context, request, activityResultLauncher) instead.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:75:13 'fun SmallTopAppBar(title: @Composable() ComposableFunction0<Unit>, modifier: Modifier = ..., navigationIcon: @Composable() ComposableFunction0<Unit> = ..., actions: @Composable() ComposableFunction1<RowScope, Unit> = ..., windowInsets: WindowInsets = ..., colors: TopAppBarColors = ..., scrollBehavior: TopAppBarScrollBehavior? = ...): Unit' is deprecated. Use TopAppBar instead.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:79:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:87:44 'fun smallTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:163:51 'val Icons.Filled.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/profile/AstrologerProfileActivity.kt:204:44 'val Icons.Filled.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/rasipalan/RasipalanActivity.kt:116:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/rasipalan/RasipalanActivity.kt:212:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/settings/SettingsActivity.kt:80:40 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/settings/ThemeSettingsActivity.kt:157:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astrolunat/astroapp/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+42 actionable tasks: 7 executed, 35 up-to-date

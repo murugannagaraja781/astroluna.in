@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network Security Configuration
+
+    WHY THIS IS NEEDED:
+    Starting Android 9 (API 28), cleartext (HTTP) traffic is blocked by default.
+    Our server uses HTTP, so we need to explicitly allow it.
+
+    In production, you should use HTTPS instead of HTTP.
+    This config allows HTTP only to our specific server IP.
+-->
+<network-security-config>
+    <!-- Allow cleartext traffic to our server -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">astroluna.in</domain>
+        <domain includeSubdomains="true">192.168.1.39</domain>
+    </domain-config>
+
+    <!-- Also allow localhost for testing -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

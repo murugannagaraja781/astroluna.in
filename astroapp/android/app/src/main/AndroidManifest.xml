@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AndroidManifest.xml for FCM Incoming Call App
+
+    WHY THESE PERMISSIONS EXIST:
+    - INTERNET: Required for FCM and API calls
+    - POST_NOTIFICATIONS: Required for Android 13+ to show any notifications
+    - FOREGROUND_SERVICE: Required to keep call handling alive
+    - FOREGROUND_SERVICE_PHONE_CALL: Android 14+ requires specific foreground service types
+    - USE_FULL_SCREEN_INTENT: Allows full-screen intent on lock screen
+    - VIBRATE: Vibrate device on incoming call
+    - WAKE_LOCK: Keep CPU awake during call processing
+    - RECEIVE_BOOT_COMPLETED: Optional - re-register FCM token after device reboot
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Network permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Notification permission (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Foreground service permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Full screen intent for lock screen (incoming call UI) -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- Ringtone and vibration -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Keep CPU awake during call processing -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Optional: Re-register after reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- WebRTC Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Queries required for Android 11+ to open external UPI apps -->
+    <queries>
+        <package android:name="com.phonepe.app" />
+        <package android:name="com.phonepe.app.business" />
+        <package android:name="com.google.android.apps.nbu.paisa.user" />
+        <package android:name="net.one97.paytm" />
+        <package android:name="in.org.npci.upiapp" />
+        <package android:name="com.whatsapp" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="upi" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="paytmmp" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="phonepe" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tez" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FCMCallApp"
+        android:name=".AstrologerApp"
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:targetApi="35">
+
+        <!--
+            MainActivity: Entry point for user registration
+            - Standard launch mode
+            - Shown in launcher
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FCMCallApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.guest.GuestDashboardActivity" />
+        <activity android:name=".ui.academy.AcademyActivity" />
+        <activity android:name=".ui.horoscope.FreeHoroscopeActivity" />
+        <activity android:name=".ui.astro.AstrologerDashboardActivity" />
+        <activity android:name=".ui.astro.AstrologerHistoryActivity" />
+        <activity android:name=".ui.admin.SuperPowerAdminDashboardActivity" android:exported="false" android:theme="@style/Theme.FCMCallApp"/>
+        <activity android:name=".ui.settings.SettingsActivity" />
+        <activity android:name=".ui.settings.ThemeSettingsActivity" />
+        <activity android:name=".ui.rasipalan.RasipalanActivity" />
+        <activity android:name=".ui.astro.AstrologerRegistrationActivity" />
+        <activity android:name=".ui.dashboard.GuestActivity" />
+        <activity android:name=".ui.payment.PaymentActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="astroluna"
+                    android:host="payment-success"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.auth.LoginActivity" />
+        <activity android:name=".ui.auth.OtpVerificationActivity" />
+        <activity android:name=".ui.home.HomeActivity" />
+        <activity android:name=".ui.wallet.WalletActivity" />
+        <activity android:name=".ui.chat.ChatActivity" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.call.CallActivity" />
+        <activity android:name=".ui.intake.IntakeActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.chart.ChartDisplayActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".ui.chart.VipChartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".ui.chart.MatchDisplayActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".ui.city.CitySearchActivity"
+            android:theme="@style/Theme.FCMCallApp" />
+
+        <activity
+            android:name=".ui.wallet.PaymentStatusActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.FCMCallApp">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="astroluna" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            IncomingCallActivity: Full-screen incoming call UI
+
+            WHY THESE FLAGS ARE CRITICAL:
+            - showWhenLocked: Shows activity even when device is locked
+            - turnScreenOn: Turns on the screen when activity starts
+            - excludeFromRecents: Don't show in recent apps (it's a transient UI)
+            - noHistory: Don't keep in activity stack
+            - launchMode="singleInstance": Only one instance, brings existing to front
+
+            Without these flags, the incoming call UI won't show on locked devices!
+        -->
+        <activity
+            android:name=".IncomingCallActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:theme="@style/Theme.FCMCallApp.FullScreen" />
+
+        <!--
+            FCMService: Handles incoming FCM messages
+
+            WHY THIS IS THE KEY COMPONENT:
+            - This service receives FCM messages even when app is killed
+            - Android's FCM infrastructure has special permission to wake apps
+            - Without this, you cannot receive calls when app is not running
+
+            The exported="false" with MESSAGING_EVENT filter is the correct pattern.
+        -->
+        <service
+            android:name=".FCMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!--
+            CallForegroundService: Keeps call processing alive
+
+            WHY THIS MATTERS:
+            - Android can kill any activity/service at any time
+            - Foreground services have higher priority and show persistent notification
+            - foregroundServiceType="phoneCall" tells Android this is a call
+            - Without this, your call handling might be killed mid-process
+        -->
+        <service
+            android:name=".CallForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="phoneCall|microphone" />
+
+        <!-- Required meta-data for FCM default notification channel -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="incoming_calls" />
+
+        <activity
+            android:name=".ui.profile.AstrologerProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FCMCallApp"/>
+
+        <activity
+            android:name=".ui.profile.UserProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FCMCallApp"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

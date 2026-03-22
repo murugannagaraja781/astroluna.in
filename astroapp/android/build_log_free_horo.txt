@@ -1,0 +1,149 @@
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsRelease UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:processReleaseGoogleServices UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesRelease UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:kaptGenerateStubsReleaseKotlin UP-TO-DATE
+> Task :app:kaptReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
+> Task :app:optimizeReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
+
+> Task :app:compileReleaseKotlin
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:129:37 Unresolved reference 'DeepJungle'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:129:49 Unresolved reference 'EmeraldGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:129:63 Unresolved reference 'MagicMint'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:182:37 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:187:37 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:201:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:202:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:203:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:204:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:205:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:219:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:220:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:221:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:222:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:223:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:237:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:238:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:239:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:240:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:241:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:254:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:255:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:256:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:257:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:258:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:271:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:272:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:273:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:274:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:275:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:288:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:289:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:290:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:291:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:292:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:305:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:306:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:307:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:308:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:309:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:322:54 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:323:53 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:324:47 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:325:52 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:326:54 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:340:58 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:341:57 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:342:51 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:343:56 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:344:58 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:355:58 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:356:57 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:357:51 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:358:56 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:359:58 Unresolved reference 'RoyalMidnightBlue'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:392:49 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:395:83 Unresolved reference 'PeacockGreen'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:406:51 Unresolved reference 'sp'.
+e: file:///Users/wohozo/Documents/astrolunat/astroapp/android/app/src/main/java/com.astroluna.app/ui/horoscope/FreeHoroscopeActivity.kt:408:45 Unresolved reference 'RoyalMidnightBlue'.
+
+> Task :app:compileReleaseKotlin FAILED
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astrolunat/astroapp/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+41 actionable tasks: 1 executed, 40 up-to-date

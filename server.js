@@ -46,6 +46,31 @@ const PHONEPE_HOST_URL = (process.env.PHONEPE_HOST_URL || "https://api.phonepe.c
 const PHONEPE_CLIENT_ID = (process.env.PHONEPE_CLIENT_ID || "").trim();
 const PHONEPE_CLIENT_VERSION = (process.env.PHONEPE_CLIENT_VERSION || "1").trim();
 const PHONEPE_CLIENT_SECRET = (process.env.PHONEPE_CLIENT_SECRET || "").trim();
+// WebRTC TURN Server Config
+const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:turn.astroluna.in:3478?transport=udp";
+const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:turn.astroluna.in:3478?transport=tcp";
+const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:turn.astroluna.in:5349";
+const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
+const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
+
+const ICE_SERVERS = [
+  { urls: "stun:stun.l.google.com:19302" },
+  { 
+    urls: TURN_SERVER_URL, 
+    username: TURN_SERVER_USERNAME, 
+    credential: TURN_SERVER_PASSWORD 
+  },
+  { 
+    urls: TURN_SERVER_URL_TCP, 
+    username: TURN_SERVER_USERNAME, 
+    credential: TURN_SERVER_PASSWORD 
+  },
+  { 
+    urls: TURN_SERVER_URL_TLS, 
+    username: TURN_SERVER_USERNAME, 
+    credential: TURN_SERVER_PASSWORD 
+  }
+];
 
 let phonepeTokenStore = {
   accessToken: null,
@@ -3129,7 +3154,8 @@ io.on('connection', (socket) => {
         fromUserId,
         callerName: fromUser?.name || 'Client',  // FIX: Add caller name for display
         type,
-        birthData: birthData || null
+        birthData: birthData || null,
+        iceServers: ICE_SERVERS // Dynamic TURN servers
       });
       socketSent = true;
       console.log(`[Session] Socket notification sent to room: ${toUserId}`);
@@ -3169,7 +3195,7 @@ io.on('connection', (socket) => {
       }
 
       console.log(`Session request: ${sessionId} (${type})`);
-      cb({ ok: true, sessionId });
+      cb({ ok: true, sessionId, iceServers: ICE_SERVERS });
 
       // --- MISSED CALL TIMEOUT (25s) ---
       setTimeout(async () => {
@@ -3694,7 +3720,7 @@ io.on('connection', (socket) => {
   });
 
   // --- Phase 1: Connection & Billing Start ---
-  socket.on('session-connect', async (data) => {
+  socket.on('session-connect', async (data, cb) => {
     try {
       const { sessionId } = data || {};
       const userId = socketToUser.get(socket.id);
@@ -3704,6 +3730,7 @@ io.on('connection', (socket) => {
       console.log(`Session Connect: User ${userId} joined Session ${sessionId}`);
 
       await handleUserConnection(sessionId, userId);
+      if (cb) cb({ ok: true, iceServers: ICE_SERVERS });
 
     } catch (err) {
       console.error('session-connect error:', err);
