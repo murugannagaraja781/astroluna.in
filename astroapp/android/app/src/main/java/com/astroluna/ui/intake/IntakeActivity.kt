@@ -104,8 +104,8 @@ class IntakeActivity : ComponentActivity() {
                     targetUserId = targetUserId,
                     tokenManager = tokenManager,
                     onClose = { finish() },
-                    onSessionConnected = { sessionId, callType ->
-                        navigateToSession(sessionId, callType)
+                    onSessionConnected = { sessionId, callType, iceServers ->
+                        navigateToSession(sessionId, callType, iceServers)
                     },
                     onUnanswered = {
                         Toast.makeText(this, "Astrologer is busy. Please try again later.", Toast.LENGTH_LONG).show()
@@ -116,7 +116,7 @@ class IntakeActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToSession(sessionId: String, type: String) {
+     private fun navigateToSession(sessionId: String, type: String, iceServers: String? = null) {
         if (type == "chat") {
             val intent = Intent(this, ChatActivity::class.java).apply {
                 putExtra("sessionId", sessionId)
@@ -131,6 +131,9 @@ class IntakeActivity : ComponentActivity() {
                 putExtra("partnerName", partnerName)
                 putExtra("isInitiator", true)
                 putExtra("callType", type)
+                if (iceServers != null) {
+                    putExtra("iceServers", iceServers)
+                }
             }
             startActivity(intent)
         }
@@ -150,7 +153,7 @@ fun IntakeScreen(
     targetUserId: String?,
     tokenManager: TokenManager,
     onClose: () -> Unit,
-    onSessionConnected: (String, String) -> Unit,
+    onSessionConnected: (String, String, String?) -> Unit,
     onUnanswered: () -> Unit
 ) {
     val context = LocalContext.current
@@ -204,8 +207,9 @@ fun IntakeScreen(
 
     // Logic State
     var isWaiting by remember { mutableStateOf(false) }
-    var waitTimeLeft by remember { mutableStateOf(30) }
+    var waitTimeLeft by remember { mutableIntStateOf(30) }
     var waitingSessionId by remember { mutableStateOf<String?>(null) }
+    var waitingIceServers by remember { mutableStateOf<String?>(null) }
 
     // State to track which city field triggered search
     var activeCitySearchTarget by remember { mutableStateOf("client") } // "client" or "partner"
@@ -394,7 +398,8 @@ fun IntakeScreen(
                 if (accepted) {
                     isWaiting = false
                     val sid = waitingSessionId ?: ""
-                    onSessionConnected(sid, callType ?: "chat")
+                    val ice = data.optJSONArray("iceServers")?.toString() ?: waitingIceServers
+                    onSessionConnected(sid, callType ?: "chat", ice)
                 } else {
                      isWaiting = false
                      // Rejected
@@ -583,9 +588,10 @@ fun IntakeScreen(
             // Initiate Session
              if (partnerId != null && callType != null) {
                  SocketManager.init()
-                 SocketManager.requestSession(partnerId, callType, birthData) { response ->
+                  SocketManager.requestSession(partnerId, callType, birthData) { response ->
                      if (response?.optBoolean("ok") == true) {
                          waitingSessionId = response.optString("sessionId")
+                         waitingIceServers = response.optJSONArray("iceServers")?.toString()
                          scope.launch { isWaiting = true }
                      } else {
                          scope.launch {

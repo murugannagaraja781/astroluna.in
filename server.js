@@ -3171,7 +3171,8 @@ io.on('connection', (socket) => {
           callerName: fromUser?.name || 'Client',
           callerId: fromUserId, // Fixed: callerUserId -> callerId
           timestamp: Date.now().toString(),
-          birthData: JSON.stringify(birthData || {})
+          birthData: JSON.stringify(birthData || {}),
+          iceServers: JSON.stringify(ICE_SERVERS) // Dynamic TURN servers for FCM
         };
 
         const fcmNotification = {
@@ -3360,6 +3361,7 @@ io.on('connection', (socket) => {
         fromUserId,
         type,
         accept: !!accept,
+        iceServers: ICE_SERVERS
       });
 
       console.log(

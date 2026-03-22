@@ -177,6 +177,10 @@ class AstrologerDashboardActivity : ComponentActivity() {
                     putExtra("callerName", callerName)
                     putExtra("callId", sessionId)
                     putExtra("callType", type)
+                    val iceServers = data.optJSONArray("iceServers")
+                    if (iceServers != null) {
+                        putExtra("iceServers", iceServers.toString())
+                    }
                     if (birthDataStr != null) {
                         putExtra("birthData", birthDataStr)
                     }
