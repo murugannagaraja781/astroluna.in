@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Payment Gateway - AstroLuna</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-purple: #7C3AED;
+            --brand-light: #A78BFA;
+            --accent-gold: #F59E0B;
+            --secondary-bg: #0C0C20;
+            --primary-bg: #050510;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--primary-bg);
+            background-image:
+                radial-gradient(circle at top left, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
+                url('https://www.transparenttextures.com/patterns/stardust.png');
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        .payment-container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            padding: 35px;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .wallet-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--brand-purple) 0%, var(--brand-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(92, 8, 116, 0.3);
+        }
+
+        .payment-header h2 {
+            color: var(--accent-gold);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .payment-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.2rem;
+        }
+
+        .user-info .expires {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            margin-top: 5px;
+        }
+
+        .amount-display {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .amount-display .label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .amount-display .amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%);
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .pay-btn:disabled {
+            background: #4B5563;
+            color: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .security-note {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .security-note i {
+            margin-right: 5px;
+            color: var(--accent-gold);
+        }
+
+        /* Error state */
+        .error-icon {
+            font-size: 4rem;
+            color: #EF4444;
+            margin-bottom: 25px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary-bg);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer-info {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Verifying Payment Token...</div>
+    </div>
+
+    <div class="payment-container" id="paymentContainer" style="display: none;">
+        <!-- Status Message -->
+        <div class="status-message" id="statusMessage"></div>
+
+        <!-- Header -->
+        <div class="payment-header">
+            <div class="wallet-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h2>Add Money to Wallet</h2>
+            <p>Secure payment via PhonePe</p>
+        </div>
+
+        <!-- User Info (from token) -->
+        <div class="user-info">
+            <div class="name" id="userName">Loading...</div>
+            <div class="expires" id="expiryInfo">Session expires in: --</div>
+        </div>
+
+        <!-- Amount Display (from token - not editable) -->
+        <div class="user-info" id="breakdownSection"
+            style="display: none; background: rgba(255, 255, 255, 0.02); margin-top: -10px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                <span style="color: var(--text-muted);">Recharge Amount:</span>
+                <span id="baseAmountDisplay" style="color: var(--text-main);">₹--</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px dashed var(--glass-border); padding-bottom: 8px; margin-bottom: 8px;">
+                <span style="color: var(--text-muted);">GST (18%):</span>
+                <span id="gstAmountDisplay" style="color: var(--text-main);">₹--</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1rem;">
+                <span style="color: var(--accent-gold);">Total Payable:</span>
+                <span id="totalAmountDisplay" style="color: var(--accent-gold);">₹--</span>
+            </div>
+        </div>
+
+        <div class="amount-display">
+            <div class="label">Amount to Pay</div>
+            <div class="amount" id="amountDisplay">₹--</div>
+        </div>
+
+        <!-- Pay Button -->
+        <button class="pay-btn" id="payBtn" onclick="initiatePayment()" disabled>
+            <i class="fas fa-lock"></i> Proceed to Pay
+        </button>
+
+        <!-- Security Note -->
+        <div class="security-note">
+            <i class="fas fa-shield-alt"></i> 100% Secure via PhonePe
+        </div>
+
+        <div class="footer-info">
+            Contact: kalpanajomr@gmail.com | 904785439<br>
+            &copy; 2024 TAMIL ARGO INTERNATIONAL
+        </div>
+    </div>
+
+    <!-- Error Container -->
+    <div class="payment-container" id="errorContainer" style="display: none;">
+        <div class="error-container">
+            <div class="error-icon"><i class="fas fa-exclamation-circle"></i></div>
+            <h2 id="errorTitle">Invalid Payment Link</h2>
+            <p id="errorMessage">This payment link is invalid or has expired.</p>
+            <button class="retry-btn" onclick="window.close()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================
+        // SECURE TOKEN-BASED PAYMENT PAGE
+        // =========================================
+
+        let paymentToken = null;
+        let paymentAmount = null;
+
+        // Show Loading
+        function showLoading(show = true, text = 'Processing...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            if (show) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        // Show Error
+        function showError(title, message) {
+            document.getElementById('paymentContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'block';
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMessage').textContent = message;
+            showLoading(false);
+        }
+
+        // Show Payment Form
+        function showPaymentForm(data) {
+            document.getElementById('paymentContainer').style.display = 'block';
+            document.getElementById('errorContainer').style.display = 'none';
+            document.getElementById('userName').textContent = data.userName || 'User';
+
+            // Display Breakdown if available
+            if (data.baseAmount) {
+                document.getElementById('breakdownSection').style.display = 'block';
+                document.getElementById('baseAmountDisplay').textContent = '₹' + data.baseAmount;
+                document.getElementById('gstAmountDisplay').textContent = '₹' + data.gst;
+                document.getElementById('totalAmountDisplay').textContent = '₹' + data.amount;
+            }
+
+            document.getElementById('amountDisplay').textContent = '₹' + data.amount;
+            document.getElementById('expiryInfo').textContent = `Session expires in: ${data.expiresIn} seconds`;
+            document.getElementById('payBtn').disabled = false;
+            paymentAmount = data.amount;
+            showLoading(false);
+        }
+
+        // Verify Token on Page Load
+        async function verifyToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            paymentToken = urlParams.get('token');
+
+            if (!paymentToken) {
+                showError('Missing Token', 'No payment token provided. Please initiate payment from the app.');
+                return;
+            }
+
+            showLoading(true, 'Verifying payment token...');
+
+            try {
+                const response = await fetch(`/api/verify-payment-token?token=${paymentToken}`);
+                const result = await response.json();
+
+                if (result.valid) {
+                    showPaymentForm(result);
+                } else {
+                    showError('Invalid Token', result.error || 'Token verification failed.');
+                }
+            } catch (error) {
+                console.error('Token verification error:', error);
+                showError('Network Error', 'Could not verify payment token. Please try again.');
+            }
+        }
+
+        // Flag to prevent double calls
+        let isPaymentInProgress = false;
+
+        // Initiate Payment (using token)
+        async function initiatePayment() {
+            // Prevent double-click
+            if (isPaymentInProgress) {
+                console.log('Payment already in progress');
+                return;
+            }
+            isPaymentInProgress = true;
+
+            if (!paymentToken) {
+                showError('Session Error', 'Payment token not found.');
+                isPaymentInProgress = false;
+                return;
+            }
+
+            showLoading(true, 'Initiating payment...');
+            document.getElementById('payBtn').disabled = true;
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const isForcedApp = urlParams.get('isApp') === 'true';
+
+                // Detect if running in Android app (WebView or Chrome Custom Tab)
+                const userAgent = navigator.userAgent || '';
+                const isAndroidApp = userAgent.includes('AstroApp') ||
+                    (userAgent.includes('Android') &&
+                        (userAgent.includes('wv') || // WebView
+                            !userAgent.includes('Chrome/'))); // Not Chrome browser
+
+                const response = await fetch('/api/payment/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: paymentToken,
+                        isApp: isForcedApp || isAndroidApp // Auto-detect or forced from URL
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.ok && result.payload && result.payload.paymentUrl) {
+                    // Redirect to PhonePe
+                    window.location.href = result.payload.paymentUrl;
+                } else {
+                    showLoading(false);
+                    document.getElementById('payBtn').disabled = false;
+                    const errorMsg = result.error || (result.payload && result.payload.error) || 'Failed to initiate payment.';
+                    alert("Payment Error: " + errorMsg);
+                    showError('Payment Error', errorMsg);
+                }
+
+            } catch (error) {
+                console.error('Payment initiation error:', error);
+                showLoading(false);
+                document.getElementById('payBtn').disabled = false;
+                alert("Payment Connection Error: " + error.message);
+                showError('Network Error', 'Could not connect to payment server.');
+            }
+        }
+
+        // Check for payment status in URL (after redirect back)
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+
+            if (status === 'success') {
+                document.getElementById('paymentContainer').style.display = 'block';
+                document.getElementById('errorContainer').style.display = 'none';
+                const statusEl = document.getElementById('statusMessage');
+                statusEl.className = 'status-message success';
+                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Payment Successful!';
+                statusEl.style.display = 'block';
+                document.querySelector('.payment-header').style.display = 'none';
+                document.querySelector('.user-info').style.display = 'none';
+                document.querySelector('.amount-display').style.display = 'none';
+                document.getElementById('payBtn').style.display = 'none';
+
+                // Immediate Close via Bridge
+                if (window.AndroidBridge && typeof window.AndroidBridge.onPaymentComplete === 'function') {
+                    window.AndroidBridge.onPaymentComplete('success');
+                } else {
+                    // Fallback for browser testing
+                    window.location.href = "astroluna://payment-success";
+                }
+
+            } else if (status === 'fail' || status === 'failure' || status === 'failed') {
+                showError('Payment Failed', 'Your payment could not be completed.');
+
+                // Immediate Close via Bridge
+                if (window.AndroidBridge && typeof window.AndroidBridge.onPaymentComplete === 'function') {
+                    window.AndroidBridge.onPaymentComplete('failed');
+                } else {
+                    // Fallback for browser testing
+                    window.location.href = "astroluna://payment-failed";
+                }
+            }
+        }
+
+        // Initialize on Page Load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if this is a return from payment gateway
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status')) {
+                checkPaymentStatus();
+                showLoading(false);
+            } else {
+                // New payment - verify token
+                verifyToken();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

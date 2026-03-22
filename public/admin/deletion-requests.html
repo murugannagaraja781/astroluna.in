@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletion Requests - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .requests-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-right: 5px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Account Deletion Requests</h1>
+
+        <div class="filters">
+            <label>Filter by Status:</label>
+            <select id="statusFilter" onchange="loadRequests()">
+                <option value="">All</option>
+                <option value="pending" selected>Pending</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+
+        <div class="requests-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>User Identifier</th>
+                        <th>User ID</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Requested At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsBody">
+                    <tr>
+                        <td colspan="7" class="loading">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for processing request -->
+    <div id="processModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Process Request</h3>
+            <p id="modalInfo"></p>
+            <textarea id="adminNotes" rows="4" placeholder="Add notes (optional)"></textarea>
+            <div class="modal-actions">
+                <button class="action-btn" onclick="closeModal()">Cancel</button>
+                <button id="confirmBtn" class="action-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRequestId = null;
+        let currentAction = null;
+
+        async function loadRequests() {
+            const status = document.getElementById('statusFilter').value;
+            const tbody = document.getElementById('requestsBody');
+
+            try {
+                const url = status
+                    ? `/api/admin/deletion-requests?status=${status}`
+                    : '/api/admin/deletion-requests';
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.ok && data.requests.length > 0) {
+                    tbody.innerHTML = data.requests.map(req => `
+                        <tr>
+                            <td>${req.requestId.substring(0, 8)}...</td>
+                            <td>${req.userIdentifier}</td>
+                            <td>${req.userId || 'N/A'}</td>
+                            <td>${req.reason || 'No reason'}</td>
+                            <td><span class="status-badge status-${req.status}">${req.status.toUpperCase()}</span></td>
+                            <td>${new Date(req.requestedAt).toLocaleString()}</td>
+                            <td>
+                                ${req.status === 'pending' ? `
+                                    <button class="action-btn btn-approve" onclick="openModal('${req.requestId}', 'approve', '${req.userIdentifier}')">Approve</button>
+                                    <button class="action-btn btn-reject" onclick="openModal('${req.requestId}', 'reject', '${req.userIdentifier}')">Reject</button>
+                                ` : req.notes || '-'}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="loading">No requests found</td></tr>';
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="7" class="loading">Error loading requests</td></tr>';
+                console.error('Error:', error);
+            }
+        }
+
+        function openModal(requestId, action, userIdentifier) {
+            currentRequestId = requestId;
+            currentAction = action;
+
+            const modal = document.getElementById('processModal');
+            const title = document.getElementById('modalTitle');
+            const info = document.getElementById('modalInfo');
+            const confirmBtn = document.getElementById('confirmBtn');
+
+            title.textContent = action === 'approve' ? 'Approve Deletion' : 'Reject Request';
+            info.textContent = `Are you sure you want to ${action} deletion request for ${userIdentifier}?`;
+
+            if (action === 'approve') {
+                confirmBtn.className = 'action-btn btn-approve';
+                confirmBtn.textContent = 'Approve & Delete';
+            } else {
+                confirmBtn.className = 'action-btn btn-reject';
+                confirmBtn.textContent = 'Reject';
+            }
+
+            confirmBtn.onclick = processRequest;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('processModal').style.display = 'none';
+            document.getElementById('adminNotes').value = '';
+            currentRequestId = null;
+            currentAction = null;
+        }
+
+        async function processRequest() {
+            const notes = document.getElementById('adminNotes').value;
+            const adminUserId = 'admin'; // You should get this from session/auth
+
+            try {
+                const response = await fetch('/api/admin/process-deletion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        requestId: currentRequestId,
+                        action: currentAction,
+                        adminUserId: adminUserId,
+                        notes: notes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert(data.message);
+                    closeModal();
+                    loadRequests();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+
+        // Load requests on page load
+        loadRequests();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadRequests, 30000);
+    </script>
+</body>
+
+</html>

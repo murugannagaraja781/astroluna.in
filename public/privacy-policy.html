@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Astro Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-purple: #5C0874;
+            --brand-light: #7A1F95;
+            --accent-gold: #D4AF37;
+            --primary-bg: #0B0F1A;
+            --secondary-bg: #161B2E;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--primary-bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(92, 8, 116, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(122, 31, 149, 0.1) 0%, transparent 40%);
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--secondary-bg);
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .header-nav {
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        ul {
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        li strong {
+            color: var(--text-main);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer strong {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 18px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-login-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 30px;
+            background: linear-gradient(135deg, var(--brand-purple), var(--brand-light));
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(92, 8, 116, 0.3);
+        }
+
+        .footer-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 8, 116, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-nav">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+
+        <h1>Privacy Policy</h1>
+        <p><strong>Effective Date:</strong> February 13, 2026</p>
+        <p>At Astro Luna, your privacy is paramount. We are dedicated to protecting your personal information and birth
+            data with the highest security standards.</p>
+
+        <section>
+            <h2><i class="fas fa-database"></i> 1. Information We Collect</h2>
+            <ul>
+                <li><strong>Identity Data:</strong> Mobile number and name for account management.</li>
+                <li><strong>Cosmic Data:</strong> Date, time, and city of birth to generate accurate astrological
+                    charts.</li>
+                <li><strong>Consultation Data:</strong> Logs of your interactions with astrologers to ensure quality
+                    service.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-shield-alt"></i> 2. Data Usage & Security</h2>
+            <p>Your birth details are used exclusively for chart calculations. We employ industry-standard encryption to
+                protect your conversations. We <strong>never</strong> sell your personal data to third-party
+                advertisers.</p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-video"></i> 3. Permissions</h2>
+            <p>Our app may request Camera and Microphone access. These are utilized <strong>only</strong> during your
+                active audio or video sessions with astrologers and are never recorded without your explicit consent.
+            </p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-user-check"></i> 4. Your Rights</h2>
+            <p>You have the right to access, correct, or delete your personal information at any time. You can request
+                account deletion directly through the app settings or by contacting our support team.</p>
+        </section>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="terms-condition.html">Terms & Conditions</a>
+                <a href="refund-cancellation-policy.html">Refund Policy</a>
+                <a href="return-policy.html">Return Policy</a>
+                <a href="delete-account.html">Delete Account</a>
+            </div>
+            <div>
+                <a href="index.html" class="footer-login-btn">Login / Join Now</a>
+            </div>
+            <p style="margin-top: 25px;">&copy; 2024 <strong>TAMIL ARGO INTERNATIONAL</strong>. All rights reserved.</p>
+            <p>Contact: kalpanajomr@gmail.com | 904785439</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund & Cancellation - Astro Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-purple: #5C0874;
+            --brand-light: #7A1F95;
+            --accent-gold: #D4AF37;
+            --primary-bg: #0B0F1A;
+            --secondary-bg: #161B2E;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--primary-bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(92, 8, 116, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(122, 31, 149, 0.1) 0%, transparent 40%);
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--secondary-bg);
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .header-nav {
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        ul {
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer strong {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 18px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-login-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 30px;
+            background: linear-gradient(135deg, var(--brand-purple), var(--brand-light));
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(92, 8, 116, 0.3);
+        }
+
+        .footer-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 8, 116, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-nav">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+
+        <h1>Refund & Cancellation Policy</h1>
+        <p>At Astro Luna, we aim for complete customer satisfaction. However, we have established clear guidelines for
+            refunds and cancellations to ensure a fair experience for both users and astrologers.</p>
+
+        <section>
+            <h2><i class="fas fa-money-bill-wave"></i> 1. Refund Eligibility</h2>
+            <p>Refunds may be processed in the following situations:</p>
+            <ul>
+                <li>Significant technical failure during a call or chat (e.g., immediate disconnection due to platform
+                    error).</li>
+                <li>Multiple deductions for the same transaction.</li>
+                <li>Incomplete services where the astrologer did not respond after session initiation.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-ban"></i> 2. Cancellation Policy</h2>
+            <p>Instant consultations (Chat/Call) cannot be cancelled once the session has started. For scheduled
+                reports, cancellations are only accepted if the request is made before the astrologer begins processing
+                the chart.</p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-wallet"></i> 3. Refund Method</h2>
+            <p>Approved refunds are typically credited back to your <strong>Astro Luna Wallet</strong> within 24-48
+                hours. These credits can be used for future consultations and do not expire.</p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-clock"></i> 4. Request Timeline</h2>
+            <p>Any refund request must be submitted within 7 days of the incident. Please provide the session ID and a
+                briefly describe the issue to our support team.</p>
+        </section>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="terms-condition.html">Terms & Conditions</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="return-policy.html">Return Policy</a>
+                <a href="delete-account.html">Delete Account</a>
+            </div>
+            <div style="margin-top: 20px;">
+                <a href="index.html" class="footer-login-btn">Login / Join Now</a>
+            </div>
+            <p style="margin-top: 25px;">&copy; 2024 <strong>TAMIL ARGO INTERNATIONAL</strong>. All rights reserved.</p>
+            <p>Contact: kalpanajomr@gmail.com | 904785439</p>
+        </div>
+    </div>
+</body>
+
+</html>

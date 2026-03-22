@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-
+astroapp
 # Logs
 *.log
 logs/

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/images/astro_5_star_logo.png">
+    <title>Astro 5 Star - New Astrologer Registration</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --bg-color: #F3F4F6;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1F2937;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            /* Fix padding issue */
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success-message {
+            text-align: center;
+            color: #047857;
+            background: #D1FAE5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="regFormContainer">
+        <h2>✨ Join Astro 5 Star</h2>
+        <form id="astroRegForm" onsubmit="submitForm(event)">
+
+            <div class="section-title">Personal Details</div>
+            <div class="form-group">
+                <label>Real Name *</label>
+                <input type="text" id="realName" required>
+            </div>
+            <div class="form-group">
+                <label>Display Name (For App)</label>
+                <input type="text" id="displayName">
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="section-title">Birth Details</div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="dob">
+            </div>
+            <div class="form-group">
+                <label>Time of Birth</label>
+                <input type="time" id="tob">
+            </div>
+            <div class="form-group">
+                <label>Place of Birth</label>
+                <input type="text" id="pob">
+            </div>
+
+            <div class="section-title">Contact Info</div>
+            <div class="form-group">
+                <label>Cell Number 1 (Login Number) *</label>
+                <input type="tel" id="cellNumber1" required placeholder="10 digit mobile number">
+            </div>
+            <div class="form-group">
+                <label>Cell Number 2</label>
+                <input type="tel" id="cellNumber2">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp Number</label>
+                <input type="tel" id="whatsAppNumber">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="example@mail.com">
+            </div>
+
+            <div class="form-group">
+                <label>Full Address</label>
+                <textarea id="address" rows="3"></textarea>
+            </div>
+
+            <div class="section-title">Professional Info</div>
+            <div class="form-group">
+                <label>Aadhar Number</label>
+                <input type="text" id="aadharNumber">
+            </div>
+            <div class="form-group">
+                <label>PAN Number</label>
+                <input type="text" id="panNumber">
+            </div>
+            <div class="form-group">
+                <label>Astrology Experience (Years)</label>
+                <input type="text" id="astrologyExperience">
+            </div>
+            <div class="form-group">
+                <label>Profession (e.g. Vedic, Tarot)</label>
+                <input type="text" id="profession">
+            </div>
+
+            <div class="section-title">Payment Details</div>
+            <div class="form-group">
+                <label>Bank Details (Acct No / IFSC)</label>
+                <textarea id="bankDetails" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>UPI Name</label>
+                <input type="text" id="upiName">
+            </div>
+            <div class="form-group">
+                <label>UPI Number</label>
+                <input type="text" id="upiNumber">
+            </div>
+
+            <button type="submit" class="btn-submit">Submit Registration</button>
+        </form>
+    </div>
+
+    <div class="container hidden" id="successContainer">
+        <div class="success-message">
+            <h3>🎉 Registration Submitted!</h3>
+            <p>Your request has been sent to the admin for approval.</p>
+            <hr style="border-top:1px dashed #047857; margin: 15px 0;">
+            <p style="font-weight:bold;">Final Step:</p>
+            <p>Please send your <b>Photo</b>, <b>Aadhar Card</b>, and <b>PAN Card</b> to our WhatsApp number:</p>
+            <h2 style="color:#25D366;"><i class="fab fa-whatsapp"></i> 9442681836</h2>
+            <p>Once approved, you will be able to login with your registered mobile number.</p>
+            <a href="/" style="display:inline-block; margin-top:15px; color:#059669; font-weight:bold;">Return to
+                Home</a>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+
+        function submitForm(e) {
+            e.preventDefault();
+
+            const data = {
+                realName: document.getElementById('realName').value,
+                displayName: document.getElementById('displayName').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                tob: document.getElementById('tob').value,
+                pob: document.getElementById('pob').value,
+                cellNumber1: document.getElementById('cellNumber1').value,
+                cellNumber2: document.getElementById('cellNumber2').value,
+                whatsAppNumber: document.getElementById('whatsAppNumber').value,
+                address: document.getElementById('address').value,
+                aadharNumber: document.getElementById('aadharNumber').value,
+                panNumber: document.getElementById('panNumber').value,
+                astrologyExperience: document.getElementById('astrologyExperience').value,
+                profession: document.getElementById('profession').value,
+                bankDetails: document.getElementById('bankDetails').value,
+                upiId: document.getElementById('upiName').value, // mapping name to ID field mostly or handle in backend
+                upiNumber: document.getElementById('upiNumber').value
+            };
+
+            const btn = document.querySelector('.btn-submit');
+            btn.innerText = 'Submitting...';
+            btn.disabled = true;
+
+            socket.emit('submit-astro-registration', data, (text) => { // Ack
+                // The server might respond with ack object or just void. Let's assume standard ack object {ok: true/false}
+                // Actually my server code: cb({ ok: true });
+            });
+
+            // Wait for callback or just simple timeout/listener
+            // My server code uses cb({ok: true}). Socket.io emits with ack.
+        }
+
+        // Correct way with Socket.IO ack:
+        document.getElementById('astroRegForm').onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                realName: document.getElementById('realName').value,
+                displayName: document.getElementById('displayName').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                tob: document.getElementById('tob').value,
+                pob: document.getElementById('pob').value,
+                cellNumber1: document.getElementById('cellNumber1').value,
+                cellNumber2: document.getElementById('cellNumber2').value,
+                whatsAppNumber: document.getElementById('whatsAppNumber').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                aadharNumber: document.getElementById('aadharNumber').value,
+                panNumber: document.getElementById('panNumber').value,
+                astrologyExperience: document.getElementById('astrologyExperience').value,
+                profession: document.getElementById('profession').value,
+                bankDetails: document.getElementById('bankDetails').value,
+                upiName: document.getElementById('upiName').value,
+                upiNumber: document.getElementById('upiNumber').value
+            };
+
+            const btn = document.querySelector('.btn-submit');
+            btn.innerText = 'Submitting...';
+            btn.disabled = true;
+
+            socket.emit('submit-astro-registration', data, (res) => {
+                if (res.ok) {
+                    document.getElementById('regFormContainer').classList.add('hidden');
+                    document.getElementById('successContainer').classList.remove('hidden');
+                } else {
+                    alert('Error: ' + (res.error || 'Registration failed'));
+                    btn.innerText = 'Submit Registration';
+                    btn.disabled = false;
+                }
+            });
+        };
+    </script>
+
+</body>
+
+</html>

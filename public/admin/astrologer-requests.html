@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrologer Applications - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .filters select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .requests-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 14px;
+            color: #34495e;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-group {
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 11px;
+            display: block;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .btn-approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-approve:hover,
+        .btn-reject:hover {
+            opacity: 0.9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .details-col {
+            min-width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Expert Registration Requests</h1>
+            <button class="refresh-btn" onclick="loadApplications()">Refresh List</button>
+        </div>
+
+        <div class="filters">
+            <label style="font-weight: 600;">Status:</label>
+            <select id="statusFilter" onchange="loadApplications()">
+                <option value="pending">Pending Review</option>
+                <option value="approved">Approved Experts</option>
+                <option value="rejected">Rejected Applications</option>
+            </select>
+        </div>
+
+        <div class="requests-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date Applied</th>
+                        <th>Expert Details</th>
+                        <th>Contact / Bio</th>
+                        <th>Professional Info</th>
+                        <th>Payment / Bank</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsBody">
+                    <tr>
+                        <td colspan="7" class="loading">Fetching applications...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Processing -->
+    <div id="processModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Process Application</h3>
+            <p id="modalInfo"></p>
+            <textarea id="adminNotes" rows="4"
+                placeholder="Optional notes (e.g. reason for rejection or special approval terms)"></textarea>
+            <div class="modal-actions">
+                <button class="action-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button id="confirmBtn" class="action-btn">Confirm Action</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAppId = null;
+        let currentAction = null;
+
+        async function loadApplications() {
+            const status = document.getElementById('statusFilter').value;
+            const tbody = document.getElementById('applicationsBody');
+
+            try {
+                const response = await fetch(`/api/admin/astrologer-applications?status=${status}`);
+                const data = await response.json();
+
+                if (data.ok && data.applications.length > 0) {
+                    tbody.innerHTML = data.applications.map(app => `
+                        <tr>
+                            <td>
+                                <b>${new Date(app.appliedAt).toLocaleDateString()}</b><br>
+                                <span style="font-size:11px; color:#95a5a6;">${new Date(app.appliedAt).toLocaleTimeString()}</span>
+                            </td>
+                            <td class="details-col">
+                                <div class="info-group">
+                                    <span class="info-label">REAL NAME</span>
+                                    <span class="info-value">${app.realName}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">DISPLAY NAME</span>
+                                    <span class="info-value">${app.displayName || '-'}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">BIRTH DETAILS</span>
+                                    <span class="info-value" style="font-size:12px;">${app.dob || '-'} | ${app.tob || '-'} | ${app.pob || '-'}</span>
+                                </div>
+                            </td>
+                            <td class="details-col">
+                                <div class="info-group">
+                                    <span class="info-label">PHONE 1</span>
+                                    <span class="info-value"><b>${app.cellNumber1}</b></span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">WHATSAPP / EMAIL</span>
+                                    <span class="info-value" style="font-size:12px;">${app.whatsAppNumber || '-'} <br> ${app.email || '-'}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">ADDRESS</span>
+                                    <span class="info-value" style="font-size:11px;">${app.address || '-'}</span>
+                                </div>
+                            </td>
+                            <td class="details-col">
+                                <div class="info-group">
+                                    <span class="info-label">EXPERIENCE</span>
+                                    <span class="info-value">${app.astrologyExperience || '0'} Years</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">PROFESSION / SKILLS</span>
+                                    <span class="info-value">${app.profession || '-'}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">KYC (AADHAR/PAN)</span>
+                                    <span class="info-value" style="font-size:11px;">A: ${app.aadharNumber || '-'}<br>P: ${app.panNumber || '-'}</span>
+                                </div>
+                            </td>
+                            <td class="details-col">
+                                <div class="info-group">
+                                    <span class="info-label">UPI DETAILS</span>
+                                    <span class="info-value">${app.upiName || '-'}<br><b>${app.upiNumber || '-'}</b></span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">BANK ACCOUNT</span>
+                                    <span class="info-value" style="font-size:11px;">${app.bankDetails || '-'}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-${app.status}">${app.status}</span>
+                                ${app.processedAt ? `<div style="font-size:10px; margin-top:5px; color:#95a5a6;">Proc: ${new Date(app.processedAt).toLocaleDateString()}</div>` : ''}
+                            </td>
+                            <td>
+                                ${app.status === 'pending' ? `
+                                    <button class="action-btn btn-approve" onclick="openModal('${app.applicationId}', 'approved', '${app.realName}')">Approve</button>
+                                    <button class="action-btn btn-reject" onclick="openModal('${app.applicationId}', 'rejected', '${app.realName}')">Reject</button>
+                                ` : `
+                                    <div style="font-size:11px; color:#7f8c8d; max-width:150px; border-left:2px solid #ddd; padding-left:8px;">
+                                        ${app.notes || 'No admin notes'}
+                                    </div>
+                                `}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" class="loading">No ${status} applications found.</td></tr>`;
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="7" class="loading" style="color:#e74c3c;">Failed to load applications. Network error.</td></tr>';
+                console.error('Error:', error);
+            }
+        }
+
+        function openModal(appId, action, name) {
+            currentAppId = appId;
+            currentAction = action;
+
+            const modal = document.getElementById('processModal');
+            const title = document.getElementById('modalTitle');
+            const info = document.getElementById('modalInfo');
+            const confirmBtn = document.getElementById('confirmBtn');
+
+            title.textContent = action === 'approved' ? 'Approve Registration' : 'Reject Application';
+            info.innerHTML = action === 'approved'
+                ? `Confirming <b>${name}</b> will promote their account to <b>Astrologer</b> role. They will be visible on the app immediately.`
+                : `Are you sure you want to reject <b>${name}</b>'s application?`;
+
+            confirmBtn.className = action === 'approved' ? 'action-btn btn-approve' : 'action-btn btn-reject';
+            confirmBtn.textContent = action === 'approved' ? 'Approve & Activate' : 'Confirm Rejection';
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('processModal').style.display = 'none';
+            document.getElementById('adminNotes').value = '';
+            currentAppId = null;
+            currentAction = null;
+        }
+
+        document.getElementById('confirmBtn').onclick = async function () {
+            const notes = document.getElementById('adminNotes').value;
+            const btn = this;
+
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/admin/astrologer/process-application', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        applicationId: currentAppId,
+                        status: currentAction,
+                        notes: notes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert(`Expert has been ${currentAction} successfully!`);
+                    closeModal();
+                    loadApplications();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        // Initialize display
+        loadApplications();
+    </script>
+</body>
+
+</html>
