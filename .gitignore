@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+logs/
+activity.log
+phonepe_debug.log
+server.log
+temp_server.log
+
+# System files
+.DS_Store
+Thumb.db
+
+# Secrets & Credentials
+firebase-service-account.json
+github_action_key
+github_action_key.pub
+.env
+
+# Backups
+backups/
