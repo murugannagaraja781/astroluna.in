@@ -658,6 +658,12 @@ const safeDbOperation = async (operation, fallbackValue = null) => {
   }
 };
 
+// Placeholder for seedDatabase if not defined
+const seedDatabase = async () => {
+  console.log('🌱 Seeding database check...');
+  // Add seed logic if needed here
+};
+
 // MongoDB Connection with retry logic
 const connectDB = async (retries = 5) => {
   try {
@@ -688,6 +694,9 @@ const connectDB = async (retries = 5) => {
     }
   }
 };
+
+// Initialize database connection
+connectDB();
 
 // Handle MongoDB connection events
 mongoose.connection.on('connected', () => {
@@ -3259,8 +3268,8 @@ app.post('/call', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
-  server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  server.listen(PORT, "127.0.0.1", () => {
+    console.log(`Server running on http://127.0.0.1:${PORT}`);
   });
 }
 

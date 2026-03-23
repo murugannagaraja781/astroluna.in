@@ -45,3 +45,4 @@ github_action_key.pub
 
 # Backups
 backups/
+astroapp/android/app/src/main/assets/csc.db
