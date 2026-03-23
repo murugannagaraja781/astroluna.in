@@ -14,18 +14,18 @@ const { DateTime } = require('luxon');
 const { fetchDailyHoroscope } = require("./utils/rasiEng/horoscopeData");
 
 // MODULAR EXPORTS - New separation architecture
-const { 
-  User, Session, CallRequest, PairMonth, 
-  BillingLedger, Withdrawal, Payment, 
+const {
+  User, Session, CallRequest, PairMonth,
+  BillingLedger, Withdrawal, Payment,
   AstrologerApplication, Notification, ChatMessage,
   AcademyVideo, Banner, AccountDeletionRequest
 } = require('./models');
 const billingModule = require('./modules/billing');
 const communicationModule = require('./modules/communication');
 const state = require('./modules/state');
-const { 
-  userSockets, socketToUser, userActiveSession, 
-  activeSessions, pendingMessages, otpStore 
+const {
+  userSockets, socketToUser, userActiveSession,
+  activeSessions, pendingMessages, otpStore
 } = state;
 
 // Activity Logger Helper
@@ -68,20 +68,20 @@ const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword
 
 const ICE_SERVERS = [
   { urls: "stun:stun.l.google.com:19302" },
-  { 
-    urls: TURN_SERVER_URL, 
-    username: TURN_SERVER_USERNAME, 
-    credential: TURN_SERVER_PASSWORD 
+  {
+    urls: TURN_SERVER_URL,
+    username: TURN_SERVER_USERNAME,
+    credential: TURN_SERVER_PASSWORD
   },
-  { 
-    urls: TURN_SERVER_URL_TCP, 
-    username: TURN_SERVER_USERNAME, 
-    credential: TURN_SERVER_PASSWORD 
+  {
+    urls: TURN_SERVER_URL_TCP,
+    username: TURN_SERVER_USERNAME,
+    credential: TURN_SERVER_PASSWORD
   },
-  { 
-    urls: TURN_SERVER_URL_TLS, 
-    username: TURN_SERVER_USERNAME, 
-    credential: TURN_SERVER_PASSWORD 
+  {
+    urls: TURN_SERVER_URL_TLS,
+    username: TURN_SERVER_USERNAME,
+    credential: TURN_SERVER_PASSWORD
   }
 ];
 
@@ -2123,12 +2123,12 @@ function getOtherUserIdFromSession(sessionId, userId) {
 
 // SHARED OBJECT FOR MODULES
 const shared = {
-    ...state,
-    ICE_SERVERS,
-    logActivity,
-    broadcastAstroUpdate,
-    sendFcmV1Push,
-    getOtherUserIdFromSession
+  ...state,
+  ICE_SERVERS,
+  logActivity,
+  broadcastAstroUpdate,
+  sendFcmV1Push,
+  getOtherUserIdFromSession
 };
 
 // Initialize Modules
@@ -3259,8 +3259,8 @@ app.post('/call', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
-  server.listen(PORT, () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  server.listen(PORT, "http://127.0.0.1", () => {
+    console.log(`Server running on http://127.0.0.1:${PORT}`);
   });
 }
 
