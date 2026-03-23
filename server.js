@@ -301,7 +301,10 @@ async function sendFcmV1Push(fcmToken, data, notification) {
       data: stringData,
       android: {
         priority: 'high',
-        ttl: 0
+        ttl: 0,
+        notification: {
+          color: notification?.color || undefined
+        }
       }
     };
 

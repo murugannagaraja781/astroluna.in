@@ -76,6 +76,32 @@ module.exports = function(io, state, shared) {
         sessionId, reason, summary: { duration, deducted: session.totalDeducted || 0, earned: session.totalEarned || 0 }
       });
       console.log(`[Session] Cleaned up ${sessionId}. Duration: ${duration}s`);
+
+      // Post-call notifications (FCM)
+      const deducted = session.totalDeducted || 0;
+      const earned = session.totalEarned || 0;
+
+      if (deducted > 0) {
+        const cUser = await User.findOne({ userId: clientId }, { fcmToken: 1 });
+        if (cUser?.fcmToken) {
+          sendFcmV1Push(cUser.fcmToken, { type: 'BILLING_DEBIT' }, {
+            title: 'Wallet Debited',
+            body: `₹${deducted} debited for your recent consultation.`,
+            color: '#FF0000' // Red hint
+          });
+        }
+      }
+
+      if (earned > 0) {
+        const aUser = await User.findOne({ userId: astrologerId }, { fcmToken: 1 });
+        if (aUser?.fcmToken) {
+          sendFcmV1Push(aUser.fcmToken, { type: 'BILLING_CREDIT' }, {
+            title: 'Wallet Credited',
+            body: `₹${earned} credited for your recent consultation.`,
+            color: '#008000' // Green hint
+          });
+        }
+      }
     } catch (err) { console.error('[Session] Cleanup error:', err); }
   }
 
