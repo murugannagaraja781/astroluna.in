@@ -904,7 +904,17 @@ class CallActivity : ComponentActivity() {
                     androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle(if (reason == "insufficient_funds") "⚠️ Low Balance" else "📞 Call Summary")
                         .setMessage(message)
-                        .setPositiveButton("OK") { _, _ -> finish() }
+                        .setPositiveButton("OK") { _, _ ->
+                            if (session?.role == "astrologer") {
+                                try {
+                                    val historyIntent = android.content.Intent(this, com.astroluna.ui.astro.AstrologerHistoryActivity::class.java)
+                                    startActivity(historyIntent)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Failed to navigate to AstrologerHistoryActivity", e)
+                                }
+                            }
+                            finish()
+                        }
                         .setCancelable(false)
                         .show()
                 } catch (e: Exception) {
