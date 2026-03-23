@@ -310,6 +310,15 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     return { success: true, messageId: result };
   } catch (err) {
     console.error('[FCM v1] Send error:', err.message, '- attempting legacy fallback');
+    // If token is invalid or not registered, remove it from DB to avoid future failures
+    if (err.message.includes('not found') || err.message.includes('not registered') || err.message.includes('invalid')) {
+      try {
+        await User.updateOne({ fcmToken: fcmToken }, { $unset: { fcmToken: 1 } });
+        console.log(`[FCM] Invalid token removed from database.`);
+      } catch (dbErr) {
+        console.error('[FCM] Failed to unset invalid token:', dbErr.message);
+      }
+    }
     return await sendFcmLegacy(fcmToken, data, notification);
   }
 }
@@ -338,7 +347,14 @@ async function sendFcmLegacy(token, data, notification) {
       },
       body: JSON.stringify(payload)
     });
-    const result = await response.json();
+    let result;
+    const text = await response.text();
+    try {
+      result = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('[FCM Legacy] Non-JSON response received:', text.substring(0, 100));
+      return { success: false, error: 'Non-JSON response from legacy endpoint' };
+    }
     console.log('[FCM Legacy] Sent result:', result);
     return { success: true, result };
   } catch (err) {
@@ -1346,7 +1362,7 @@ app.post('/api/user/intake', async (req, res) => {
     const user = await User.findOneAndUpdate(
       { userId },
       { $set: { intakeDetails: intakeData } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!user) {
