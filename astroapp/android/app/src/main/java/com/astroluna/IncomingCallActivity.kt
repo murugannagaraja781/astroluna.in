@@ -105,9 +105,15 @@ class IncomingCallActivity : ComponentActivity() {
         startVibration()
         handler.postDelayed(timeoutRunnable, CALL_TIMEOUT_MS)
 
-        // Ensure socket is connecting
+        // Ensure socket is connecting and registering
         try {
             SocketManager.init()
+            val session = com.astroluna.data.local.TokenManager(this).getUserSession()
+            session?.userId?.let { uid ->
+                SocketManager.registerUser(uid) { success ->
+                    Log.d(TAG, "User registration on IncomingCall: $success")
+                }
+            }
         } catch(e: Exception) { e.printStackTrace() }
 
         setContent {

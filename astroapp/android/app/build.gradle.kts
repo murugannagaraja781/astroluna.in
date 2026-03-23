@@ -16,8 +16,8 @@ android {
         applicationId = "com.astroluna"
         minSdk = 21
         targetSdk = 35
-        versionCode = 20260311
-        versionName = "7.0.0"
+        versionCode = 1
+        versionName = "1.0.0"
         multiDexEnabled = true
     }
 
@@ -31,6 +31,12 @@ android {
                 storePassword = props["storePassword"] as String
                 keyAlias = props["keyAlias"] as String
                 keyPassword = props["keyPassword"] as String
+                
+                // Ensure all signing schemes are enabled for maximum compatibility
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+                enableV4Signing = true
             }
         }
     }
