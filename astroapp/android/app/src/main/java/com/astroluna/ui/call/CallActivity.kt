@@ -345,45 +345,7 @@ class CallActivity : ComponentActivity() {
 
         // Start Remaining Time Countdown (for astrologers only)
         if (role == "astrologer") {
-            lifecycleScope.launch {
-                while (isActive) {
-                    delay(1000)
-                    if (remainingTime.isNotEmpty() && remainingTime != "00:00") {
-                        val parts = remainingTime.split(":")
-                        if (parts.size == 2) {
-                            val mins = parts[0].toIntOrNull() ?: 0
-                            val secs = parts[1].toIntOrNull() ?: 0
-                            val totalSecs = mins * 60 + secs - 1
-                            if (totalSecs > 0) {
-                                remainingTime = String.format("%02d:%02d", totalSecs / 60, totalSecs % 60)
-                            } else {
-                                remainingTime = "00:00"
-                                endCall() // Auto-end when time exhausted
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Fetch wallet and calculate initial remaining time
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val client = okhttp3.OkHttpClient()
-                    val request = okhttp3.Request.Builder()
-                        .url("${com.astroluna.utils.Constants.SERVER_URL}/api/user/${partnerId}")
-                        .build()
-                    val response = client.newCall(request).execute()
-                    if (response.isSuccessful) {
-                        val json = JSONObject(response.body?.string() ?: "{}")
-                        val walletBalance = json.optDouble("walletBalance", 0.0)
-                        val ratePerMin = 10.0 // Default rate, ideally from partner data
-                        val totalMinutes = (walletBalance / ratePerMin).toInt()
-                        remainingTime = String.format("%02d:%02d", totalMinutes, 0)
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to fetch wallet balance", e)
-                }
-            }
+            // Remaining time will be updated via 'billing-started' socket event
         }
     }
 
@@ -891,11 +853,31 @@ class CallActivity : ComponentActivity() {
             } catch (e: Exception) { e.printStackTrace() }
         }
 
-        SocketManager.onBillingStarted { startTime ->
+        SocketManager.onBillingStarted { info ->
             runOnUiThread {
                 statusText = "🔴 Billing Active"
                 isBillingActive = true
-                // Removed duplicate createOffer here to avoid race conditions
+                
+                // Update remaining time from server
+                val mins = info.availableMinutes
+                remainingTime = String.format("%02d:%02d", mins, 0)
+                
+                // Start local countdown for the remaining time
+                lifecycleScope.launch {
+                    var totalSecs = mins * 60
+                    while (totalSecs > 0 && isBillingActive) {
+                        delay(1000)
+                        totalSecs--
+                        remainingTime = String.format("%02d:%02d", totalSecs / 60, totalSecs % 60)
+                        if (totalSecs <= 0) {
+                             remainingTime = "00:00"
+                             if (session?.role == "astrologer") {
+                                 Toast.makeText(this@CallActivity, "Client balance exhausted", Toast.LENGTH_LONG).show()
+                             }
+                        }
+                    }
+                }
+
                 androidx.core.os.HandlerCompat.postDelayed(android.os.Handler(android.os.Looper.getMainLooper()), {
                    if(statusText == "🔴 Billing Active") statusText = ""
                 }, null, 3000)

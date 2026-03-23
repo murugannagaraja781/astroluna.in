@@ -126,7 +126,13 @@ class ChatActivity : ComponentActivity() {
                     toUserId = toUserId,
                     sessionId = sessionId,
                     remainingTime = remainingTime,
-                    clientBirthData = clientBirthData
+                    clientBirthData = clientBirthData,
+                    onCopyText = { text ->
+                        val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                        val clip = android.content.ClipData.newPlainText("Chat Message", text)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(this@ChatActivity, "Text Copied", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         }
@@ -322,7 +328,8 @@ fun ChatScreen(
     toUserId: String?,
     sessionId: String?,
     remainingTime: String,
-    clientBirthData: JSONObject? = null
+    clientBirthData: JSONObject? = null,
+    onCopyText: (String) -> Unit
 ) {
     val messages by viewModel.history.observeAsState(emptyList())
     val isTyping by viewModel.typingStatus.observeAsState(false)
@@ -431,7 +438,7 @@ fun ChatScreen(
                 }
 
                 items(displayedMessages) { msg ->
-                    ChatBubble(msg, isAstrologer, onReply = { replyingTo = msg })
+                    ChatBubble(msg, isAstrologer, onReply = { replyingTo = msg }, onLongClick = { onCopyText(msg.text) })
                 }
                 if (isTyping) item { TypingBubble() }
             }
@@ -441,7 +448,7 @@ fun ChatScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ChatBubble(msg: ChatMessage, amIAstrologer: Boolean, onReply: () -> Unit) {
+fun ChatBubble(msg: ChatMessage, amIAstrologer: Boolean, onReply: () -> Unit, onLongClick: () -> Unit) {
     val isMe = msg.isSent
     val isMsgFromAstrologer = if (isMe) amIAstrologer else !amIAstrologer
 
@@ -489,7 +496,7 @@ fun ChatBubble(msg: ChatMessage, amIAstrologer: Boolean, onReply: () -> Unit) {
                         .widthIn(max = 280.dp)
                         .combinedClickable(
                             onClick = {},
-                            onLongClick = onReply
+                            onLongClick = onLongClick
                         )
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {

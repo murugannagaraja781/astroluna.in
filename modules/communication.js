@@ -207,13 +207,21 @@ module.exports = function(io, shared) {
         // Missed call timeout
         setTimeout(async () => {
           const s = activeSessions.get(sessionId);
-          if (s && s.status === 'ringing') {
+            if (s && s.status === 'ringing') {
             io.to(fromUserId).emit('session-ended', { sessionId, reason: 'no_answer' });
             io.to(toUserId).emit('session-ended', { sessionId, reason: 'missed' });
             userActiveSession.delete(fromUserId);
             userActiveSession.delete(toUserId);
             activeSessions.delete(sessionId);
             await Session.updateOne({ sessionId }, { status: 'missed', endTime: Date.now() });
+            
+            // Item 9: If astrologer misses call, set them offline
+            const target = await User.findOne({ userId: toUserId });
+            if (target && target.role === 'astrologer') {
+              console.log(`[Status] Setting ${toUserId} offline due to missed call.`);
+              await User.updateOne({ userId: toUserId }, { isAvailable: false, isOnline: false });
+              broadcastAstroUpdate();
+            }
           }
         }, 30000);
       } catch (err) {
@@ -260,7 +268,30 @@ module.exports = function(io, shared) {
         const session = activeSessions.get(sessionId);
         if (session) {
           session.status = 'active';
-          if (session.astrologerId) User.updateOne({ userId: session.astrologerId }, { isBusy: true }).then(() => broadcastAstroUpdate());
+          session.actualBillingStart = Date.now(); // Start per-minute billing
+          
+          User.findOne({ userId: session.astrologerId }).then(async (astro) => {
+             if (astro) {
+               await User.updateOne({ userId: session.astrologerId }, { isBusy: true });
+               broadcastAstroUpdate();
+               
+               // ITEM 5: Emit billing-started with wallet/available time
+               const client = await User.findOne({ userId: session.clientId });
+               if (client) {
+                 const rate = astro.price || 20;
+                 const mins = Math.floor(client.walletBalance / rate);
+                 const info = {
+                   startTime: session.actualBillingStart,
+                   clientBalance: client.walletBalance,
+                   ratePerMinute: rate,
+                   availableMinutes: mins
+                 };
+                 io.to(session.clientId).emit('billing-started', info);
+                 io.to(session.astrologerId).emit('billing-started', info);
+                 console.log(`[Billing] Session ${sessionId} started. Available: ${mins} mins`);
+               }
+             }
+          });
         }
       }
       io.to(toUserId).emit('session-answered', { sessionId, fromUserId, accept: !!accept, iceServers: ICE_SERVERS });
@@ -294,7 +325,30 @@ module.exports = function(io, shared) {
         if (accept) {
           if (session.status === 'active') return safeAck(cb, { ok: true, fromUserId });
           session.status = 'active';
-          User.updateOne({ userId: astrologerId }, { isBusy: true }).then(() => broadcastAstroUpdate());
+          session.actualBillingStart = Date.now(); // Start per-minute billing
+
+          User.findOne({ userId: astrologerId }).then(async (astro) => {
+            if (astro) {
+              await User.updateOne({ userId: astrologerId }, { isBusy: true });
+              broadcastAstroUpdate();
+
+              // ITEM 5: Push billing info
+              const client = await User.findOne({ userId: session.clientId });
+              if (client) {
+                const rate = astro.price || 20;
+                const mins = Math.floor(client.walletBalance / rate);
+                const info = {
+                  startTime: session.actualBillingStart,
+                  clientBalance: client.walletBalance,
+                  ratePerMinute: rate,
+                  availableMinutes: mins
+                };
+                io.to(session.clientId).emit('billing-started', info);
+                io.to(session.astrologerId).emit('billing-started', info);
+                console.log(`[Billing] Session ${sessionId} started (Native). Available: ${mins} mins`);
+              }
+            }
+          });
           io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true });
           safeAck(cb, { ok: true, fromUserId });
         } else {
@@ -312,6 +366,25 @@ module.exports = function(io, shared) {
       if (!fromUserId || !sessionId || !toUserId || !signal) return;
       io.to(toUserId).emit('signal', { sessionId, fromUserId, signal });
     });
+
+    // --- ITEM 4: Message Status Relay (Double Tick) ---
+    socket.on('message-status', (data) => {
+      const { toUserId, messageId, status, sessionId } = data || {};
+      if (!toUserId || !messageId || !status) return;
+      io.to(toUserId).emit('message-status', { messageId, status, sessionId });
+      console.log(`[Chat] Relay status ${status} for ${messageId} to ${toUserId}`);
+    });
+
+    // --- ITEM 8: Logout Handler ---
+    socket.on('logout', async (data) => {
+      const userId = data?.userId || socketToUser.get(socket.id);
+      if (userId) {
+        console.log(`[Status] Explicit logout for ${userId}`);
+        await User.updateOne({ userId }, { isOnline: false, isAvailable: false, isBusy: false });
+        broadcastAstroUpdate();
+      }
+    });
+
 
     // --- End Session ---
     socket.on('end-session', async (data) => {

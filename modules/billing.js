@@ -28,7 +28,7 @@ module.exports = function(io, state, shared) {
 
       if (client.walletBalance < totalCharge) {
         console.log(`[Billing] Insufficient balance for ${clientId}.`);
-        io.to(sessionId).emit('insufficient-balance', { sessionId });
+        await endSessionRecord(sessionId, 'insufficient_funds');
         return;
       }
 
