@@ -1143,7 +1143,7 @@ app.post('/api/admin/academy/videos', async (req, res) => {
 
 app.put('/api/admin/academy/videos/:id', async (req, res) => {
   try {
-    const video = await AcademyVideo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const video = await AcademyVideo.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     res.json({ ok: true, video });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
@@ -1290,7 +1290,7 @@ app.post('/api/admin/banners', async (req, res) => {
 // Admin: Update Banner
 app.put('/api/admin/banners/:id', async (req, res) => {
   try {
-    const banner = await Banner.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const banner = await Banner.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     res.json({ ok: true, banner });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
