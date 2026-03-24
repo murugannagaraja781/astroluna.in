@@ -184,6 +184,7 @@ module.exports = function(io, shared) {
         });
         userActiveSession.set(fromUserId, sessionId);
         userActiveSession.set(toUserId, sessionId);
+        socket.join(sessionId); // Join room immediately after creation
 
         const callPayload = {
           sessionId, fromUserId, callerName: fromUser.name || 'Client',
@@ -261,6 +262,7 @@ module.exports = function(io, shared) {
       const { sessionId, toUserId, accept } = data || {};
       const fromUserId = socketToUser.get(socket.id);
       if (!fromUserId || !sessionId || !toUserId) return;
+      socket.join(sessionId); // Callee joins room upon answering
 
       if (!accept) {
         endSessionRecord(sessionId);
@@ -303,6 +305,7 @@ module.exports = function(io, shared) {
         const { sessionId, accept, callType } = data || {};
         const astrologerId = socketToUser.get(socket.id);
         if (!astrologerId || !sessionId) return safeAck(cb, { ok: false, error: 'Invalid data' });
+        socket.join(sessionId); // Callee joins room upon answering (Native)
 
         const session = activeSessions.get(sessionId);
         if (!session) {
