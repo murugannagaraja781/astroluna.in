@@ -38,8 +38,9 @@ import androidx.compose.ui.unit.sp
 import com.astroluna.ui.theme.CosmicAppTheme
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.astroluna.ui.intake.IntakeActivity
 import org.json.JSONObject
 
 // --- Aesthetic Constants (Premium Blue) ---
@@ -166,6 +167,29 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
 
+    val editLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val dataStr = result.data?.getStringExtra("birthData")
+            if (dataStr != null) {
+                try {
+                    val newData = JSONObject(dataStr)
+                    // Update our birthData and trigger a refresh
+                    isLoading = true
+                    scope.launch {
+                        try {
+                            val resultChart = fetchFullChart(newData)
+                            chartState = resultChart
+                        } finally {
+                            isLoading = false
+                        }
+                    }
+                } catch(e: Exception){ e.printStackTrace() }
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -207,6 +231,16 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             .fillMaxSize()
             .navigationBarsPadding()
             .background(Brush.verticalGradient(listOf(DeepSpaceNavy, PremiumBlue)))) {
+            
+            // --- New Client Info Header ---
+            ClientInfoHeader(birthData) {
+                val intent = Intent(context, IntakeActivity::class.java).apply {
+                    putExtra("isEditMode", true)
+                    putExtra("existingData", birthData.toString())
+                }
+                editLauncher.launch(intent)
+            }
+
             if (isLoading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = NeonCyan)
@@ -639,5 +673,64 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
     } catch (e: Exception) {
         e.printStackTrace()
         null
+    }
+}
+
+@Composable
+fun ClientInfoHeader(birthData: JSONObject, onEdit: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.08f)),
+        border = BorderStroke(1.dp, NeonCyan.copy(alpha = 0.3f))
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = birthData.optString("name", "User Details"),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = NeonCyan,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(4.dp))
+                val dob = "${birthData.optInt("day")}/${birthData.optInt("month")}/${birthData.optInt("year")}"
+                val tob = String.format("%02d:%02d", birthData.optInt("hour"), birthData.optInt("minute"))
+                val gender = birthData.optString("gender", "Male")
+                val place = birthData.optString("city", "Unknown Place")
+
+                Text(
+                    text = "$dob | $tob | $gender",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+                Text(
+                    text = place,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.6f)
+                )
+            }
+            
+            IconButton(
+                onClick = onEdit,
+                modifier = Modifier
+                    .background(NeonCyan.copy(alpha = 0.2f), CircleShape)
+                    .size(40.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Details",
+                    tint = NeonCyan,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
 }

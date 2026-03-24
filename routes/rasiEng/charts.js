@@ -115,16 +115,25 @@ router.post('/full', async (req, res) => {
         }));
         const navamsaAscSign = getNavamsaSign(houses.ascendant);
 
+        const now = DateTime.now();
         const detailedDasha = dashaPeriods.map(md => {
+            const mdStart = DateTime.fromISO(md.start);
+            const mdEnd = DateTime.fromISO(md.end);
+            const isCurrentMD = now >= mdStart && now < mdEnd;
+            const isNearMD = now.plus({ years: 10 }) >= mdStart && now.minus({ years: 2 }) <= mdEnd;
+
+            // Level 2: Bhuktis
             const bhuktis = getSubPeriods(md.start, md.end, md.lord, 1);
+            
             return {
                 ...md,
                 subPeriods: bhuktis.map(bh => {
-                    const antaras = getSubPeriods(bh.start, bh.end, bh.lord, 2);
-                    return {
-                        ...bh,
-                        subPeriods: antaras
-                    };
+                    // Level 3: Antaras - Only calculate for current or near Mahadashas to save big on JSON size
+                    if (isCurrentMD || isNearMD) {
+                        const antaras = getSubPeriods(bh.start, bh.end, bh.lord, 2);
+                        return { ...bh, subPeriods: antaras };
+                    }
+                    return bh;
                 })
             };
         });
