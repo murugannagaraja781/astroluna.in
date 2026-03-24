@@ -747,12 +747,14 @@ class CallActivity : ComponentActivity() {
                             }
                         }
                         PeerConnection.IceConnectionState.FAILED -> {
-                            if (!isEditingIntake) {
-                                Toast.makeText(this@CallActivity, "Connection Failed", Toast.LENGTH_SHORT).show()
-                                endCall()
-                            } else {
-                                Log.d(TAG, "ICE Failed while editing intake - ignoring to allow reconnect")
-                                statusText = "Reconnecting..."
+                            runOnUiThread {
+                                if (!isEditingIntake) {
+                                    Toast.makeText(this@CallActivity, "Connection Failed - Retrying...", Toast.LENGTH_SHORT).show()
+                                    statusText = "Connection Failed"
+                                } else {
+                                    Log.d(TAG, "ICE Failed while editing intake - ignoring to allow reconnect")
+                                    statusText = "Reconnecting..."
+                                }
                             }
                         }
                         else -> {}
@@ -760,10 +762,18 @@ class CallActivity : ComponentActivity() {
                 }
             }
             override fun onIceConnectionReceivingChange(p0: Boolean) {}
-            override fun onIceGatheringChange(p0: PeerConnection.IceGatheringState?) {}
+            override fun onIceGatheringChange(p0: PeerConnection.IceGatheringState?) {
+                Log.d(TAG, "ICE Gathering State: $p0")
+                runOnUiThread {
+                    if (p0 == PeerConnection.IceGatheringState.GATHERING) {
+                        statusText = "Gathering routes..."
+                    }
+                }
+            }
 
             override fun onIceCandidate(candidate: IceCandidate?) {
                 if (candidate != null) {
+                    Log.d(TAG, "Generated ICE Candidate (${candidate.sdpMid}): ${candidate.sdp}")
                     val signalData = JSONObject().apply {
                          put("type", "candidate")
                          put("candidate", JSONObject().apply {

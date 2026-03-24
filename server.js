@@ -67,19 +67,15 @@ const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
 const ICE_SERVERS = [
-  { urls: "stun:stun.l.google.com:19302" },
+  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] },
   {
-    urls: TURN_SERVER_URL,
-    username: TURN_SERVER_USERNAME,
-    credential: TURN_SERVER_PASSWORD
-  },
-  {
-    urls: TURN_SERVER_URL_TCP,
-    username: TURN_SERVER_USERNAME,
-    credential: TURN_SERVER_PASSWORD
-  },
-  {
-    urls: TURN_SERVER_URL_TLS,
+    urls: [
+      TURN_SERVER_URL,
+      TURN_SERVER_URL_TCP,
+      TURN_SERVER_URL_TLS,
+      "turns:turn.astroluna.in:5349?transport=tcp",
+      "turn:turn.astroluna.in:3478?transport=udp"
+    ],
     username: TURN_SERVER_USERNAME,
     credential: TURN_SERVER_PASSWORD
   }
