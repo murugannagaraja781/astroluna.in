@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -35,9 +36,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.app.Activity
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
 import com.astroluna.ui.theme.CosmicAppTheme
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.astroluna.ui.intake.IntakeActivity
@@ -165,6 +171,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
     var chartState by remember { mutableStateOf<ChartData?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var selectedTab by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val editLauncher = rememberLauncherForActivityResult(
@@ -646,10 +653,10 @@ fun DashaNodeInternal(period: DashaPeriod) {
             period.subPeriods?.forEach { child ->
                 DashaNodeInternal(child)
             }
-            Divider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
+            HorizontalDivider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
         }
         if (period.level == 1) {
-            Divider(color = Color.White.copy(alpha = 0.1f))
+            HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
         }
     }
 }

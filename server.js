@@ -309,15 +309,15 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     };
 
     const result = await callApp.messaging().send(message);
-    console.log('[FCM v1] Push sent successfully:', result);
+    console.log(`[FCM v1] Push sent to ${fcmToken.substring(0, 10)}... | Result:`, result);
     return { success: true, messageId: result };
   } catch (err) {
-    console.error('[FCM v1] Send error:', err.message, '- attempting legacy fallback');
+    console.error(`[FCM v1] Send error for token ${fcmToken.substring(0, 10)}...:`, err.message);
     // If token is invalid or not registered, remove it from DB to avoid future failures
     if (err.message.includes('not found') || err.message.includes('not registered') || err.message.includes('invalid')) {
       try {
         await User.updateOne({ fcmToken: fcmToken }, { $unset: { fcmToken: 1 } });
-        console.log(`[FCM] Invalid token removed from database.`);
+        console.log(`[FCM] Invalid token removed from database: ${fcmToken.substring(0, 10)}...`);
       } catch (dbErr) {
         console.error('[FCM] Failed to unset invalid token:', dbErr.message);
       }
@@ -350,15 +350,21 @@ async function sendFcmLegacy(token, data, notification) {
       },
       body: JSON.stringify(payload)
     });
-    let result;
+
     const text = await response.text();
+    if (!response.ok) {
+       console.error(`[FCM Legacy] HTTP Error ${response.status}:`, text.substring(0, 200));
+       return { success: false, error: `HTTP ${response.status}` };
+    }
+
+    let result;
     try {
       result = JSON.parse(text);
     } catch (parseErr) {
       console.error('[FCM Legacy] Non-JSON response received:', text.substring(0, 100));
-      return { success: false, error: 'Non-JSON response from legacy endpoint' };
+      return { success: false, error: 'Non-JSON response' };
     }
-    console.log('[FCM Legacy] Sent result:', result);
+    console.log('[FCM Legacy] Sent successfully:', result);
     return { success: true, result };
   } catch (err) {
     console.error('[FCM Legacy] Error:', err.message);

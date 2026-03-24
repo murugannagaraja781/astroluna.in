@@ -353,6 +353,7 @@ module.exports = function(io, shared) {
             }
           });
           io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true });
+          console.log(`[Signal] ${astrologerId} answered ${sessionId} (Native). Peer: ${fromUserId}`);
           safeAck(cb, { ok: true, fromUserId });
         } else {
           io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, accept: false });
@@ -367,6 +368,10 @@ module.exports = function(io, shared) {
       const { sessionId, toUserId, signal } = data || {};
       const fromUserId = socketToUser.get(socket.id);
       if (!fromUserId || !sessionId || !toUserId || !signal) return;
+
+      const type = signal.type || (signal.candidate ? 'ice-candidate' : 'unknown');
+      console.log(`[Signal] Relay ${type} from ${fromUserId} to ${toUserId} | Session: ${sessionId}`);
+      
       io.to(toUserId).emit('signal', { sessionId, fromUserId, signal });
     });
 
