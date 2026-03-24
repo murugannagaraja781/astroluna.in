@@ -386,6 +386,20 @@ module.exports = function(io, shared) {
     });
 
 
+    // --- Session Connect (Room Join) ---
+    socket.on('session-connect', (data, cb) => {
+      try {
+        const { sessionId } = data || {};
+        if (sessionId) {
+          socket.join(sessionId);
+          logActivity('session', `Socket ${socket.id} joined room ${sessionId}`);
+          safeAck(cb, { ok: true, iceServers: ICE_SERVERS });
+        } else {
+          safeAck(cb, { ok: false, error: 'No sessionId' });
+        }
+      } catch (err) { console.error('session-connect error', err); }
+    });
+
     // --- End Session ---
     socket.on('end-session', async (data) => {
       const { sessionId } = data || {};
