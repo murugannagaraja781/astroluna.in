@@ -152,59 +152,75 @@ data class KPPlanet(val name: String, val levelA: List<Int>, val levelB: List<In
 data class KPHouse(val house: Int, val level1: List<String>, val level2: List<String>, val level3: List<String>, val level4: List<String>, val lord: String)
 
 class VipChartActivity : ComponentActivity() {
+    private val birthDataState = mutableStateOf<JSONObject?>(null)
+    private var sessionId: String? = null
+    private var toUserId: String? = null
+
+    private val refreshReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            val dataStr = intent?.getStringExtra("birthData")
+            if (dataStr != null) {
+                try {
+                    birthDataState.value = JSONObject(dataStr)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val birthDataStr = intent.getStringExtra("birthData") ?: "{}"
-        val birthData = JSONObject(birthDataStr)
+        sessionId = intent.getStringExtra("sessionId")
+        toUserId = intent.getStringExtra("toUserId")
+        birthDataState.value = JSONObject(birthDataStr)
+
+        registerReceiver(refreshReceiver, android.content.IntentFilter("com.astroluna.REFRESH_CHART"))
 
         setContent {
             CosmicAppTheme {
-                VipChartScreen(birthData) { finish() }
+                val currentData = birthDataState.value ?: JSONObject()
+                VipChartScreen(
+                    birthData = currentData,
+                    onBack = { finish() },
+                    onDataUpdated = { newData ->
+                        birthDataState.value = newData
+                        // Sync to peer
+                        if (sessionId != null && toUserId != null) {
+                            com.astroluna.data.remote.SocketManager.getSocket()?.emit("client-birth-chart", JSONObject().apply {
+                                put("sessionId", sessionId)
+                                put("toUserId", toUserId)
+                                put("birthData", newData)
+                            })
+                        }
+                    }
+                )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(refreshReceiver)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
+fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit, onDataUpdated: (JSONObject) -> Unit) {
     var chartState by remember { mutableStateOf<ChartData?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var selectedTab by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
-    val editLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val dataStr = result.data?.getStringExtra("birthData")
-            if (dataStr != null) {
-                try {
-                    val newData = JSONObject(dataStr)
-                    // Update our birthData and trigger a refresh
-                    isLoading = true
-                    scope.launch {
-                        try {
-                            val resultChart = fetchFullChart(newData)
-                            chartState = resultChart
-                        } finally {
-                            isLoading = false
-                        }
-                    }
-                } catch(e: Exception){ e.printStackTrace() }
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        scope.launch {
-            try {
-                val result = fetchFullChart(birthData)
-                chartState = result
-            } finally {
-                isLoading = false
-            }
+    
+    // Key the effect on birthData to refresh when it changes from broadcast
+    LaunchedEffect(birthData) {
+        isLoading = true
+        try {
+            val result = fetchFullChart(birthData)
+            chartState = result
+        } finally {
+            isLoading = false
         }
     }
 
@@ -240,6 +256,18 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             .background(Brush.verticalGradient(listOf(DeepSpaceNavy, PremiumBlue)))) {
             
             // --- New Client Info Header ---
+            val editLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+                if (res.resultCode == Activity.RESULT_OK) {
+                    val dStr = res.data?.getStringExtra("birthData")
+                    if (dStr != null) {
+                         try { 
+                             val nData = JSONObject(dStr)
+                             onDataUpdated(nData) 
+                         } catch(e: Exception){}
+                    }
+                }
+            }
+
             ClientInfoHeader(birthData) {
                 val intent = Intent(context, IntakeActivity::class.java).apply {
                     putExtra("isEditMode", true)

@@ -383,6 +383,14 @@ module.exports = function(io, shared) {
       console.log(`[Chat] Relay status ${status} for ${messageId} to ${toUserId}`);
     });
 
+    socket.on('client-birth-chart', (data) => {
+      const { sessionId, toUserId, birthData } = data || {};
+      if (sessionId && toUserId && birthData) {
+        io.to(toUserId).emit('client-birth-chart', { sessionId, birthData });
+        console.log(`[Signal] Relay client-birth-chart to ${toUserId} for session ${sessionId}`);
+      }
+    });
+
     // --- ITEM 8: Logout Handler ---
     socket.on('logout', async (data) => {
       const userId = data?.userId || socketToUser.get(socket.id);

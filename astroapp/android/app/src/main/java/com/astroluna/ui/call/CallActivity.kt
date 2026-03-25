@@ -54,6 +54,10 @@ import com.astroluna.utils.CallState
 import org.json.JSONObject
 import org.webrtc.*
 import java.util.LinkedList
+import androidx.compose.ui.window.Dialog
+import androidx.compose.animation.core.*
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 
 class CallActivity : ComponentActivity() {
 
@@ -96,6 +100,14 @@ class CallActivity : ComponentActivity() {
     private var audioFile: File? = null
 
     private var isWebRTCInitialized = false
+    private var lastBackPressTime by mutableLongStateOf(0L)
+
+    // Summary Dialog State
+    private var showSummaryDialog by mutableStateOf(false)
+    private var summaryReason by mutableStateOf("")
+    private var summaryEarned by mutableDoubleStateOf(0.0)
+    private var summaryDeducted by mutableDoubleStateOf(0.0)
+    private var summaryDurationSec by mutableIntStateOf(0)
 
     // Proximity Sensor for Audio Calls
     private var proximityWakeLock: android.os.PowerManager.WakeLock? = null
@@ -276,29 +288,57 @@ class CallActivity : ComponentActivity() {
         // Set Content
         setContent {
             CosmicAppTheme {
-                CallScreen(
-                    remoteRenderer = remoteView,
-                    localRenderer = localView,
-                    partnerName = partnerName ?: "Unknown",
-                    duration = formattedDuration,
-                    statusText = statusText,
-                    isBillingActive = isBillingActive,
-                    callType = callType,
-                    isMuted = isMutedState,
-                    isVideoEnabled = isVideoEnabledState,
-                    isSpeakerOn = isSpeakerOnState,
-                    role = role ?: "user",
-                    remainingTime = remainingTime,
-                    onToggleMic = { toggleMic() },
-                    onToggleCamera = { toggleCamera() },
-                    onToggleSpeaker = { toggleSpeaker() },
-                    onEndCall = { endCall() },
-                    onEditIntake = { openEditIntake() },
-                    onShowRasi = { showRasiChart() },
-                    isRecording = isRecordingState,
-                    onToggleRecording = { toggleRecording() },
-                    isReady = isWebRTCInitialized
-                )
+                // Strictly disabled back button as per user request
+                androidx.activity.compose.BackHandler {
+                    Toast.makeText(this@CallActivity, "Back button disabled during call", Toast.LENGTH_SHORT).show()
+                }
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CallScreen(
+                        remoteRenderer = remoteView,
+                        localRenderer = localView,
+                        partnerName = partnerName ?: "Unknown",
+                        duration = formattedDuration,
+                        statusText = statusText,
+                        isBillingActive = isBillingActive,
+                        callType = callType,
+                        isMuted = isMutedState,
+                        isVideoEnabled = isVideoEnabledState,
+                        isSpeakerOn = isSpeakerOnState,
+                        role = role ?: "user",
+                        remainingTime = remainingTime,
+                        onToggleMic = { toggleMic() },
+                        onToggleCamera = { toggleCamera() },
+                        onToggleSpeaker = { toggleSpeaker() },
+                        onEndCall = { endCall() },
+                        onEditIntake = { openEditIntake() },
+                        onShowRasi = { showRasiChart() },
+                        isRecording = isRecordingState,
+                        onToggleRecording = { toggleRecording() },
+                        isReady = isWebRTCInitialized
+                    )
+
+                    if (showSummaryDialog) {
+                        CallSummaryDialog(
+                            reason = summaryReason,
+                            earned = summaryEarned,
+                            deducted = summaryDeducted,
+                            duration = summaryDurationSec,
+                            role = session?.role ?: "user",
+                            onDismiss = {
+                                if (session?.role == "astrologer") {
+                                    try {
+                                        val historyIntent = android.content.Intent(this@CallActivity, com.astroluna.ui.astro.AstrologerHistoryActivity::class.java)
+                                        startActivity(historyIntent)
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Failed to navigate to history", e)
+                                    }
+                                }
+                                finish()
+                            }
+                        )
+                    }
+                }
             }
         }
 
@@ -851,6 +891,12 @@ class CallActivity : ComponentActivity() {
                 val bData = data.optJSONObject("birthData")
                 if (bData != null) {
                     clientBirthData = bData
+                    
+                    // Notify any open chart activity to refresh
+                    val refreshIntent = android.content.Intent("com.astroluna.REFRESH_CHART")
+                    refreshIntent.putExtra("birthData", bData.toString())
+                    sendBroadcast(refreshIntent)
+
                     runOnUiThread {
                         val myRole = TokenManager(this@CallActivity).getUserSession()?.role
                         if (myRole == "client") {
@@ -897,45 +943,19 @@ class CallActivity : ComponentActivity() {
         SocketManager.onSessionEndedWithSummary { reason, deducted, earned, duration ->
             runOnUiThread {
                 if (isFinishing || isDestroyed) return@runOnUiThread
-
                 timerHandler.removeCallbacks(timerRunnable)
-                val totalSeconds = duration // duration is already in seconds from server
-                val minutes = totalSeconds / 60
-                val seconds = totalSeconds % 60
-                val durationStr = String.format("%02d:%02d", minutes, seconds)
+                
+                // Set state to show the Compose summary dialog
+                summaryReason = reason ?: ""
+                summaryDeducted = deducted
+                summaryEarned = earned
+                summaryDurationSec = duration
+                showSummaryDialog = true
 
-                val message = when {
-                    session?.role == "astrologer" -> "Duration: $durationStr\n\nYou earned: ₹${String.format("%.2f", earned)}"
-                    reason == "insufficient_funds" -> "Call ended due to insufficient balance.\n\nDuration: $durationStr\nDeducted: ₹${String.format("%.2f", deducted)}"
-                    else -> "Duration: $durationStr\nDeducted: ₹${String.format("%.2f", deducted)}"
-                }
-
-                try {
-                    androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle(if (reason == "insufficient_funds") "⚠️ Low Balance" else "📞 Call Summary")
-                        .setMessage(message)
-                        .setPositiveButton("OK") { _, _ ->
-                            if (session?.role == "astrologer") {
-                                try {
-                                    val historyIntent = android.content.Intent(this, com.astroluna.ui.astro.AstrologerHistoryActivity::class.java)
-                                    startActivity(historyIntent)
-                                } catch (e: Exception) {
-                                    Log.e(TAG, "Failed to navigate to AstrologerHistoryActivity", e)
-                                }
-                            }
-                            finish()
-                        }
-                        .setCancelable(false)
-                        .show()
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to show call summary dialog", e)
-                    finish()
-                }
-
-                // Fallback: If dialog fails to show or is dismissed without clicking OK, finish after 5s
+                // Fallback: If dialog is not dismissed, finish after 15s
                 timerHandler.postDelayed({
                     if (!isFinishing && !isDestroyed) finish()
-                }, 10000)
+                }, 15000)
             }
         }
 
@@ -1124,6 +1144,8 @@ class CallActivity : ComponentActivity() {
         if (clientBirthData != null) {
             val intent = android.content.Intent(this, com.astroluna.ui.chart.VipChartActivity::class.java)
             intent.putExtra("birthData", clientBirthData.toString())
+            intent.putExtra("sessionId", sessionId)
+            intent.putExtra("toUserId", partnerId)
             startActivity(intent)
         } else {
             Toast.makeText(this, "Waiting for Client Data...", Toast.LENGTH_SHORT).show()
@@ -1348,5 +1370,143 @@ fun ControlBtnItem(onClick: () -> Unit, icon: Any, label: String, active: Boolea
             }
         }
         Text(text = label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+    }
+}
+
+@Composable
+fun CelebrationOverlay() {
+    val infiniteTransition = rememberInfiniteTransition(label = "celebration")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFFFFD700).copy(alpha = alpha * 0.3f), // Gold
+                        Color.Transparent
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        // Simple star particles - using core Check/AddCircle icons as placeholders for stars
+        repeat(15) { index ->
+            val starAlpha by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 2000, delayMillis = index * 100),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "star"
+            )
+            val offset = remember { androidx.compose.ui.unit.IntOffset(((-200)..200).random(), ((-400)..400).random()) }
+            
+            // Use core PlayArrow as a "star" sparkle
+            Icon(
+                imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow,
+                contentDescription = null,
+                modifier = Modifier
+                    .offset { offset }
+                    .size(16.dp)
+                    .alpha(starAlpha),
+                tint = Color(0xFFFFD700)
+            )
+        }
+    }
+}
+
+@Composable
+fun CallSummaryDialog(
+    reason: String,
+    earned: Double,
+    deducted: Double,
+    duration: Int,
+    role: String,
+    onDismiss: () -> Unit
+) {
+    androidx.compose.ui.window.Dialog(onDismissRequest = { /* Prevent dismiss on outside touch */ }) {
+        Box(contentAlignment = Alignment.Center) {
+            // Celebration if earned > 0 for astrologer
+            if (earned > 0 && role == "astrologer") {
+                CelebrationOverlay()
+            }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = if (reason == "insufficient_funds") "⚠️ Low Balance" else "📞 Call Summary",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = if (reason == "insufficient_funds") Color(0xFFD32F2F) else Color(0xFF1B5E20)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val minutes = duration / 60
+                    val seconds = duration % 60
+                    val durationStr = String.format("%02d:%02d", minutes, seconds)
+
+                    Text("Duration: $durationStr", style = MaterialTheme.typography.bodyLarge)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (role == "astrologer") {
+                        Text(
+                            text = "You earned: ₹${String.format("%.2f", earned)}",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2E7D32)
+                        )
+                        if (earned > 0) {
+                            Text(
+                                "Payment added successfully! ✨",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color(0xFF4CAF50),
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = "Deducted: ₹${String.format("%.2f", deducted)}",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFD32F2F)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("OK", color = Color.White, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
     }
 }
