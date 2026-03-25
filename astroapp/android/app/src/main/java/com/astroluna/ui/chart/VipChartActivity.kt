@@ -18,8 +18,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -243,7 +246,13 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit, onDataUpdated: (JS
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = NeonCyan) }
+                    IconButton(onClick = onBack) { 
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, 
+                            "Back", 
+                            tint = NeonCyan
+                        ) 
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
@@ -670,7 +679,7 @@ fun DashaNodeInternal(period: DashaPeriod) {
 
             if (hasSub) {
                 Icon(
-                    if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
+                    if (expanded) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.Gray
                 )
