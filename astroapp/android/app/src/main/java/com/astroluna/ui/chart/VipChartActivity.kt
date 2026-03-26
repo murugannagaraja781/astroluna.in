@@ -696,26 +696,41 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
             addProperty("timezone", birthData.optDouble("timezone", 5.5))
         }
 
-        android.util.Log.d("VipChart", "Payload: $payload")
-        val response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChart(payload)
+        android.util.Log.d("VipChart", "Payload (POST): $payload")
         
+        // Strategy 1: POST (Standard)
+        var response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChart(payload)
+        
+        // Strategy 2: GET Fallback if POST fails (Cloudflare often blocks large POSTs)
+        if (!response.isSuccessful) {
+             android.util.Log.w("VipChart", "POST failed (Code: ${response.code()}), trying GET fallback...")
+             response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChartFallback(
+                 date = String.format("%04d-%02d-%02d", birthData.optInt("year"), birthData.optInt("month"), birthData.optInt("day")),
+                 time = String.format("%02d:%02d", birthData.optInt("hour"), birthData.optInt("minute")),
+                 lat = birthData.optDouble("latitude", 13.0827),
+                 lng = birthData.optDouble("longitude", 80.2707),
+                 timezone = birthData.optDouble("timezone", 5.5)
+             )
+        }
+
         if (response.isSuccessful && response.body() != null) {
              val bodyString = response.body().toString()
-             android.util.Log.d("VipChart", "Response Body: $bodyString")
-             val chartResponse = Gson().fromJson(bodyString, ChartResponse::class.java)
-             if (chartResponse.success) return@withContext chartResponse.data
-             else {
-                 android.util.Log.e("VipChart", "Chart Error: ${response.body()}")
+             android.util.Log.d("VipChart", "Response OK")
+             try {
+                 val chartResponse = Gson().fromJson(bodyString, ChartResponse::class.java)
+                 if (chartResponse.success) return@withContext chartResponse.data
+                 else android.util.Log.e("VipChart", "API Success but 'success'=false: $bodyString")
+             } catch (e: Exception) {
+                 android.util.Log.e("VipChart", "JSON Parsing Error: ${e.message}", e)
              }
         } else {
              val errorBody = response.errorBody()?.string()
              android.util.Log.e("VipChart", "API Error: ${response.code()} - $errorBody")
         }
-        null
     } catch (e: Exception) {
-        android.util.Log.e("VipChart", "Fetch Exception: ${e.message}", e)
-        null
+        android.util.Log.e("VipChart", "Network/Fetch Exception", e)
     }
+    null
 }
 
 @Composable

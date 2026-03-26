@@ -52,6 +52,15 @@ interface ApiInterface {
     @POST("api/rasi-eng/charts/full")
     suspend fun getRasiEngBirthChart(@Body request: com.google.gson.JsonObject): Response<com.google.gson.JsonObject>
 
+    @retrofit2.http.GET("api/rasi-eng/charts/full-test")
+    suspend fun getRasiEngBirthChartFallback(
+        @retrofit2.http.Query("date") date: String,
+        @retrofit2.http.Query("time") time: String,
+        @retrofit2.http.Query("lat") lat: Double,
+        @retrofit2.http.Query("lng") lng: Double,
+        @retrofit2.http.Query("timezone") timezone: Double
+    ): Response<com.google.gson.JsonObject>
+
     @POST("api/rasi-eng/matching")
     suspend fun getRasiEngMatching(@Body request: com.google.gson.JsonObject): Response<com.google.gson.JsonObject>
 

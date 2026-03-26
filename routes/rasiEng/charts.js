@@ -35,17 +35,27 @@ function formatLongitude(longitude) {
 
 router.get('/full-test', async (req, res) => {
     try {
-        const { date = "1990-01-09", time = "22:49", lat = 13.0, lng = 80.0, timezone = 5.5, ayanamsa = 'Lahiri' } = req.query;
+        const query = req.query || {};
+        const { 
+            date = "1990-01-09", 
+            time = "22:49", 
+            lat = 13.0, 
+            lng = 80.0, 
+            timezone = 5.5, 
+            ayanamsa = 'Lahiri' 
+        } = query;
         return handleFullChart(req, res, { date, time, lat: parseFloat(lat), lng: parseFloat(lng), timezone: parseFloat(timezone), ayanamsa });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 router.post('/full', async (req, res) => {
-    return handleFullChart(req, res, req.body);
+    return handleFullChart(req, res, req.body || {});
 });
 
-async function handleFullChart(req, res, input) {
+async function handleFullChart(req, res, input = {}) {
     try {
+        // Ensure input is at least an empty object for safe destructuring
+        const sourceData = input || {};
         const {
             date = DateTime.now().setZone('Asia/Kolkata').toFormat('yyyy-MM-dd'),
             time = '12:00',
@@ -53,7 +63,7 @@ async function handleFullChart(req, res, input) {
             lng = 80.2707,
             timezone = 5.5,
             ayanamsa = 'Lahiri'
-        } = input || {};
+        } = sourceData;
 
         const offsetHours = Math.floor(Math.abs(timezone));
         const offsetMinutes = Math.round((Math.abs(timezone) - offsetHours) * 60);
