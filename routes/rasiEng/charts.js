@@ -33,9 +33,18 @@ function formatLongitude(longitude) {
     return `${signs[signIndex]} ${deg}° ${min}' ${sec}"`;
 }
 
-// Get complete chart data in one call
-// Get complete chart data in one call
+router.get('/full-test', async (req, res) => {
+    try {
+        const { date = "1990-01-09", time = "22:49", lat = 13.0, lng = 80.0, timezone = 5.5, ayanamsa = 'Lahiri' } = req.query;
+        return handleFullChart(req, res, { date, time, lat: parseFloat(lat), lng: parseFloat(lng), timezone: parseFloat(timezone), ayanamsa });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 router.post('/full', async (req, res) => {
+    return handleFullChart(req, res, req.body);
+});
+
+async function handleFullChart(req, res, input) {
     try {
         const {
             date = DateTime.now().setZone('Asia/Kolkata').toFormat('yyyy-MM-dd'),
@@ -61,12 +70,15 @@ router.post('/full', async (req, res) => {
         const jd = swissEph.julday(utc.year, utc.month, utc.day, utc.hour + utc.minute / 60 + utc.second / 3600);
 
         // Calculate all data in parallel for speed
+        console.log('Generating full chart for:', { date, time, lat, lng });
+
         const [houses, panchanga, transitJD, tamilDateData] = await Promise.all([
             getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa),
             getPanchanga(jd, lat, lng, ayanamsa),
             swissEph.julday(DateTime.now().toUTC().year, DateTime.now().toUTC().month, DateTime.now().toUTC().day, DateTime.now().toUTC().hour + DateTime.now().toUTC().minute / 60),
             getTamilDate(dt, ayanamsa)
         ]);
+        console.log('Progress: Houses & Panchanga OK');
 
         const muhurtas = getMuhurtas(jd, lat, lng);
 
@@ -82,10 +94,12 @@ router.post('/full', async (req, res) => {
 
         const { getFullDashaBreakdown, getVimshottariDasha, getSubPeriods } = require('../../utils/rasiEng/dashaCalculations');
 
+        console.log('Calculating Dasha for moonLon:', moonLon);
         const [dashaBreakdown, dashaPeriods] = await Promise.all([
             getFullDashaBreakdown(moonLon, dt),
             getVimshottariDasha(moonLon, dt)
         ]);
+        console.log('Progress: Dasha OK (Periods:', dashaPeriods.length, ')');
 
         let dashaInfo = {
             mahadashaName: "Ketu",
@@ -174,7 +188,7 @@ router.post('/full', async (req, res) => {
         console.error('Charts Full API error:', error);
         res.status(500).json({ error: error.message || 'Calculation failed' });
     }
-});
+}
 
 // Quick chart (planets and houses only)
 router.post('/quick', (req, res) => {
