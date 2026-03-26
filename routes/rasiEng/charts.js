@@ -53,7 +53,7 @@ async function handleFullChart(req, res, input) {
             lng = 80.2707,
             timezone = 5.5,
             ayanamsa = 'Lahiri'
-        } = req.body;
+        } = input || {};
 
         const offsetHours = Math.floor(Math.abs(timezone));
         const offsetMinutes = Math.round((Math.abs(timezone) - offsetHours) * 60);
