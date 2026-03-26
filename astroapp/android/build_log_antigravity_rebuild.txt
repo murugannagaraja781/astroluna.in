@@ -1,0 +1,88 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.12/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:clean
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsRelease
+> Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:generateReleaseResources FROM-CACHE
+> Task :app:processReleaseGoogleServices FROM-CACHE
+> Task :app:mergeReleaseResources FROM-CACHE
+> Task :app:packageReleaseResources FROM-CACHE
+> Task :app:parseReleaseLocalResources FROM-CACHE
+> Task :app:dataBindingGenBaseClassesRelease FROM-CACHE
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:processReleaseMainManifest FROM-CACHE
+> Task :app:processReleaseManifest FROM-CACHE
+> Task :app:processReleaseManifestForPackage FROM-CACHE
+> Task :app:processReleaseResources FROM-CACHE
+> Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets FROM-CACHE
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:stripReleaseDebugSymbols
+> Task :app:processApplicationManifestReleaseForBundle
+> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:bundleReleaseResources FROM-CACHE
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:kaptGenerateStubsReleaseKotlin
+> Task :app:kaptReleaseKotlin
+> Task :app:compileReleaseKotlin
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:173:34 Unresolved reference: Activity
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:180:27 Unresolved reference: launch
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:182:47 Suspend function 'fetchFullChart' should be called only from a coroutine or another suspend function
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:194:15 Unresolved reference: launch
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:196:30 Suspension functions can be called only within coroutine body
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:237:30 Unresolved reference: Intent
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:237:37 Unresolved reference: context
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:238:21 Unresolved reference: putExtra
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:239:21 Unresolved reference: putExtra
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:294:35 Unresolved reference: launch
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:296:50 Suspend function 'fetchFullChart' should be called only from a coroutine or another suspend function
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:657:73 Unresolved reference: withContext
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:667:61 Suspension functions can be called only within coroutine body
+
+> Task :app:compileReleaseKotlin FAILED
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4m 1s
+42 actionable tasks: 25 executed, 16 from cache, 1 up-to-date

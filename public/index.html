@@ -10126,47 +10126,57 @@
         ];
 
         grid.innerHTML = '';
+        // Traditional Background
+        grid.style.backgroundColor = '#FCF5E5';
+        grid.style.border = '2px solid #8B0000';
+
         cellMap.forEach((sign, idx) => {
           const div = document.createElement('div');
           div.className = 'SouthChartBox';
+          div.style.border = '1px solid #8B0000';
 
           if (!sign) {
             div.setAttribute('data-center', 'true');
             div.style.cssText = 'border: none; background: transparent;';
             if (idx === 5) {
-              div.style.cssText = 'grid-column: 2 / span 2; grid-row: 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fffcf5; border: 2px solid #D97706; border-radius: 8px; font-size: 0.75rem; color: #5b0079; font-weight: bold; padding: 5px; text-align: center;';
+              div.style.cssText = 'grid-column: 2 / span 2; grid-row: 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fffcf5; border: 2px solid #8B0000; border-radius: 4px; font-size: 0.7rem; color: #8B0000; font-weight: bold; padding: 5px; text-align: center;';
               const bDateStr = d.input_date || (d.birth_details ? `${d.birth_details.day}-${d.birth_details.month}-${d.birth_details.year}` : '');
               const bTimeStr = d.input_time || (d.birth_details ? `${d.birth_details.hour}:${d.birth_details.minute}` : '');
               div.innerHTML = `
-                <div style="font-size: 0.65rem; color: #d97706; margin-bottom: 2px;">${d.panchanga?.nakshatra || 'Nakshatra'}</div>
-                <div style="font-size: 0.8rem; margin-bottom: 2px;">${bDateStr}</div>
-                <div style="font-size: 0.8rem;">${bTimeStr}</div>
+                <div style="font-size: 0.6rem; color: #d97706; margin-bottom: 2px;">${chartType.toUpperCase()}</div>
+                <div style="font-size: 0.75rem; margin-bottom: 2px;">${bDateStr}</div>
+                <div style="font-size: 0.75rem;">${bTimeStr}</div>
               `;
             } else {
               div.style.display = 'none';
             }
           } else {
-            const planetsInSign = [];
+            const occupants = [];
             if (isRasi) {
               rawPlanets.forEach(p => {
                 if (p.signName === sign) {
-                  planetsInSign.push(p.name.substring(0, 2));
+                  const items = p.degreeFormatted?.split(" ") || [];
+                  const deg = items.length >= 3 ? `${items[items.length-3].replace('°','')}:${items[items.length-2].replace('\'','')}` : "";
+                  occupants.push(`${p.name.substring(0, 2)} ${deg}`);
                 }
               });
               if (houses.ascendantDetails?.signName === sign) {
-                planetsInSign.unshift('Asc');
+                occupants.unshift('Lagna');
               }
             } else if (d.navamsa) {
-              for (let k in d.navamsa.planets) {
-                if (d.navamsa.planets[k] === sign) {
-                  planetsInSign.push(k.substring(0, 2));
+              const navPlanets = Array.isArray(d.navamsa.planets) ? d.navamsa.planets : [];
+              navPlanets.forEach(p => {
+                if (p.signName === sign) {
+                    occupants.push(p.name.substring(0, 2));
                 }
+              });
+              if (d.navamsa.ascendantSign === sign) {
+                  occupants.unshift('Lagna');
               }
             }
 
-            const fontSize = planetsInSign.length > 5 ? '0.65rem' : (planetsInSign.length > 3 ? '0.75rem' : '0.85rem');
-
-            div.innerHTML = `<div class="s-planet-text" style="font-size:${fontSize}; font-weight:700; color:#111; line-height:1.2;">${planetsInSign.join('<br>') || ''}</div>`;
+            const fontSize = occupants.length > 5 ? '0.6rem' : '0.75rem';
+            div.innerHTML = `<div class="s-planet-text" style="font-size:${fontSize}; font-weight:700; color:#111; line-height:1.1;">${occupants.join('<br>') || ''}</div>`;
           }
           if (div.style.display !== 'none') grid.appendChild(div);
         });

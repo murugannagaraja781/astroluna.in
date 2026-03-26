@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -1141,6 +1142,7 @@ class CallActivity : ComponentActivity() {
     }
 
     private fun showRasiChart() {
+        Log.d(TAG, "showRasiChart() called. clientBirthData is null? ${clientBirthData == null}")
         if (clientBirthData != null) {
             val intent = android.content.Intent(this, com.astroluna.ui.chart.VipChartActivity::class.java)
             intent.putExtra("birthData", clientBirthData.toString())
@@ -1148,7 +1150,8 @@ class CallActivity : ComponentActivity() {
             intent.putExtra("toUserId", partnerId)
             startActivity(intent)
         } else {
-            Toast.makeText(this, "Waiting for Client Data...", Toast.LENGTH_SHORT).show()
+            Log.w(TAG, "showRasiChart() - clientBirthData is NULL")
+            Toast.makeText(this, "ஜோதிடம்: விவரங்கள் இன்னும் வரவில்லை (Waiting for Data...)", Toast.LENGTH_LONG).show()
         }
     }
 }
@@ -1319,7 +1322,7 @@ fun CallScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (role == "astrologer") {
-                        ControlBtnItem(onClick = onShowRasi, icon = android.R.drawable.ic_menu_gallery, label = "Chart", active = true)
+                        ControlBtnItem(onClick = onShowRasi, icon = Icons.Default.Star, label = "Jothidam", active = true)
                     } else {
                         Spacer(modifier = Modifier.size(48.dp))
                     }

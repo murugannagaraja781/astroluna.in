@@ -373,7 +373,7 @@ fun FreeHoroscopeScreen(
                         OutlinedTextField(
                              value = cityName,
                              onValueChange = {},
-                             label = { Text("City", color = Color.White.copy(alpha = 0.5f)) },
+                             label = { Text("City (Click to Pick)", color = Color.White) },
                              readOnly = true,
                              enabled = false,
                              modifier = Modifier
@@ -412,9 +412,8 @@ fun FreeHoroscopeScreen(
                         // Generate Button
                         Button(
                             onClick = {
-                                if (validateInputs(name, day, month, year, hour, minute, cityName, timezoneOffset)) {
+                                if (validateInputs(name, day, month, year, hour, minute, cityName, timezoneOffset, latitude, longitude)) {
                                     isLoading = true
-
                                     val h = hour.toIntOrNull() ?: 0
                                     val hour24 = if (amPm == "PM" && h < 12) h + 12
                                                 else if (amPm == "AM" && h == 12) 0
@@ -436,6 +435,8 @@ fun FreeHoroscopeScreen(
                                         longitude = longitude ?: 0.0
                                     )
                                     onGenerateChart(birthData)
+                                } else {
+                                    Toast.makeText(context, "Please enter all birth details including location.", Toast.LENGTH_LONG).show()
                                 }
                             },
                             modifier = Modifier
@@ -480,7 +481,9 @@ private fun validateInputs(
     hour: String,
     minute: String,
     city: String,
-    timezone: Double?
+    timezone: Double?,
+    lat: Double?,
+    lng: Double?
 ): Boolean {
     return name.isNotBlank() &&
             day.isNotBlank() &&
@@ -489,7 +492,9 @@ private fun validateInputs(
             hour.isNotBlank() &&
             minute.isNotBlank() &&
             city.isNotBlank() &&
-            timezone != null
+            timezone != null &&
+            lat != null &&
+            lng != null
 }
 
 
