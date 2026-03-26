@@ -11,7 +11,13 @@ const { getTamilDate } = require('../../utils/rasiEng/tamilDate');
 const router = express.Router();
 
 router.get('/test', (req, res) => {
-    res.json({ message: 'Charts router is working!' });
+    try {
+        const jd = swissEph.julday(2026, 3, 26, 12);
+        const signs = swissEph.getSign(0);
+        res.json({ message: 'Charts router is working!', swissEph: 'OK', sampleJd: jd, sampleSign: signs.name });
+    } catch (err) {
+        res.json({ message: 'Charts router works, but SwissEph FAILED!', error: err.message });
+    }
 });
 
 // Helper function to format longitude as degrees/minutes/seconds

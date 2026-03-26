@@ -9,10 +9,10 @@ const { getTamilDate } = require('./utils/rasiEng/tamilDate');
 
 async function test() {
     try {
-        const date = "1990-03-15";
-        const time = "12:00";
-        const lat = 13.0827;
-        const lng = 80.2707;
+        const date = "1990-01-09";
+        const time = "22:49";
+        const lat = 10.0463; // Alanganallur roughly
+        const lng = 78.0435;
         const timezone = 5.5;
         const ayanamsa = 'Lahiri';
 

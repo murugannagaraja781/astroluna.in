@@ -268,7 +268,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = NeonCyan)
                 }
-            } else if (chartState == null && !isLoading) {
+            } else if (chartState == null) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
@@ -299,8 +299,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                         }
                     }
                 }
-            } else { // This implies chartState != null and not isLoading
-                if (chartState != null) {
+            } else {
                 ScrollableTabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color.Transparent,
@@ -332,31 +331,9 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
 
                 Box(modifier = Modifier.weight(1f)) {
                     when (selectedTab) {
-                        0 -> if (chartState != null) ChartsTab(chartState!!, birthData)
-                        1 -> if (chartState != null) PlanetGridTab(chartState!!)
+                        0 -> ChartsTab(chartState!!, birthData)
+                        1 -> PlanetGridTab(chartState!!)
                         2 -> if (chartState?.dasha != null) DashaListTab(chartState!!.dasha!!)
-                    }
-                }
-            } else if (!isLoading) {
-                // Not Loading and no state = Error
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("தரவு பெற முடியவில்லை", color = Color.White, fontWeight = FontWeight.Bold)
-                        Text("Data Fetch Failed", color = Color.White.copy(0.6f), fontSize = 12.sp)
-                        Spacer(Modifier.height(16.dp))
-                        Button(onClick = {
-                            isLoading = true
-                            scope.launch {
-                                try {
-                                    val result = fetchFullChart(birthData)
-                                    chartState = result
-                                } finally {
-                                    isLoading = false
-                                }
-                            }
-                         }, colors = ButtonDefaults.buttonColors(containerColor = NeonCyan)) {
-                            Text("Retry / மீண்டும் முயற்சி செய்", color = Color.Black)
-                        }
                     }
                 }
             }
