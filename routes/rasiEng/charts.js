@@ -10,6 +10,10 @@ const { getTamilDate } = require('../../utils/rasiEng/tamilDate');
 
 const router = express.Router();
 
+router.get('/test', (req, res) => {
+    res.json({ message: 'Charts router is working!' });
+});
+
 // Helper function to format longitude as degrees/minutes/seconds
 function formatLongitude(longitude) {
     const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
@@ -154,6 +158,7 @@ router.post('/full', async (req, res) => {
             }
         };
 
+        console.log('Generating full chart for:', { date, time, lat, lng });
         res.json({
             success: true,
             version: "v5.5",
