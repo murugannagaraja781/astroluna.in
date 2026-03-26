@@ -90,8 +90,8 @@ data class ChartData(
 )
 
 data class Planet(
-    val name: String,
-    val signName: String,
+    val name: String? = null,
+    val signName: String? = null,
     val longitude: Double = 0.0,
     val isRetrograde: Boolean = false,
     val signIndex: Int = 0,
@@ -105,13 +105,13 @@ data class Planet(
 )
 
 data class HouseData(
-    val cusps: List<Double>,
-    val details: List<HouseDetail>,
-    val ascendantDetails: HouseDetail
+    val cusps: List<Double>? = null,
+    val details: List<HouseDetail>? = null,
+    val ascendantDetails: HouseDetail? = null
 )
 
 data class HouseDetail(
-    val signName: String,
+    val signName: String? = null,
     val signAbbr: String? = null,
     val nakshatra: String? = null,
     val nakshatraPada: Int = 0,
@@ -134,14 +134,14 @@ data class Panchanga(
 
 data class PanchangaValue(val name: String)
 data class DashaPeriod(
-    val lord: String,
-    val start: String,
-    val end: String,
-    val level: Int,
+    val lord: String? = null,
+    val start: String? = null,
+    val end: String? = null,
+    val level: Int? = null,
     val subPeriods: List<DashaPeriod>? = null
 )
-data class Transit(val name: String, val signName: String, val isRetrograde: Boolean)
-data class TamilDate(val day: Int, val month: String, val year: String)
+data class Transit(val name: String? = null, val signName: String? = null, val isRetrograde: Boolean? = null)
+data class TamilDate(val day: Int? = null, val month: String? = null, val year: String? = null)
 data class NavamsaData(
     val planets: List<Planet>? = null,
     val ascendantSign: String? = null
@@ -182,25 +182,20 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             if (dataStr != null) {
                 try {
                     val newData = JSONObject(dataStr)
-                    // Update our birthData and trigger a refresh
                     isLoading = true
-                    errorMessage = null // Clear previous error
+                    errorMessage = null 
                     scope.launch {
                         try {
                             val resultChart = fetchFullChart(newData)
-                            if (resultChart == null) {
-                                errorMessage = "Server returned empty data or error. Check logs."
-                            }
                             setChartState(resultChart)
                         } catch (e: Exception) {
-                            errorMessage = "Failed to fetch chart data: ${e.localizedMessage ?: "Unknown error"}"
+                            errorMessage = "Update Failed: ${e.message ?: "Unknown error"}"
                         } finally {
                             isLoading = false
                         }
                     }
                 } catch(e: Exception){
-                    errorMessage = "Error parsing updated birth data: ${e.localizedMessage ?: "Unknown error"}"
-                    e.printStackTrace()
+                    errorMessage = "Error parsing updated birth data"
                 }
             }
         }
@@ -208,19 +203,14 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
 
     LaunchedEffect(Unit) {
         isLoading = true
-        errorMessage = null // Clear previous error
-        scope.launch {
-            try {
-                val result = fetchFullChart(birthData)
-                if (result == null) {
-                    errorMessage = "Server returned empty data or error. Check logs."
-                }
-                setChartState(result)
-            } catch (e: Exception) {
-                errorMessage = "Failed to fetch chart data: ${e.localizedMessage ?: "Unknown error"}"
-            } finally {
-                isLoading = false
-            }
+        errorMessage = null
+        try {
+            val result = fetchFullChart(birthData)
+            setChartState(result)
+        } catch (e: Exception) {
+            errorMessage = e.message ?: "Connection Error"
+        } finally {
+            isLoading = false
         }
     }
 
@@ -284,12 +274,9 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                             scope.launch {
                                 try {
                                     val result = fetchFullChart(birthData)
-                                    if (result == null) {
-                                        errorMessage = "Server returned empty data or error. Check logs."
-                                    }
                                     setChartState(result)
                                 } catch (e: Exception) {
-                                    errorMessage = "Failed to fetch chart data: ${e.localizedMessage ?: "Unknown error"}"
+                                    errorMessage = "Retry Failed: ${e.message ?: "Unknown error"}"
                                 } finally {
                                     isLoading = false
                                 }
@@ -696,15 +683,11 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
             addProperty("timezone", birthData.optDouble("timezone", 5.5))
         }
 
-        android.util.Log.d("VipChart", "Payload (POST): $payload")
+        android.util.Log.d("VipChart", "Payload: $payload")
         
-        // Strategy 1: POST (Standard)
         var response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChart(payload)
         
-        // Strategy 2: GET Fallback if POST fails (Cloudflare often blocks large POSTs)
         if (!response.isSuccessful) {
-             val code = response.code()
-             android.util.Log.w("VipChart", "POST failed (Code: $code), trying GET fallback...")
              response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChartFallback(
                  date = String.format("%04d-%02d-%02d", birthData.optInt("year"), birthData.optInt("month"), birthData.optInt("day")),
                  time = String.format("%02d:%02d", birthData.optInt("hour"), birthData.optInt("minute")),
@@ -715,22 +698,27 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
         }
 
         if (response.isSuccessful && response.body() != null) {
-            val chartResponse = response.body()!!
-            if (chartResponse.success) {
-                android.util.Log.d("VipChart", "Fetch OK")
-                return@withContext chartResponse.data
-            } else {
-                android.util.Log.e("VipChart", "API Success but 'success'=false")
-                throw Exception("Server failed to calculate data (success is false)")
+            val rawJson = response.body().toString()
+            android.util.Log.d("VipChart", "Raw JSON: $rawJson")
+            
+            try {
+                val chartResponse = com.google.gson.Gson().fromJson(rawJson, ChartResponse::class.java)
+                if (chartResponse.success) {
+                    return@withContext chartResponse.data
+                } else {
+                    throw Exception("Server Error: Success was False")
+                }
+            } catch (e: Exception) {
+                val preview = if (rawJson.length > 50) rawJson.take(50) + "..." else rawJson
+                throw Exception("Parsing Error: ${e.message}. JSON: $preview")
             }
         } else {
              val errorBody = response.errorBody()?.string() ?: "Empty body"
-             android.util.Log.e("VipChart", "API Error: ${response.code()} - $errorBody")
-             throw Exception("HTTP ${response.code()}: $errorBody")
+             throw Exception("Server Error ${response.code()}: $errorBody")
         }
     } catch (e: Exception) {
-        android.util.Log.e("VipChart", "Network/Fetch Exception: ${e.message}", e)
-        throw e // Rethrow so the UI can capture the exact message
+        android.util.Log.e("VipChart", "Fetch Exception", e)
+        throw e
     }
 }
 
