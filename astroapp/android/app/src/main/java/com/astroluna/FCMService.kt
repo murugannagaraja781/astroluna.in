@@ -270,6 +270,13 @@ class FCMService : FirebaseMessagingService() {
         // Wake up the screen
         wakeUpDevice()
 
+        // EXPLICIT: Start foreground service immediately to wake up process and stay alive
+        val serviceIntent = Intent(this, CallForegroundService::class.java).apply {
+            putExtra("callerName", callerName)
+            putExtra("callId", callId)
+        }
+        ContextCompat.startForegroundService(this, serviceIntent)
+
         // Create intent for IncomingCallActivity
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or

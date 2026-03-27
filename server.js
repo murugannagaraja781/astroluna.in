@@ -309,7 +309,8 @@ async function sendFcmV1Push(fcmToken, data, notification) {
       android: {
         priority: 'high',
         ttl: 0,
-        notification: {
+        directBootOk: true, // Allow delivery even if device is in Direct Boot mode
+        notification: (data.type === 'INCOMING_CALL' || data.type === 'CALL_ENDED' || !notification) ? undefined : {
           color: notification?.color || undefined,
           sound: 'default',
           clickAction: 'INCOMING_CALL'
