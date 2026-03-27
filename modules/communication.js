@@ -444,6 +444,75 @@ module.exports = function(io, shared) {
       } catch (err) { console.error('chat-message error', err); }
     });
 
+    // --- Super Admin Handlers ---
+    socket.on('admin-get-ledger-stats', async (data, cb) => {
+      const fromUserId = socketToUser.get(socket.id);
+      const user = await User.findOne({ userId: fromUserId });
+      if (!user || user.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+      try {
+        const ledger = await BillingLedger.find();
+        const stats = {
+          totalRevenue: 0,
+          adminProfit: 0,
+          astroPayout: 0,
+          totalDuration: 0,
+          totalUsers: await User.countDocuments({ role: { $ne: 'superadmin' } }),
+          activeSessions: activeSessions.size
+        };
+
+        ledger.forEach(l => {
+          stats.totalRevenue += (l.chargedToClient || 0);
+          stats.adminProfit += (l.adminAmount || 0);
+          stats.astroPayout += (l.creditedToAstrologer || 0);
+          // If we want minutes, we'd sum durations, but here we can approximate from charged amounts or add a duration field to ledger
+          // For now, let's just sum the credited amounts
+        });
+
+        // Sum actual sessions duration from DB sessions
+        const allSessions = await Session.find({ status: 'completed' });
+        allSessions.forEach(s => {
+          stats.totalDuration += (s.duration || 0);
+        });
+
+        safeAck(cb, { ok: true, stats, fullLedger: ledger });
+      } catch (e) {
+        console.error('admin-get-ledger-stats error', e);
+        safeAck(cb, { ok: false, error: 'Server error' });
+      }
+    });
+
+    socket.on('admin-update-user-details', async (data, cb) => {
+      const fromUserId = socketToUser.get(socket.id);
+      const admin = await User.findOne({ userId: fromUserId });
+      if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+      try {
+        const { userId, updates } = data;
+        await User.updateOne({ userId }, updates);
+        logActivity('admin', `User ${userId} details updated by admin`, updates);
+        safeAck(cb, { ok: true });
+        
+        // Broadcast update to all astrologers if it's an astro update
+        broadcastAstroUpdate();
+      } catch (e) {
+        console.error('admin-update-user-details error', e);
+        safeAck(cb, { ok: false, error: 'Server error' });
+      }
+    });
+
+    // --- System Log Handler ---
+    socket.on('admin-get-logs', async (data, cb) => {
+      const fromUserId = socketToUser.get(socket.id);
+      const admin = await User.findOne({ userId: fromUserId });
+      if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+      try {
+          const logs = await fs.promises.readFile('activity.log', 'utf8').catch(() => '');
+          safeAck(cb, { ok: true, logs });
+      } catch (e) { safeAck(cb, { ok: false }); }
+    });
+
     socket.on('disconnect', () => {
       const userId = socketToUser.get(socket.id);
       if (userId) {
