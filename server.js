@@ -67,19 +67,18 @@ const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
 const ICE_SERVERS = [
-  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] },
-  {
-    urls: [
-      TURN_SERVER_URL,
-      TURN_SERVER_URL_TCP,
-      TURN_SERVER_URL_TLS,
-      "turns:turn.astroluna.in:5349?transport=tcp",
-      "turn:turn.astroluna.in:3478?transport=udp"
-    ],
-    username: TURN_SERVER_USERNAME,
-    credential: TURN_SERVER_PASSWORD
-  }
+  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }
 ];
+
+// Combine with TURN if provided in env
+if (process.env.TURN_SERVER_URL) {
+  ICE_SERVERS.push({
+    urls: [process.env.TURN_SERVER_URL, process.env.TURN_SERVER_URL_TCP || process.env.TURN_SERVER_URL, process.env.TURN_SERVER_URL_TLS || process.env.TURN_SERVER_URL].filter(Boolean),
+    username: process.env.TURN_SERVER_USERNAME,
+    credential: process.env.TURN_SERVER_PASSWORD
+  });
+}
+
 
 let phonepeTokenStore = {
   accessToken: null,
@@ -295,11 +294,17 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const message = {
       token: fcmToken,
       data: stringData,
+      notification: notification ? {
+        title: notification.title || 'astroluna',
+        body: notification.body || 'N/A'
+      } : undefined,
       android: {
         priority: 'high',
         ttl: 0,
         notification: {
-          color: notification?.color || undefined
+          color: notification?.color || undefined,
+          sound: 'default',
+          clickAction: 'INCOMING_CALL'
         }
       }
     };

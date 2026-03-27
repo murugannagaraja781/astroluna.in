@@ -5,6 +5,8 @@
 
 # Keep our models
 -keep class com.astroluna.data.model.** { *; }
+-keep class com.astroluna.ui.chart.** { *; }
+-keep class com.astroluna.data.api.** { *; }
 
 # Keep Retrofit and Gson
 -keep class retrofit2.** { *; }

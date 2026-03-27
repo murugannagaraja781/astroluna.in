@@ -1,172 +1,69 @@
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.12/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-Daemon will be stopped at the end of the build 
-> Task :app:clean
-> Task :app:buildKotlinToolingMetadata
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:dataBindingMergeDependencyArtifactsRelease
-> Task :app:generateReleaseResValues FROM-CACHE
-> Task :app:generateReleaseResources FROM-CACHE
-> Task :app:processReleaseGoogleServices FROM-CACHE
-> Task :app:mergeReleaseResources FROM-CACHE
-> Task :app:packageReleaseResources FROM-CACHE
-> Task :app:parseReleaseLocalResources FROM-CACHE
-> Task :app:dataBindingGenBaseClassesRelease FROM-CACHE
-> Task :app:mapReleaseSourceSetPaths
-> Task :app:checkReleaseAarMetadata
-> Task :app:createReleaseCompatibleScreenManifests
-> Task :app:extractDeepLinksRelease FROM-CACHE
-> Task :app:processReleaseMainManifest FROM-CACHE
-> Task :app:processReleaseManifest FROM-CACHE
-> Task :app:processReleaseManifestForPackage FROM-CACHE
-> Task :app:processReleaseResources FROM-CACHE
-> Task :app:javaPreCompileRelease FROM-CACHE
-> Task :app:extractProguardFiles
-> Task :app:mergeReleaseJniLibFolders
-> Task :app:mergeReleaseNativeLibs
-> Task :app:checkReleaseDuplicateClasses
+> Task :app:dataBindingMergeDependencyArtifactsRelease UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:processReleaseGoogleServices UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesRelease UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
 > Task :app:mergeReleaseStartupProfile UP-TO-DATE
-> Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseShaders
+> Task :app:mergeReleaseShaders UP-TO-DATE
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseAssets
-> Task :app:stripReleaseDebugSymbols
-> Task :app:compressReleaseAssets FROM-CACHE
-> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:extractReleaseVersionControlInfo
-> Task :app:processApplicationManifestReleaseForBundle
-> Task :app:bundleReleaseResources FROM-CACHE
-> Task :app:collectReleaseDependencies
-> Task :app:sdkReleaseDependencyData
-> Task :app:validateSigningRelease
-> Task :app:writeReleaseAppMetadata
-> Task :app:writeReleaseSigningConfigVersions
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
+> Task :app:processApplicationManifestReleaseForBundle UP-TO-DATE
+> Task :app:bundleReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
 > Task :app:kaptGenerateStubsReleaseKotlin
-> Task :app:kaptReleaseKotlin FROM-CACHE
+> Task :app:kaptReleaseKotlin
 > Task :app:compileReleaseKotlin
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:73:13 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:79:37 Unnecessary safe call on a non-null receiver of type Intent?
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:236:13 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/FCMService.kt:337:30 'FULL_WAKE_LOCK: Int' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/FCMService.kt:338:38 'ACQUIRE_CAUSES_WAKEUP: Int' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/IncomingCallActivity.kt:134:15 Unnecessary safe call on a non-null receiver of type Intent
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/SocketManager.kt:27:44 Elvis operator (?:) always returns the left operand of non-nullable type String
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:59 Parameter 'limit' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:76 Parameter 'before' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/academy/AcademyActivity.kt:136:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:143:9 Variable 'userId' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:299:74 'CallMissed: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.CallMissed
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:246:40 'create(MediaType?, String): RequestBody' is deprecated. Moved to extension function. Put the 'content' argument first to fix Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:276:5 Parameter 'onWithdraw' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:519:40 'ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:618:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:696:26 'CircularProgressIndicator(Float, Modifier = ..., Color = ..., Dp = ..., Color = ..., StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:803:41 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:920:38 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerHistoryActivity.kt:104:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:80:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:245:36 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:279:36 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/auth/OtpVerificationActivity.kt:129:5 Parameter 'phone' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:436:22 'setter for isSpeakerphoneOn: Boolean' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:468:17 'constructor MediaRecorder()' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:618:18 This declaration overrides deprecated member but not marked as deprecated itself. Please add @Deprecated annotation or suppress. See https://youtrack.jetbrains.com/issue/KT-47902 for details
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:619:15 'onRequestPermissionsResult(Int, Array<String>, IntArray): Unit' is deprecated. This method has been deprecated in favor of using the Activity Result API
-      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt
-      contracts for common intents available in
-      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for
-      testing, and allow receiving results in separate, testable classes independent from your
-      activity. Use
-      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)} passing
-      in a {@link RequestMultiplePermissions} object for the {@link ActivityResultContract} and
-      handling the result in the {@link ActivityResultCallback#onActivityResult(Object) callback}.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:950:40 Elvis operator (?:) always returns the left operand of non-nullable type String
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1040:42 The corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1063:42 The corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1174:5 Parameter 'isBillingActive' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:35:38 Variable 'birthData' initializer is redundant
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:54:42 Unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/MatchDisplayActivity.kt:36:38 Variable 'birthData' initializer is redundant
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/MatchDisplayActivity.kt:55:42 Unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:229:71 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:261:40 'Indicator(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Use SecondaryIndicator instead.
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:340:9 Variable 'ascIdx' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:644:49 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:644:78 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:655:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:658:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:365:86 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:477:21 Variable 'color' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:486:45 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:667:40 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/city/CitySearchActivity.kt:118:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:64:17 Variable 'customBg' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:65:17 Variable 'customCard' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:66:17 Variable 'customFont' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:67:17 Variable 'customBtn' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:78:21 Variable 'selectedRasiItem' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:272:13 Variable 'socket' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1050:5 Parameter 'isTamil' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1051:5 Parameter 'onToggleLanguage' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1202:9 Variable 'showChat' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1203:9 Variable 'showVideo' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1204:9 Variable 'showCall' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1340:46 'Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1385:74 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1684:9 Variable 'context' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1835:78 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:209:47 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:357:65 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:148:5 Parameter 'partnerName' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:149:5 Parameter 'partnerImage' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:296:33 Unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:629:48 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:760:69 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:958:73 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:1127:37 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:21:35 'PhonePe' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:290:57 Elvis operator (?:) always returns the left operand of non-nullable type String?
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:450:53 Elvis operator (?:) always returns the left operand of non-nullable type String?
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:81:5 Parameter 'id' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:85:5 Parameter 'image' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:95:9 Variable 'yellowAccent' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:103:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:216:51 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:240:46 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:103:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:202:57 'create(MediaType?, File): RequestBody' is deprecated. Moved to extension function. Put the 'file' argument first to fix Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/SettingsActivity.kt:80:40 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/ThemeSettingsActivity.kt:157:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:63:13 Variable 'pageFooter' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:87:20 'setter for statusBarColor: Int' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:88:20 'setter for navigationBarColor: Int' is deprecated. Deprecated in Java
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/ThemeModels.kt:60:19 Parameter 'theme' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/PaymentStatusActivity.kt:89:9 Variable 'bgColor' is never used
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:415:37 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:425:41 Name shadowed: amt
-w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/CallState.kt:17:24 Parameter 'newSessionId' is never used
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:353:98 Type mismatch: inferred type is String? but String was expected
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:473:69 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+e: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:503:33 Type mismatch: inferred type is String? but String was expected
 
-> Task :app:compileReleaseJavaWithJavac
-> Task :app:generateReleaseLintVitalReportModel
-> Task :app:mergeReleaseGeneratedProguardFiles UP-TO-DATE
-> Task :app:processReleaseJavaRes
-> Task :app:expandReleaseArtProfileWildcards
-> Task :app:mergeReleaseJavaResource
-> Task :app:lintVitalAnalyzeRelease
-> Task :app:minifyReleaseWithR8
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
-> Task :app:compileReleaseArtProfile
-> Task :app:shrinkReleaseRes
-> Task :app:optimizeReleaseResources FROM-CACHE
-> Task :app:packageRelease
-> Task :app:createReleaseApkListingFileRedirect
-> Task :app:assembleRelease
+> Task :app:compileReleaseKotlin FAILED
 
 [Incubating] Problems report is available at: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
 
@@ -174,5 +71,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 15m 22s
-57 actionable tasks: 37 executed, 18 from cache, 2 up-to-date
+BUILD FAILED in 1m 5s
+41 actionable tasks: 4 executed, 37 up-to-date

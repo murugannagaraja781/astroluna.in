@@ -143,13 +143,13 @@ class FCMService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         if (message.data.isNotEmpty()) {
             val data = message.data
-            val messageType = data["type"] ?: "UNKNOWN"
+            val messageType = data["type"]?.uppercase() ?: "UNKNOWN"
 
             Log.d(TAG, "Data Payload: $data, Type: $messageType")
 
             when (messageType) {
-                "INCOMING_CALL" -> handleIncomingCall(data)
-                "CALL_ENDED" -> {
+                "INCOMING_CALL", "incoming_call" -> handleIncomingCall(data)
+                "CALL_ENDED", "call_ended" -> {
                     Log.d(TAG, "Call ended - clearing notification and opening app")
                     val notificationManager = getSystemService(NotificationManager::class.java)
                     notificationManager.cancel(CALL_NOTIFICATION_ID)
@@ -163,7 +163,7 @@ class FCMService : FirebaseMessagingService() {
                         Log.e(TAG, "Failed to open app on CALL_ENDED", e)
                     }
                 }
-                "INCOMING_CHAT" -> {
+                "INCOMING_CHAT", "incoming_chat" -> {
                     val callerName = data["callerName"] ?: "Unknown"
                     val callerId = data["callerId"] ?: ""
                     val sessionId = data["sessionId"] ?: ""

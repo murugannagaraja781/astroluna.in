@@ -47,6 +47,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.astroluna.ui.intake.IntakeActivity
 import org.json.JSONObject
+import com.astroluna.data.model.*
 
 // --- Aesthetic Constants (Premium Blue) ---
 val DeepSpaceNavy = Color(0xFF000B18)
@@ -76,98 +77,63 @@ val planetAbbrTamil = mapOf(
     "Ketu" to "கேது", "Ascendant" to "லக்", "As" to "லக்", "Mandi" to "மாந்தி"
 )
 
-// --- Updated Data Models ---
-data class ChartResponse(val success: Boolean, val data: ChartData)
-data class ChartData(
-    val planets: List<Planet>? = null,
-    val houses: HouseData? = null,
-    val panchanga: Panchanga? = null,
-    val dasha: List<DashaPeriod>? = null,
-    val transits: List<Transit>? = null,
-    val tamilDate: TamilDate? = null,
-    val kpSignificators: KPSignificators? = null,
-    val navamsa: NavamsaData? = null
-)
 
-data class Planet(
-    val name: String? = null,
-    val signName: String? = null,
-    val longitude: Double = 0.0,
-    val isRetrograde: Boolean = false,
-    val signIndex: Int = 0,
-    val house: Int = 0,
-    val nakshatra: String? = null,
-    val nakshatraPada: Int = 0,
-    val degreeFormatted: String? = null,
-    val signLord: String? = null,
-    val starLord: String? = null,
-    val subLord: String? = null
-)
+    private var sessionId: String? = null
+    private var toUserId: String? = null
+    private var partnerName: String? = null
+    private var currentBirthDataState = mutableStateOf(JSONObject("{}"))
 
-data class HouseData(
-    val cusps: List<Double>? = null,
-    val details: List<HouseDetail>? = null,
-    val ascendantDetails: HouseDetail? = null
-)
-
-data class HouseDetail(
-    val signName: String? = null,
-    val signAbbr: String? = null,
-    val nakshatra: String? = null,
-    val nakshatraPada: Int = 0,
-    val starLord: String? = null,
-    val subLord: String? = null,
-    val degreeFormatted: String? = null
-)
-
-data class Panchanga(
-    val tithi: PanchangaValue? = null,
-    val nakshatra: PanchangaValue? = null,
-    val yoga: PanchangaValue? = null,
-    val karana: PanchangaValue? = null,
-    val vara: PanchangaValue? = null,
-    val sunrise: String? = null,
-    val sunset: String? = null,
-    val moonSign: String? = null,
-    val sunSign: String? = null
-)
-
-data class PanchangaValue(val name: String)
-data class DashaPeriod(
-    val lord: String? = null,
-    val start: String? = null,
-    val end: String? = null,
-    val level: Int? = null,
-    val subPeriods: List<DashaPeriod>? = null
-)
-data class Transit(val name: String? = null, val signName: String? = null, val isRetrograde: Boolean? = null)
-data class TamilDate(val day: Int? = null, val month: String? = null, val year: String? = null)
-data class NavamsaData(
-    val planets: List<Planet>? = null,
-    val ascendantSign: String? = null
-)
-data class KPSignificators(val planetView: List<KPPlanet>?, val houseView: List<KPHouse>?)
-data class KPPlanet(val name: String, val levelA: List<Int>, val levelB: List<Int>, val levelC: List<Int>, val levelD: List<Int>)
-data class KPHouse(val house: Int, val level1: List<String>, val level2: List<String>, val level3: List<String>, val level4: List<String>, val lord: String)
-
-class VipChartActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val birthDataStr = intent.getStringExtra("birthData") ?: "{}"
-        val birthData = JSONObject(birthDataStr)
-
-        setContent {
-            CosmicAppTheme {
-                VipChartScreen(birthData) { finish() }
+    private val chartRefreshReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            val dataStr = intent?.getStringExtra("birthData")
+            if (dataStr != null) {
+                try {
+                    val newData = JSONObject(dataStr)
+                    currentBirthDataState.value = newData
+                    // The Composable will automatically recompose because it reads this state
+                } catch(e: Exception) {}
             }
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val birthDataStr = intent.getStringExtra("birthData") ?: "{}"
+        sessionId = intent.getStringExtra("sessionId")
+        toUserId = intent.getStringExtra("toUserId")
+        partnerName = intent.getStringExtra("partnerName") ?: "Client"
+        
+        currentBirthDataState.value = JSONObject(birthDataStr)
+
+        setContent {
+            CosmicAppTheme {
+                VipChartScreen(currentBirthDataState, sessionId, toUserId) { finish() }
+            }
+        }
+        
+        // Register receiver for real-time updates broadcast by CallActivity
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(chartRefreshReceiver, android.content.IntentFilter("com.astroluna.REFRESH_CHART"), android.content.Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(chartRefreshReceiver, android.content.IntentFilter("com.astroluna.REFRESH_CHART"))
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            unregisterReceiver(chartRefreshReceiver)
+        } catch(e: Exception) {}
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
+fun VipChartScreen(birthDataState: MutableState<JSONObject>, sessionId: String?, toUserId: String?, onBack: () -> Unit) {
     val context = LocalContext.current
+    var currentBirthData by birthDataState
     val (chartState, setChartState) = remember { mutableStateOf<ChartData?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -182,8 +148,20 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             if (dataStr != null) {
                 try {
                     val newData = JSONObject(dataStr)
+                    currentBirthData = newData
                     isLoading = true
                     errorMessage = null 
+                    
+                    // SHARE WITH PARTNER IF SESSION ACTIVE
+                    if (!sessionId.isNullOrEmpty() && !toUserId.isNullOrEmpty()) {
+                        com.astroluna.data.remote.SocketManager.getSocket()?.emit("client-birth-chart", JSONObject().apply {
+                            put("sessionId", sessionId)
+                            put("toUserId", toUserId)
+                            put("birthData", newData)
+                        })
+                        Toast.makeText(context, "Birth details shared with partner", Toast.LENGTH_SHORT).show()
+                    }
+
                     scope.launch {
                         try {
                             val resultChart = fetchFullChart(newData)
@@ -201,11 +179,11 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(currentBirthData) {
         isLoading = true
         errorMessage = null
         try {
-            val result = fetchFullChart(birthData)
+            val result = fetchFullChart(currentBirthData)
             setChartState(result)
         } catch (e: Exception) {
             errorMessage = e.message ?: "Connection Error"
@@ -246,10 +224,10 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             .background(Brush.verticalGradient(listOf(DeepSpaceNavy, PremiumBlue)))) {
 
             // --- New Client Info Header ---
-            ClientInfoHeader(birthData) {
+            ClientInfoHeader(currentBirthData) {
                 val intent = Intent(context, IntakeActivity::class.java).apply {
                     putExtra("isEditMode", true)
-                    putExtra("existingData", birthData.toString())
+                    putExtra("existingData", currentBirthData.toString())
                 }
                 editLauncher.launch(intent)
             }
@@ -422,7 +400,7 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
                                 val signNo = signIdx + 1
                                 val occupants = mutableListOf<String>()
                                 if (signEn == ascSign) occupants.add("As")
-                                planets.filter { it.signName == signEn }.forEach { occupants.add(it.name) }
+                                 planets.filter { it.signName == signEn }.forEach { p -> p.name?.let { occupants.add(it) } }
 
                                 Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(signNo.toString(), fontSize = 10.sp, color = TraditionalRed.copy(0.6f), modifier = Modifier.align(Alignment.Start))
@@ -540,9 +518,10 @@ fun PlanetGridTab(data: ChartData) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Planet Name (Red)
-                    Row(modifier = Modifier.weight(1.5f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                     Row(modifier = Modifier.weight(1.5f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        val pName = p.name ?: "Unk"
                         Text(
-                            text = planetAbbrTamil[p.name] ?: p.name.take(3),
+                            text = planetAbbrTamil[pName] ?: pName.take(3),
                             color = Color.Red,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -572,7 +551,8 @@ fun PlanetGridTab(data: ChartData) {
                     Text(text = planetAbbrTamil[p.starLord ?: ""] ?: p.starLord?.take(2) ?: "-", modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Sign (Blue)
-                    Text(text = signTamil[p.signName] ?: p.signName, modifier = Modifier.weight(2f), style = detailStyle)
+                    val sName = p.signName ?: ""
+                    Text(text = signTamil[sName] ?: sName, modifier = Modifier.weight(2f), style = detailStyle)
                 }
             }
         }
@@ -632,14 +612,14 @@ fun DashaNodeInternal(period: DashaPeriod) {
             }
 
             Box(Modifier.size(32.dp).background(iconColor.copy(0.1f), CircleShape), contentAlignment = Alignment.Center) {
-                Text(planetAbbrTamil[period.lord] ?: period.lord.take(2), color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(planetAbbrTamil[period.lord] ?: period.lord?.take(2) ?: "", color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
 
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "${planetTamil[period.lord] ?: period.lord} " + when(period.level) {
+                    text = "${planetTamil[period.lord] ?: period.lord ?: ""} " + when(period.level) {
                         1 -> "மகா தசை"
                         2 -> "புக்தி"
                         3 -> "ஆந்தரம்"
@@ -649,7 +629,9 @@ fun DashaNodeInternal(period: DashaPeriod) {
                     fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
                     fontSize = if(period.level == 1) 16.sp else 14.sp
                 )
-                Text("${period.start.take(10).replace("-", ".")} - ${period.end.take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
+                val startStr = period.start?.take(10)?.replace("-", ".") ?: ""
+                val endStr = period.end?.take(10)?.replace("-", ".") ?: ""
+                Text("$startStr - $endStr", fontSize = 11.sp, color = Color.Gray)
             }
 
             if (hasSub) {

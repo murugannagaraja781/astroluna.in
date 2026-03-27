@@ -159,12 +159,16 @@ module.exports = function(io, shared) {
       try {
         const { toUserId, type, birthData } = data || {};
         const fromUserId = socketToUser.get(socket.id);
-        if (!fromUserId || !toUserId || !type) return safeAck(cb, { ok: false, error: 'Missing data' });
+        if (!fromUserId) return safeAck(cb, { ok: false, error: 'You are not registered (send register first)' });
+        if (!toUserId || !type) return safeAck(cb, { ok: false, error: 'Missing target user or session type' });
 
         const toUser = await User.findOne({ userId: toUserId });
         const fromUser = await User.findOne({ userId: fromUserId });
 
-        if (!toUser) return safeAck(cb, { ok: false, error: 'Target not found' });
+        if (!toUser) {
+           console.error(`[Signal] Session failed: Target user ${toUserId} does not exist in database`);
+           return safeAck(cb, { ok: false, error: 'Target user not found in database' });
+        }
 
         if (userActiveSession.has(toUserId)) {
           const sid = userActiveSession.get(toUserId);
