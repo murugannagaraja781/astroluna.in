@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.astroluna.data.api.ApiService
 import com.astroluna.data.local.AppDatabase
 import com.astroluna.data.local.entity.ChatMessageEntity

@@ -368,10 +368,24 @@ module.exports = function(io, shared) {
     });
 
     // --- Signaling Relay ---
-    socket.on('signal', (data) => {
-      const { sessionId, toUserId, signal } = data || {};
+    socket.on('signal', async (data) => {
+      let { sessionId, toUserId, signal } = data || {};
       const fromUserId = socketToUser.get(socket.id);
-      if (!fromUserId || !sessionId || !toUserId || !signal) return;
+      if (!fromUserId || !sessionId || !signal) return;
+
+      // Fallback: If toUserId is missing or unknown, find it from the session
+      if (!toUserId || toUserId === 'Unknown') {
+        const session = activeSessions.get(sessionId) || await Session.findOne({ sessionId });
+        if (session) {
+          const users = session.users || [session.fromUserId, session.toUserId];
+          toUserId = users.find(u => u && u !== fromUserId);
+        }
+      }
+
+      if (!toUserId || toUserId === 'Unknown') {
+        console.warn(`[Signal] Cannot relay signal: Target user Unknown for session ${sessionId}`);
+        return;
+      }
 
       const type = signal.type || (signal.candidate ? 'ice-candidate' : 'unknown');
       console.log(`[Signal] Relay ${type} from ${fromUserId} to ${toUserId} | Session: ${sessionId}`);
@@ -407,13 +421,22 @@ module.exports = function(io, shared) {
 
 
     // --- Session Connect (Room Join) ---
-    socket.on('session-connect', (data, cb) => {
+    socket.on('session-connect', async (data, cb) => {
       try {
         const { sessionId } = data || {};
         if (sessionId) {
           socket.join(sessionId);
           logActivity('session', `Socket ${socket.id} joined room ${sessionId}`);
-          safeAck(cb, { ok: true, iceServers: ICE_SERVERS });
+          
+          let toUserId;
+          const session = activeSessions.get(sessionId) || await Session.findOne({ sessionId });
+          if (session) {
+             const fromUserId = socketToUser.get(socket.id);
+             const users = session.users || [session.fromUserId, session.toUserId];
+             toUserId = users.find(u => u && u !== fromUserId);
+          }
+          
+          safeAck(cb, { ok: true, iceServers: ICE_SERVERS, toUserId });
         } else {
           safeAck(cb, { ok: false, error: 'No sessionId' });
         }

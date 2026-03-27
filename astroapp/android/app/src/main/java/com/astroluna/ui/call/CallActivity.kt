@@ -21,6 +21,17 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.VolumeDown
+import androidx.compose.material.icons.filled.StopCircle
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +69,6 @@ import java.util.LinkedList
 import androidx.compose.ui.window.Dialog
 import androidx.compose.animation.core.*
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
 
 class CallActivity : ComponentActivity() {
 
@@ -668,6 +678,12 @@ class CallActivity : ComponentActivity() {
                                     if (dynamicIce != null) {
                                         runOnUiThread { updateIceServers(dynamicIce) }
                                     }
+                                    
+                                    val recoveryId = response?.optString("toUserId")
+                                    if (!recoveryId.isNullOrEmpty() && (partnerId == null || partnerId == "Unknown")) {
+                                        Log.d(TAG, "Recovered partnerId from session-connect: $recoveryId")
+                                        partnerId = recoveryId
+                                    }
                                 } catch (e: Exception) { e.printStackTrace() }
                             }
                         })
@@ -695,7 +711,23 @@ class CallActivity : ComponentActivity() {
                         val connectPayload = JSONObject().apply {
                             put("sessionId", sessionId)
                         }
-                        SocketManager.getSocket()?.emit("session-connect", connectPayload)
+                        SocketManager.getSocket()?.emit("session-connect", connectPayload, io.socket.client.Ack { args ->
+                             if (args != null && args.isNotEmpty()) {
+                                try {
+                                    val response = args[0] as? JSONObject
+                                    val dynamicIce = response?.optJSONArray("iceServers")
+                                    if (dynamicIce != null) {
+                                        runOnUiThread { updateIceServers(dynamicIce) }
+                                    }
+                                    
+                                    val recoveryId = response?.optString("toUserId")
+                                    if (!recoveryId.isNullOrEmpty() && (partnerId == null || partnerId == "Unknown")) {
+                                        Log.d(TAG, "Recovered partnerId from session-connect: $recoveryId")
+                                        partnerId = recoveryId
+                                    }
+                                } catch (e: Exception) { e.printStackTrace() }
+                            }
+                        })
                     }
                 }
             }
@@ -1217,13 +1249,13 @@ fun CallScreen(
                 Text("Initializing Camera...", color = Color.Gray, modifier = Modifier.padding(top = 80.dp))
             }
         } else {
-            // Audio Call UI Placeholder
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            // Audio Call UI Placeholder - Shifted Up to avoid bottom panel overlap
+            Box(Modifier.fillMaxSize().offset(y = (-80).dp), contentAlignment = Alignment.Center) {
                  Icon(
                      painter = painterResource(id = R.drawable.ic_person_placeholder),
                      contentDescription = "User",
                      tint = Color.Gray,
-                     modifier = Modifier.size(120.dp)
+                     modifier = Modifier.size(150.dp)
                  )
             }
         }
@@ -1237,8 +1269,6 @@ fun CallScreen(
                 .height(110.dp)
                 .shadow(8.dp, RoundedCornerShape(24.dp))
                 .background(Color.White, RoundedCornerShape(24.dp))
-        )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -1278,13 +1308,13 @@ fun CallScreen(
             }
         }
 
-        // Local Video (PIP)
+        // Local Video (PIP) - Fixed position for better visibility
         if (callType == "video") {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 16.dp, bottom = 150.dp)
-                    .size(width = 100.dp, height = 140.dp)
+                    .padding(end = 16.dp, bottom = 100.dp)
+                    .size(width = 110.dp, height = 150.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .border(2.dp, Color.White, RoundedCornerShape(16.dp))
                     .background(Color.DarkGray)
@@ -1298,68 +1328,117 @@ fun CallScreen(
             }
         }
 
-        // Bottom Controls Container (Grid)
-        Box(
+        // --- Professional Control Panel ---
+        Surface(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
                 .padding(16.dp)
-                .fillMaxWidth()
-                .shadow(16.dp, RoundedCornerShape(32.dp))
-                .background(Color.White, RoundedCornerShape(32.dp))
-                .padding(20.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(32.dp),
+            color = Color.White.copy(alpha = 0.95f),
+            shadowElevation = 12.dp
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Media Row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ControlBtnItem(onClick = onToggleMic, icon = if (!isMuted) Icons.Default.Phone else Icons.Default.Phone, label = "Mute", active = !isMuted)
-                    if (callType == "video") {
-                        ControlBtnItem(onClick = onToggleCamera, icon = if (isVideoEnabled) Icons.Default.PlayArrow else Icons.Default.PlayArrow, label = "Video", active = isVideoEnabled)
-                    }
-                    ControlBtnItem(onClick = onToggleSpeaker, icon = if (isSpeakerOn) Icons.Default.Refresh else Icons.Default.Refresh, label = "Speaker", active = isSpeakerOn)
-                }
-
-                // Actions Row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                // LEFT SECTION: ASTRO TOOLS (Rasi, Match, Edit)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     if (role == "astrologer") {
                         ControlBtnItem(onClick = onShowRasi, icon = Icons.Default.Star, label = "Rasi", active = true)
                         ControlBtnItem(onClick = onShowMatch, icon = Icons.Default.Favorite, label = "Match", active = true)
+                        ControlBtnItem(onClick = onEditIntake, icon = Icons.Default.Edit, label = "Edit", active = true)
                     } else {
-                        Spacer(modifier = Modifier.size(48.dp))
+                        Spacer(modifier = Modifier.height(140.dp))
                     }
+                }
 
-                    // End Call
-                    IconButton(
-                        onClick = onEndCall,
-                        modifier = Modifier
-                            .size(64.dp)
-                            .shadow(8.dp, CircleShape)
-                            .background(Color(0xFFFF5252), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Phone, "End", tint = Color.White, modifier = Modifier.size(32.dp))
+                // CENTER SECTION: MAIN ACTION (End Call)
+                Column(
+                    modifier = Modifier.weight(1.2f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        // Pulsing background effect
+                        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+                        val scale by infiniteTransition.animateFloat(
+                            initialValue = 1f,
+                            targetValue = 1.15f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(1200, easing = LinearEasing),
+                                repeatMode = RepeatMode.Reverse
+                            ),
+                            label = "scale"
+                        )
+                        
+                        Box(
+                            modifier = Modifier
+                                .size(90.dp)
+                                .scale(scale)
+                                .background(Color(0xFFFF5252).copy(alpha = 0.2f), CircleShape)
+                        )
+
+                        IconButton(
+                            onClick = onEndCall,
+                            modifier = Modifier
+                                .size(72.dp)
+                                .shadow(8.dp, CircleShape)
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(Color(0xFFFF5252), Color(0xFFC62828))
+                                    ),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Call, 
+                                contentDescription = "End", 
+                                tint = Color.White, 
+                                modifier = Modifier.size(36.dp).rotate(135f)
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("End", color = Color(0xFFC62828), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+
+                // RIGHT SECTION: MEDIA CONTROLS (Mute, Speaker, Stop)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ControlBtnItem(
+                        onClick = onToggleMic, 
+                        icon = if (isMuted) Icons.Default.MicOff else Icons.Default.Mic, 
+                        label = if (isMuted) "Unmute" else "Mute", 
+                        active = !isMuted
+                    )
+                    
+                    ControlBtnItem(
+                        onClick = onToggleSpeaker, 
+                        icon = if (isSpeakerOn) Icons.Default.VolumeUp else Icons.Default.VolumeDown, 
+                        label = "Speaker", 
+                        active = isSpeakerOn
+                    )
 
                     if (role == "astrologer") {
                         ControlBtnItem(
                             onClick = onToggleRecording,
-                            icon = if (isRecording) Icons.Default.Star else Icons.Default.AddCircle,
-                            label = if (isRecording) "Stop" else "REC",
+                            icon = if (isRecording) Icons.Default.StopCircle else Icons.Default.RadioButtonChecked,
+                            label = if (isRecording) "Stop" else "Rec",
                             active = isRecording
                         )
                     } else {
-                        ControlBtnItem(onClick = onEditIntake, icon = Icons.Default.Edit, label = "Edit", active = false)
+                        Spacer(modifier = Modifier.height(48.dp))
                     }
                 }
             }
@@ -1368,24 +1447,35 @@ fun CallScreen(
 }
 
 @Composable
-fun ControlBtnItem(onClick: () -> Unit, icon: Any, label: String, active: Boolean) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        val bgColor = if (active) Color(0xFFE8F5E9) else Color(0xFFF5F5F5)
-        val tintColor = if (active) Color(0xFF4CAF50) else Color.Gray
+fun ControlBtnItem(onClick: () -> Unit, icon: ImageVector, label: String, active: Boolean) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        val bgColor = if (active) Color(0xFFE8F5E9) else Color(0xFFF5F5F7)
+        val tintColor = if (active) Color(0xFF4CAF50) else Color(0xFF8E8E93)
+        val shadowAlpha = if (active) 0.15f else 0.05f
 
-        IconButton(
+        Surface(
             onClick = onClick,
             modifier = Modifier
-                .size(48.dp)
-                .shadow(if (active) 2.dp else 4.dp, CircleShape)
-                .background(bgColor, CircleShape)
+                .size(54.dp),
+            shape = CircleShape,
+            color = bgColor,
+            shadowElevation = if (active) 2.dp else 0.dp
         ) {
-            when (icon) {
-                is ImageVector -> Icon(icon, null, tint = tintColor)
-                is Int -> Icon(painterResource(icon), null, tint = tintColor)
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = tintColor,
+                    modifier = Modifier.size(26.dp)
+                )
             }
         }
-        Text(text = label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+        Text(
+            text = label, 
+            fontSize = 11.sp, 
+            fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
+            color = if (active) Color(0xFF2E7D32) else Color(0xFF636366)
+        )
     }
 }
 
