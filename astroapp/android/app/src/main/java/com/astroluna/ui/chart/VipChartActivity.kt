@@ -422,7 +422,9 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
                                 val signNo = signIdx + 1
                                 val occupants = mutableListOf<String>()
                                 if (signEn == ascSign) occupants.add("As")
-                                planets.filter { it.signName == signEn }.forEach { occupants.add(it.name) }
+                                planets.filter { it.signName == signEn }.forEach { p ->
+                                    p.name?.let { occupants.add(it) }
+                                }
 
                                 Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(signNo.toString(), fontSize = 10.sp, color = TraditionalRed.copy(0.6f), modifier = Modifier.align(Alignment.Start))
@@ -542,7 +544,7 @@ fun PlanetGridTab(data: ChartData) {
                     // Planet Name (Red)
                     Row(modifier = Modifier.weight(1.5f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = planetAbbrTamil[p.name] ?: p.name.take(3),
+                            text = planetAbbrTamil[p.name ?: ""] ?: (p.name ?: "??").take(3),
                             color = Color.Red,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -566,13 +568,13 @@ fun PlanetGridTab(data: ChartData) {
                     Text(text = nakName, modifier = Modifier.weight(2.5f), style = detailStyle)
 
                     // Pada (Blue)
-                    Text(text = p.nakshatraPada.toString(), modifier = Modifier.weight(1f), style = detailStyle)
+                    Text(text = (p.nakshatraPada ?: 0).toString(), modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Star Lord (Blue)
                     Text(text = planetAbbrTamil[p.starLord ?: ""] ?: p.starLord?.take(2) ?: "-", modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Sign (Blue)
-                    Text(text = signTamil[p.signName] ?: p.signName, modifier = Modifier.weight(2f), style = detailStyle)
+                    Text(text = signTamil[p.signName ?: ""] ?: (p.signName ?: "-"), modifier = Modifier.weight(2f), style = detailStyle)
                 }
             }
         }
@@ -581,10 +583,9 @@ fun PlanetGridTab(data: ChartData) {
 
 fun formatDegreeOnly(degreeStr: String?): String {
     if (degreeStr == null) return ""
-    // degreeStr is "Leo 15° 30' 45\"" or "Leo 15°30'45\""
     val regex = """(\d+°\s*\d+'\s*\d+")""".toRegex()
     val match = regex.find(degreeStr)
-    return match?.value ?: degreeStr.split(" ").last()
+    return match?.value ?: degreeStr.split(" ").lastOrNull() ?: ""
 }
 
 @Composable
@@ -616,15 +617,15 @@ fun DashaNodeInternal(period: DashaPeriod) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(enabled = hasSub) { expanded = !expanded }
+                .clickable { if (hasSub) expanded = !expanded }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val levelIndent = (period.level - 1) * 20
+            val levelIndent = ((period.level ?: 1) - 1) * 20
             Spacer(Modifier.width(levelIndent.dp))
 
             // Icon/Prefix based on level
-            val iconColor = when(period.level) {
+            val iconColor = when(period.level ?: 1) {
                 1 -> TraditionalRed
                 2 -> Color(0xFF2E7D32)
                 3 -> Color(0xFF1976D2)
@@ -632,29 +633,29 @@ fun DashaNodeInternal(period: DashaPeriod) {
             }
 
             Box(Modifier.size(32.dp).background(iconColor.copy(0.1f), CircleShape), contentAlignment = Alignment.Center) {
-                Text(planetAbbrTamil[period.lord] ?: period.lord.take(2), color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(planetAbbrTamil[period.lord ?: ""] ?: (period.lord ?: "??").take(2), color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
 
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "${planetTamil[period.lord] ?: period.lord} " + when(period.level) {
+                    text = "${planetTamil[period.lord ?: ""] ?: (period.lord ?: "Unknown")} " + when(period.level ?: 1) {
                         1 -> "மகா தசை"
                         2 -> "புக்தி"
                         3 -> "ஆந்தரம்"
                         4 -> "பிரத்யந்தரம்"
                         else -> "சிக்ஷ்ம"
                     },
-                    fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = if(period.level == 1) 16.sp else 14.sp
+                    fontWeight = if((period.level ?: 1) == 1) FontWeight.Bold else FontWeight.Medium,
+                    fontSize = if((period.level ?: 1) == 1) 16.sp else 14.sp
                 )
-                Text("${period.start.take(10).replace("-", ".")} - ${period.end.take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
+                Text("${(period.start ?: "....-..-..").take(10).replace("-", ".")} - ${(period.end ?: "....-..-..").take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
             }
 
             if (hasSub) {
                 Icon(
-                    if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.Gray
                 )
@@ -665,9 +666,9 @@ fun DashaNodeInternal(period: DashaPeriod) {
             period.subPeriods?.forEach { child ->
                 DashaNodeInternal(child)
             }
-            Divider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
+            Divider(Modifier.padding(start = (((period.level ?: 1)) * 20).dp), color = Color.White.copy(alpha = 0.05f))
         }
-        if (period.level == 1) {
+        if ((period.level ?: 1) == 1) {
             Divider(color = Color.White.copy(alpha = 0.1f))
         }
     }

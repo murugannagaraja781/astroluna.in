@@ -41,12 +41,16 @@ function logActivity(type, message, details = null) {
   }
   console.log(logStr);
 
-  // Optional: Also write to a persistent activity log file
+  // Also write to MongoDB SystemLog collection
   try {
-    fs.appendFileSync('activity.log', logStr + '\n');
-  } catch (err) {
-    // console.error('Failed to write to activity.log');
-  }
+    SystemLog.create({
+      type: 'info', // defaults to info, can be improved to match activity type
+      module: type,
+      message: message,
+      details: details,
+      timestamp: new Date()
+    }).catch(e => console.error('Failed to save SystemLog:', e.message));
+  } catch (err) {}
 }
 
 // PhonePe Config
@@ -1949,6 +1953,153 @@ app.post('/api/admin/process-deletion', async (req, res) => {
     console.error('[Admin] Error processing deletion:', error);
     res.status(500).json({ ok: false, error: 'Failed to process request' });
   }
+});
+
+// ===== ADMIN: GET BILLING HISTORY (LEDGER) =====
+app.get('/api/admin/billing-history', async (req, res) => {
+  try {
+    // Fetch last 100 billing entries
+    const ledgers = await BillingLedger.find()
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .lean();
+
+    // Population logic:
+    // 1. Get unique session IDs to fetch sessions
+    // 2. Map them for quick access
+    // 3. Populate client and astrologer phone/name
+
+    const sessionIds = [...new Set(ledgers.map(l => l.sessionId))];
+    const sessions = await Session.find({ sessionId: { $in: sessionIds } }).lean();
+    const sessionMap = new Map();
+    sessions.forEach(s => sessionMap.set(s.sessionId, s));
+
+    // Get unique user IDs (both clients and astros) for name lookup
+    const userIds = new Set();
+    sessions.forEach(s => {
+      if (s.clientId) userIds.add(s.clientId);
+      if (s.astrologerId) userIds.add(s.astrologerId);
+    });
+    
+    const users = await User.find({ userId: { $in: Array.from(userIds) } })
+      .select('userId name phone role')
+      .lean();
+    
+    const userMap = new Map();
+    users.forEach(u => userMap.set(u.userId, u));
+
+    const enrichedHistory = ledgers.map(l => {
+      const session = sessionMap.get(l.sessionId) || {};
+      const client = userMap.get(session.clientId) || { name: 'Unknown', phone: 'Unknown' };
+      const astro = userMap.get(session.astrologerId) || { name: 'Unknown', phone: 'Unknown' };
+
+      return {
+        ...l,
+        clientName: client.name,
+        clientPhone: client.phone,
+        astroName: astro.name,
+        astroPhone: astro.phone,
+        type: session.type || 'N/A'
+      };
+    });
+
+    res.json({ ok: true, history: enrichedHistory });
+  } catch (err) {
+    console.error('[Admin] Billing History error:', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// --- ADMIN: PHOTO APPROVALS ---
+app.get('/api/admin/photo-approvals', async (req, res) => {
+  try {
+    const list = await User.find({ photoStatus: 'pending' }).select('userId name phone image pendingImage photoStatus').lean();
+    res.json({ ok: true, list });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.post('/api/admin/photo/process', async (req, res) => {
+  try {
+    const { userId, status } = req.body; // 'approved' or 'rejected'
+    const user = await User.findOne({ userId });
+    if (!user) return res.status(404).json({ ok: false, error: 'User not found' });
+
+    if (status === 'approved' && user.pendingImage) {
+      user.image = user.pendingImage;
+    }
+    user.pendingImage = '';
+    user.photoStatus = status === 'approved' ? 'none' : 'rejected';
+    await user.save();
+
+    res.json({ ok: true, message: `Photo ${status}` });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// --- ADMIN: REVIEWS ---
+app.get('/api/admin/reviews', async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 }).limit(100).lean();
+    res.json({ ok: true, reviews });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.delete('/api/admin/reviews/:id', async (req, res) => {
+  try {
+    await Review.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// --- ADMIN: SYSTEM LOGS ---
+app.get('/api/admin/system-logs', async (req, res) => {
+  try {
+    const logs = await SystemLog.find().sort({ timestamp: -1 }).limit(100).lean();
+    res.json({ ok: true, logs });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// --- ADMIN: SLABS (GLOBAL SETTINGS) ---
+app.get('/api/admin/slabs', async (req, res) => {
+  try {
+    let settings = await GlobalSettings.findOne({ key: 'slab_percentages' });
+    if (!settings) {
+      settings = await GlobalSettings.create({ 
+        key: 'slab_percentages', 
+        value: { slab1: 30, slab2: 35, slab3: 40, slab4: 45, slab5: 50 } 
+      });
+    }
+    res.json({ ok: true, slabs: settings.value });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.post('/api/admin/slabs', async (req, res) => {
+  try {
+    const { slabs } = req.body;
+    await GlobalSettings.updateOne({ key: 'slab_percentages' }, { value: slabs, updatedAt: new Date() }, { upsert: true });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// --- ADMIN: BROADCAST (OFFERS) ---
+app.post('/api/admin/broadcast', async (req, res) => {
+  try {
+    const { title, body } = req.body;
+    if (!title || !body) return res.status(400).json({ ok: false, error: 'Title and body required' });
+
+    // Fetch all users with fcmToken
+    const users = await User.find({ fcmToken: { $exists: true, $ne: '' } }).select('fcmToken').lean();
+    
+    let successCount = 0;
+    for (const u of users) {
+      try {
+        await sendFcmV1Push(u.fcmToken, { type: 'OFFER' }, { title, body });
+        successCount++;
+      } catch (err) {}
+    }
+
+    logActivity('admin', `Broadcast sent to ${successCount} users: ${title}`);
+    res.json({ ok: true, count: successCount });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
 // ===== NATIVE CALL ACCEPT API =====

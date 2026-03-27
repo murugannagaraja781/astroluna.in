@@ -5206,6 +5206,36 @@
         </div>
       </div>
 
+      <!-- Tab: History (Detailed Ledger) -->
+      <div id="admin-sect-history" class="admin-tab-section">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">
+            <i class="fas fa-history"></i> Detailed Ledger History
+          </h2>
+        </div>
+        <div class="admin-card" style="padding:0; overflow:hidden;">
+          <table class="premium-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Astrologer</th>
+                <th>Amount</th>
+                <th>Earnings</th>
+                <th>Margin</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="adminHistoryList">
+              <!-- Items auto-injected -->
+            </tbody>
+          </table>
+          <div id="historyLoading" style="text-align:center; padding:40px; color:#9ca3af;">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block;"></i>
+            Loading history...
+          </div>
+        </div>
+      </div>
       <!-- Tab: Referral Withdrawals -->
       <div id="admin-sect-referrals" class="admin-tab-section">
         <div class="dashboard-header">
@@ -5230,6 +5260,67 @@
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
             Loading requests...
           </div>
+        </div>
+      </div>
+
+      <!-- Tab: Photo Approvals -->
+      <div id="admin-sect-photo-approvals" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-user-circle"></i> Photo Approvals</h2></div>
+        <div id="adminPhotoApprovalList" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:15px; margin-top:10px;">
+          <div style="text-align:center; padding:30px; color:#9ca3af;">No pending photos</div>
+        </div>
+      </div>
+
+      <!-- Tab: Commission Slabs -->
+      <div id="admin-sect-slabs" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-percent"></i> Commission Settings</h2></div>
+        <div class="admin-card" style="max-width:500px;">
+          <p style="font-size:0.9rem; color:#6b7280; margin-bottom:20px;">Define percentage share for astrologers in each slab.</p>
+          <div id="slabSettingsContainer">
+            <!-- Slab inputs auto-injected -->
+          </div>
+          <button class="cosmic-btn" style="width:100%; margin-top:20px;" onclick="saveSlabSettings()">Update Commission Slabs</button>
+        </div>
+      </div>
+
+      <!-- Tab: Reviews -->
+      <div id="admin-sect-reviews" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-star"></i> Review Moderation</h2></div>
+        <div id="adminReviewsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+          <div style="text-align:center; padding:30px; color:#9ca3af;">Loading reviews...</div>
+        </div>
+      </div>
+
+      <!-- Tab: Broadcast -->
+      <div id="admin-sect-broadcast" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-bullhorn"></i> Push Broadcast</h2></div>
+        <div class="admin-card" style="max-width:500px;">
+          <div style="margin-bottom:15px;">
+            <label style="display:block; margin-bottom:5px; font-weight:600;">Title</label>
+            <input type="text" id="bcTitle" class="app-input" placeholder="Offer Title">
+          </div>
+          <div style="margin-bottom:15px;">
+            <label style="display:block; margin-bottom:5px; font-weight:600;">Message</label>
+            <textarea id="bcMessage" class="app-input" style="height:100px;" placeholder="Message for users..."></textarea>
+          </div>
+          <button class="cosmic-btn" style="width:100%;" onclick="sendBroadcastPush()">Send Push to All Users</button>
+        </div>
+      </div>
+
+      <!-- Tab: Server Logs -->
+      <div id="admin-sect-logs" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-terminal"></i> System Logs</h2></div>
+        <div class="admin-card" style="background:#0f172a; color:#cbd5e1; font-family:monospace; padding:15px; height:60vh; overflow-y:auto;" id="adminLogsTerminal">
+          <div style="color:#22c55e;">[SUCCESS] Terminal connected. Fetching logs...</div>
+        </div>
+         <button class="cosmic-btn" style="margin-top:10px; background:#334155;" onclick="loadAdminLogs()">Refresh Logs</button>
+      </div>
+
+      <!-- Tab: Alerts (Notifications) -->
+      <div id="admin-sect-notifications" class="admin-tab-section">
+        <div class="dashboard-header"><h2 class="dashboard-title"><i class="fas fa-bell"></i> System Alerts</h2></div>
+        <div id="adminNotificationsList" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+           <div style="text-align:center; padding:30px; color:#9ca3af;">No recent alerts.</div>
         </div>
       </div>
 
@@ -5271,47 +5362,63 @@
     </div>
 
     <!-- Bottom Nav -->
-    <div class="admin-nav">
+    <div class="admin-nav" style="flex-wrap: wrap; height: auto; padding: 10px; gap: 5px; justify-content: center;">
       <div class="admin-nav-item active" id="anav-home" onclick="navAdmin('home')">
-        <i class="fas fa-home"></i>
-        <span>Dash</span>
-      </div>
-      <div class="admin-nav-item" id="anav-earnings" onclick="navAdmin('earnings')">
-        <i class="fas fa-chart-pie"></i>
-        <span>Earnings</span>
-      </div>
-      <div class="admin-nav-item" id="anav-payouts" onclick="navAdmin('payouts')">
-        <i class="fas fa-user-astronaut"></i>
-        <span>Astrologers</span>
-      </div>
-      <div class="admin-nav-item" id="anav-referrals" onclick="navAdmin('referrals')" style="position:relative;">
-        <i class="fas fa-hand-holding-usd"></i>
-        <span>Referrals</span>
-        <div id="badge-referrals" class="hidden"
-          style="position:absolute; top:2px; right:15px; background:red; color:white; border-radius:50%; min-width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; padding:2px; font-weight:bold;">
-          0</div>
-      </div>
-      <div class="admin-nav-item" id="anav-users" onclick="navAdmin('users')">
-        <i class="fas fa-users"></i>
-        <span>Users</span>
-      </div>
-      <div class="admin-nav-item" id="anav-academy" onclick="navAdmin('academy')">
-        <i class="fas fa-graduation-cap"></i>
-        <span>Academy</span>
-      </div>
-      <div class="admin-nav-item" id="anav-slider" onclick="navAdmin('slider')">
-        <i class="fas fa-images"></i>
-        <span>Slider</span>
+        <i class="fas fa-home"></i> <span>Dash</span>
       </div>
       <div class="admin-nav-item" id="anav-requests" onclick="navAdmin('requests')" style="position:relative;">
-        <i class="fas fa-user-plus"></i>
-        <span>Requests</span>
-        <div id="badge-requests" class="hidden"
-          style="position:absolute; top:2px; right:8px; background:#ef4444; color:white; border-radius:50%; min-width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; padding:2px; font-weight:bold;">
-          0</div>
+        <i class="fas fa-user-plus"></i> <span>Requests</span>
+        <div id="badge-requests" class="hidden admin-badge">0</div>
+      </div>
+      <div class="admin-nav-item" id="anav-photo-approvals" onclick="navAdmin('photo-approvals')">
+        <i class="fas fa-user-circle"></i> <span>Photos</span>
+      </div>
+      <div class="admin-nav-item" id="anav-payouts" onclick="navAdmin('payouts')">
+        <i class="fas fa-user-astronaut"></i> <span>Astros</span>
+      </div>
+      <div class="admin-nav-item" id="anav-users" onclick="navAdmin('users')">
+        <i class="fas fa-users"></i> <span>Users</span>
+      </div>
+      <div class="admin-nav-item" id="anav-referrals" onclick="navAdmin('referrals')" style="position:relative;">
+        <i class="fas fa-hand-holding-usd"></i> <span>Payouts</span>
+      </div>
+      <div class="admin-nav-item" id="anav-earnings" onclick="navAdmin('earnings')">
+        <i class="fas fa-chart-line"></i> <span>Performance</span>
+      </div>
+      <div class="admin-nav-item" id="anav-history" onclick="navAdmin('history')">
+        <i class="fas fa-history"></i> <span>History</span>
+      </div>
+      <div class="admin-nav-item" id="anav-slabs" onclick="navAdmin('slabs')">
+        <i class="fas fa-percent"></i> <span>Slabs</span>
+      </div>
+      <div class="admin-nav-item" id="anav-reviews" onclick="navAdmin('reviews')">
+        <i class="fas fa-star"></i> <span>Reviews</span>
+      </div>
+      <div class="admin-nav-item" id="anav-academy" onclick="navAdmin('academy')">
+        <i class="fas fa-graduation-cap"></i> <span>Academy</span>
+      </div>
+      <div class="admin-nav-item" id="anav-broadcast" onclick="navAdmin('broadcast')">
+        <i class="fas fa-bullhorn"></i> <span>Broadcast</span>
+      </div>
+      <div class="admin-nav-item" id="anav-logs" onclick="navAdmin('logs')">
+        <i class="fas fa-terminal"></i> <span>Logs</span>
+      </div>
+      <div class="admin-nav-item" id="anav-slider" onclick="navAdmin('slider')">
+        <i class="fas fa-images"></i> <span>Banners</span>
+      </div>
+      <div class="admin-nav-item" id="anav-notifications" onclick="navAdmin('notifications')">
+        <i class="fas fa-bell"></i> <span>Alerts</span>
       </div>
     </div>
   </div>
+
+  <style>
+    .admin-badge {
+      position: absolute; top: 2px; right: 5px; background: #ef4444; color: white; border-radius: 50%; 
+      min-width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; 
+      padding: 2px; font-weight: bold;
+    }
+  </style>
 
 
 
@@ -8178,6 +8285,18 @@
         loadAdminReferralWithdrawals();
       } else if (tab === 'requests') {
         loadAstrologerRequests();
+      } else if (tab === 'history') {
+        loadAdminHistory();
+      } else if (tab === 'photo-approvals') {
+        loadAdminPhotoApprovals();
+      } else if (tab === 'slabs') {
+        loadSlabSettings();
+      } else if (tab === 'reviews') {
+        loadAdminReviews();
+      } else if (tab === 'logs') {
+        loadAdminLogs();
+      } else if (tab === 'notifications') {
+        loadAdminNotifications();
       }
     };
 
@@ -8417,7 +8536,6 @@
         else alert('Failed to delete');
       } catch (e) { alert('Network Error'); }
     }
-
     function loadAdminLedgerStats() {
       socket.emit('admin-get-ledger-stats', {}, (res) => {
         if (res.ok) {
@@ -8449,24 +8567,26 @@
 
           if (res.fullLedger) {
             const tbody = document.getElementById('fullLedgerBody');
-            tbody.innerHTML = '';
-            // Aggregate by type
-            const agg = {};
-            res.fullLedger.forEach(l => {
-              if (!agg[l.type]) agg[l.type] = { count: 0, amount: 0 };
-              agg[l.type].count++;
-              agg[l.type].amount += (l.amount || 0);
-            });
+            if (tbody) {
+              tbody.innerHTML = '';
+              // Aggregate by type
+              const agg = {};
+              res.fullLedger.forEach(l => {
+                if (!agg[l.type]) agg[l.type] = { count: 0, amount: 0 };
+                agg[l.type].count++;
+                agg[l.type].amount += (l.amount || 0);
+              });
 
-            Object.keys(agg).forEach(k => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                  <td style="padding:16px 15px; border-bottom:1px solid #e5e7eb;">${k.toUpperCase().replace('_', ' ')}</td>
-                  <td style="padding:16px 15px; text-align:center; border-bottom:1px solid #e5e7eb;">${agg[k].count}</td>
-                  <td style="padding:16px 15px; text-align:right; font-weight:700; color:#059669; border-bottom:1px solid #e5e7eb;">₹${agg[k].amount}</td>
-                `;
-              tbody.appendChild(row);
-            });
+              Object.keys(agg).forEach(k => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding:16px 15px; border-bottom:1px solid #e5e7eb;">${k.toUpperCase().replace('_', ' ')}</td>
+                    <td style="padding:16px 15px; text-align:center; border-bottom:1px solid #e5e7eb;">${agg[k].count}</td>
+                    <td style="padding:16px 15px; text-align:right; font-weight:700; color:#059669; border-bottom:1px solid #e5e7eb;">₹${agg[k].amount}</td>
+                  `;
+                tbody.appendChild(row);
+              });
+            }
           } else {
             const tbody = document.getElementById('fullLedgerBody');
             if (tbody) {
@@ -8475,6 +8595,248 @@
           }
         }
       });
+    }
+    // --- History / Ledger ---
+    async function loadAdminHistory() {
+      const list = document.getElementById('adminHistoryList');
+      const loader = document.getElementById('historyLoading');
+      if (!list) return;
+      loader.classList.remove('hidden');
+      list.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/admin/billing-history');
+        const data = await res.json();
+        loader.classList.add('hidden');
+        if (data.ok && data.history) {
+          renderAdminHistory(data.history);
+        } else {
+          list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">Failed to load history</td></tr>';
+        }
+      } catch (err) {
+        console.error('History Error:', err);
+        loader.classList.add('hidden');
+        list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">Connection error</td></tr>';
+      }
+    }
+
+    function renderAdminHistory(history) {
+      const list = document.getElementById('adminHistoryList');
+      if (!list) return;
+      
+      if (history.length === 0) {
+        list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#9ca3af;">No transactions found</td></tr>';
+        return;
+      }
+
+      list.innerHTML = history.map(h => {
+        const date = new Date(h.createdAt).toLocaleString('en-IN', {
+          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+
+        // Format reason for readability
+        let reasonLabel = h.reason || 'N/A';
+        let reasonColor = '#4b5563';
+        if (h.reason === 'first_60') { reasonLabel = 'First Min'; reasonColor = '#dc2626'; }
+        else if (h.reason?.startsWith('slab_')) { reasonLabel = 'Slab ' + h.reason.split('_')[1]; reasonColor = '#059669'; }
+
+        return `
+          <tr>
+            <td style="font-size:0.8rem; color:#6b7280; padding:12px 15px;">${date}</td>
+            <td style="padding:12px 15px;">
+              <div style="font-weight:600; color:#1e3a8a;">${h.clientName}</div>
+              <div style="font-size:0.75rem; color:#6b7280;">${h.clientPhone}</div>
+            </td>
+            <td style="padding:12px 15px;">
+              <div style="font-weight:600; color:#4b5563;">${h.astroName}</div>
+              <div style="font-size:0.75rem; color:#7c3aed;">${h.astroPhone}</div>
+            </td>
+            <td style="font-weight:700; color:#059669; padding:12px 15px;">₹${h.chargedToClient}</td>
+            <td style="font-weight:700; color:#4338ca; padding:12px 15px;">₹${h.creditedToAstrologer}</td>
+            <td style="font-weight:700; color:#b91c1c; padding:12px 15px;">₹${h.adminAmount}</td>
+            <td style="padding:12px 15px;">
+              <span class="status-badge" style="background:#f3f4f6; color:${reasonColor}; font-size:0.75rem; padding:4px 8px; border-radius:12px; font-weight:600;">
+                ${reasonLabel}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // --- Photo Approvals ---
+    async function loadAdminPhotoApprovals() {
+      const container = document.getElementById('adminPhotoApprovalList');
+      if(!container) return;
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;">Loading photos...</div>';
+      try {
+        const res = await fetch('/api/admin/photo-approvals');
+        const data = await res.json();
+        if(data.ok) renderAdminPhotos(data.list);
+      } catch(e) { container.innerHTML = 'Error loading photos'; }
+    }
+
+    function renderAdminPhotos(list) {
+      const container = document.getElementById('adminPhotoApprovalList');
+      if(list.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:30px; grid-column:1/-1; color:#9ca3af;">No pending photos</div>';
+        return;
+      }
+      container.innerHTML = list.map(u => `
+        <div class="admin-card" style="padding:10px; text-align:center;">
+          <img src="${u.pendingImage}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+          <div style="font-weight:600; font-size:0.8rem; margin-bottom:5px;">${u.name}</div>
+          <div style="display:flex; gap:5px;">
+            <button class="cosmic-btn" style="padding:5px; flex:1; background:#10b981; font-size:0.7rem;" onclick="processPhoto('${u.userId}', 'approved')">Approve</button>
+            <button class="cosmic-btn" style="padding:5px; flex:1; background:#ef4444; font-size:0.7rem;" onclick="processPhoto('${u.userId}', 'rejected')">Reject</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function processPhoto(userId, status) {
+      try {
+        const res = await fetch('/api/admin/photo/process', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({userId, status})
+        });
+        const data = await res.json();
+        if(data.ok) loadAdminPhotoApprovals();
+      } catch(e) { alert('Error processing photo'); }
+    }
+
+    // --- Commission Slabs ---
+    async function loadSlabSettings() {
+      const container = document.getElementById('slabSettingsContainer');
+      if(!container) return;
+      try {
+        const res = await fetch('/api/admin/slabs');
+        const data = await res.json();
+        if(data.ok) {
+          container.innerHTML = Object.keys(data.slabs).map(k => `
+            <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:600; text-transform:capitalize;">${k.replace('slab', 'Slab ')} (%)</span>
+              <input type="number" class="app-input slab-input" data-key="${k}" value="${data.slabs[k]}" style="width:80px; text-align:center;">
+            </div>
+          `).join('');
+        }
+      } catch(e) { container.innerHTML = 'Error loading slabs'; }
+    }
+
+    async function saveSlabSettings() {
+      const inputs = document.querySelectorAll('.slab-input');
+      const slabs = {};
+      inputs.forEach(i => slabs[i.dataset.key] = parseInt(i.value));
+      try {
+        const res = await fetch('/api/admin/slabs', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({slabs})
+        });
+        const data = await res.json();
+        if(data.ok) alert('Slab settings updated!');
+      } catch(e) { alert('Update failed'); }
+    }
+
+    // --- Reviews ---
+    async function loadAdminReviews() {
+      const list = document.getElementById('adminReviewsList');
+      if(!list) return;
+      try {
+        const res = await fetch('/api/admin/reviews');
+        const data = await res.json();
+        if(data.ok) renderAdminReviews(data.reviews);
+      } catch(e) { list.innerHTML = 'Error loading reviews'; }
+    }
+
+    function renderAdminReviews(reviews) {
+      const list = document.getElementById('adminReviewsList');
+      if(reviews.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#9ca3af;">No reviews yet</div>'; return; }
+      list.innerHTML = reviews.map(r => `
+        <div class="admin-card" style="padding:15px; display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="color:var(--accent-gold); margin-bottom:5px;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+            <p style="margin:0; font-size:0.9rem; color:#4b5563;">${r.comment}</p>
+            <div style="font-size:0.75rem; color:#9ca3af; margin-top:10px;">Astro: ${r.astrologerId} | Client: ${r.clientId}</div>
+          </div>
+          <button class="btn-delete" style="padding:6px; border-radius:50%;" onclick="deleteReview('${r._id}')"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteReview(id) {
+      if(!confirm('Delete this review?')) return;
+      try {
+        const res = await fetch('/api/admin/reviews/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if(data.ok) loadAdminReviews();
+      } catch(e) { alert('Failed to delete'); }
+    }
+
+    // --- System Logs ---
+    async function loadAdminLogs() {
+      const term = document.getElementById('adminLogsTerminal');
+      if(!term) return;
+      try {
+        const res = await fetch('/api/admin/system-logs');
+        const data = await res.json();
+        if(data.ok) {
+          term.innerHTML = data.logs.map(l => {
+              let color = '#cbd5e1';
+              if(l.type === 'error') color = '#f87171';
+              if(l.type === 'critical') color = '#ef4444';
+              if(l.type === 'warn') color = '#fbbf24';
+              const ts = new Date(l.timestamp).toLocaleTimeString();
+              return `<div style="margin-bottom:4px; color:${color}">[${ts}] [${l.module.toUpperCase()}] ${l.message}</div>`;
+          }).join('') || '<div style="color:#94a3b8">No logs found.</div>';
+          term.scrollTop = term.scrollHeight;
+        }
+      } catch(e) { term.innerHTML = 'Error fetching logs'; }
+    }
+
+    // --- System Alerts ---
+    async function loadAdminNotifications() {
+      const list = document.getElementById('adminNotificationsList');
+      if(!list) return;
+      try {
+        const res = await fetch('/api/admin/notifications');
+        const data = await res.json();
+        if(data.ok) renderAdminNotifications(data.notifications);
+      } catch(e) { list.innerHTML = 'Error loading alerts'; }
+    }
+
+    function renderAdminNotifications(notifs) {
+      const list = document.getElementById('adminNotificationsList');
+      if(!notifs || notifs.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#9ca3af;">No recent alerts.</div>'; return; }
+      list.innerHTML = notifs.map(n => `
+        <div class="admin-card" style="padding:12px; border-left:4px solid ${n.type === 'missed_call' ? '#ef4444' : '#3b82f6'}">
+          <div style="font-weight:600; font-size:0.9rem;">${n.title || n.text}</div>
+          <div style="font-size:0.8rem; color:#6b7280; margin-top:4px;">${new Date(n.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    async function sendBroadcastPush() {
+        const title = document.getElementById('bcTitle').value;
+        const body = document.getElementById('bcMessage').value;
+        if(!title || !body) return alert('Title and Message required');
+        
+        if(!confirm('THIS WILL SEND A PUSH NOTIFICATION TO ALL USERS. Continue?')) return;
+        
+        try {
+            const res = await fetch('/api/admin/broadcast', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({title, body})
+            });
+            const data = await res.json();
+            if(data.ok) {
+                alert('Broadcast successful! Sent to ' + data.count + ' users.');
+                document.getElementById('bcTitle').value = '';
+                document.getElementById('bcMessage').value = '';
+            }
+        } catch(e) { alert('Broadcast failed'); }
     }
 
     function formatReason(r) {
