@@ -5502,11 +5502,18 @@
             type: callType
           };
 
-          // Start WebRTC (astrologer side - not initiator)
-          if (callType !== 'chat') {
-            console.log('[API Accept] Starting WebRTC as responder');
-            startWebRTC(false);
-          }
+          // Fetch ICE servers before starting WebRTC
+          socket.emit('session-connect', { sessionId: apiAcceptedCall }, (ack) => {
+             if (ack && ack.ok && ack.iceServers) {
+                 state.iceServers = ack.iceServers;
+                 console.log('[WebRTC] Dynamic ICE servers updated from API path');
+             }
+             // Start WebRTC (astrologer side - not initiator)
+             if (callType !== 'chat') {
+               console.log('[API Accept] Starting WebRTC as responder');
+               startWebRTC(false);
+             }
+          });
 
           // Show session UI
           const sSes = document.getElementById('sSession');
@@ -6945,6 +6952,10 @@
       } else {
         window.receivedBirthData = null;
       }
+      
+      if (data.iceServers) {
+        state.iceServers = data.iceServers;
+      }
 
       sInc.classList.remove('hidden');
       const titles = { chat: 'Chat Request', audio: 'Incoming Call', video: 'Incoming Video Call' };
@@ -7016,8 +7027,6 @@
         console.log('[Session] Starting WebRTC as initiator');
         if (state.session.type === 'chat') {
           startTimer();
-        } else {
-          startWebRTC(true); // Caller is initiator
         }
       } else {
         alert('Request Rejected');
@@ -7063,7 +7072,18 @@
       sSes.classList.remove('hidden');
 
       // Trigger Billing Start on Server
-      socket.emit('session-connect', { sessionId: sid });
+      socket.emit('session-connect', { sessionId: sid }, (ack) => {
+        if (ack && ack.ok && ack.iceServers) {
+          state.iceServers = ack.iceServers;
+          console.log('[WebRTC] Received dynamic ICE servers from session-connect');
+        }
+        
+        // Finalize session UI / Start WebRTC
+        if (type !== 'chat') {
+          console.log('[WebRTC] Initializing as', isInit ? 'Initiator' : 'Responder');
+          startWebRTC(isInit);
+        }
+      });
 
       if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'KEEP_AWAKE', enable: true }));
@@ -7175,8 +7195,6 @@
       const partnerInitEl = document.getElementById('sessionPartnerInitial');
       if (partnerNameEl) partnerNameEl.innerText = partnerName;
       if (partnerInitEl) partnerInitEl.innerText = partnerName.charAt(0).toUpperCase();
-
-      if (!isInit && type !== 'chat') startWebRTC(false);
     }
 
     // WebRTC Logic
@@ -7204,29 +7222,18 @@
           lv.play().catch(e => console.warn('Local Video Play Error:', e));
         }
 
+        const defaultIceServers = [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
+        ];
+
         const p = new SimplePeer({
           initiator,
           stream,
-          trickle: false,
+          trickle: true,
           config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              {
-                urls: 'turn:turn.astroluna.in:3478?transport=udp',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              },
-              {
-                urls: 'turn:turn.astroluna.in:3478?transport=tcp',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              },
-              {
-                urls: 'turns:turn.astroluna.in:5349',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              }
-            ]
+            iceServers: state.iceServers || defaultIceServers
           }
         });
 
