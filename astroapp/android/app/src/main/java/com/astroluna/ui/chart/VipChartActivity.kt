@@ -22,6 +22,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import retrofit2.Response
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -48,6 +51,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.astroluna.ui.intake.IntakeActivity
 import org.json.JSONObject
 import com.astroluna.data.model.*
+import android.widget.Toast
 
 // --- Aesthetic Constants (Premium Blue) ---
 val DeepSpaceNavy = Color(0xFF000B18)
@@ -77,7 +81,7 @@ val planetAbbrTamil = mapOf(
     "Ketu" to "கேது", "Ascendant" to "லக்", "As" to "லக்", "Mandi" to "மாந்தி"
 )
 
-
+class VipChartActivity : ComponentActivity() {
     private var sessionId: String? = null
     private var toUserId: String? = null
     private var partnerName: String? = null
@@ -204,7 +208,7 @@ fun VipChartScreen(birthDataState: MutableState<JSONObject>, sessionId: String?,
                             color = NeonCyan
                         )
                         Text(
-                            birthData.optString("name", "User"),
+                            currentBirthData.optString("name", "User"),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White.copy(alpha = 0.6f)
                         )
@@ -251,7 +255,7 @@ fun VipChartScreen(birthDataState: MutableState<JSONObject>, sessionId: String?,
                             errorMessage = null
                             scope.launch {
                                 try {
-                                    val result = fetchFullChart(birthData)
+                                    val result = fetchFullChart(currentBirthData)
                                     setChartState(result)
                                 } catch (e: Exception) {
                                     errorMessage = "Retry Failed: ${e.message ?: "Unknown error"}"
@@ -296,7 +300,7 @@ fun VipChartScreen(birthDataState: MutableState<JSONObject>, sessionId: String?,
 
                 Box(modifier = Modifier.weight(1f)) {
                     when (selectedTab) {
-                        0 -> ChartsTab(chartState!!, birthData)
+                        0 -> ChartsTab(chartState!!, currentBirthData)
                         1 -> PlanetGridTab(chartState!!)
                         2 -> if (chartState?.dasha != null) DashaListTab(chartState!!.dasha!!)
                     }
@@ -547,7 +551,7 @@ fun PlanetGridTab(data: ChartData) {
                     Text(text = nakName, modifier = Modifier.weight(2.5f), style = detailStyle)
 
                     // Pada (Blue)
-                    Text(text = (p.nakshatraPada ?: 0).toString(), modifier = Modifier.weight(1f), style = detailStyle)
+                    Text(text = p.nakshatraPada.toString(), modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Star Lord (Blue)
                     Text(text = planetAbbrTamil[p.starLord ?: ""] ?: p.starLord?.take(2) ?: "-", modifier = Modifier.weight(1f), style = detailStyle)
@@ -601,11 +605,11 @@ fun DashaNodeInternal(period: DashaPeriod) {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val levelIndent = ((period.level ?: 1) - 1) * 20
+            val levelIndent = (period.level - 1) * 20
             Spacer(Modifier.width(levelIndent.dp))
 
             // Icon/Prefix based on level
-            val iconColor = when(period.level ?: 1) {
+            val iconColor = when(period.level) {
                 1 -> TraditionalRed
                 2 -> Color(0xFF2E7D32)
                 3 -> Color(0xFF1976D2)
@@ -620,15 +624,15 @@ fun DashaNodeInternal(period: DashaPeriod) {
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "${planetTamil[period.lord ?: ""] ?: (period.lord ?: "Unknown")} " + when(period.level ?: 1) {
+                    text = "${planetTamil[period.lord ?: ""] ?: (period.lord ?: "Unknown")} " + when(period.level) {
                         1 -> "மகா தசை"
                         2 -> "புக்தி"
                         3 -> "ஆந்தரம்"
                         4 -> "பிரத்யந்தரம்"
                         else -> "சிக்ஷ்ம"
                     },
-                    fontWeight = if((period.level ?: 1) == 1) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = if((period.level ?: 1) == 1) 16.sp else 14.sp
+                    fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
+                    fontSize = if(period.level == 1) 16.sp else 14.sp
                 )
                 Text("${(period.start ?: "....-..-..").take(10).replace("-", ".")} - ${(period.end ?: "....-..-..").take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
             }
@@ -646,10 +650,10 @@ fun DashaNodeInternal(period: DashaPeriod) {
             period.subPeriods?.forEach { child ->
                 DashaNodeInternal(child)
             }
-            Divider(Modifier.padding(start = (((period.level ?: 1)) * 20).dp), color = Color.White.copy(alpha = 0.05f))
+            HorizontalDivider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
         }
-        if ((period.level ?: 1) == 1) {
-            Divider(color = Color.White.copy(alpha = 0.1f))
+        if (period.level == 1) {
+            HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
         }
     }
 }

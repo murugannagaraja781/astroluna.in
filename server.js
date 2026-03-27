@@ -299,10 +299,13 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const message = {
       token: fcmToken,
       data: stringData,
-      notification: notification ? {
+      // For high-priority calls, we use data-only messages to ensure onMessageReceived is triggered
+      // and we can show our custom Full Screen UI. Including 'notification' key makes the OS 
+      // handle it, which often suppresses the full screen intent if app is killed.
+      notification: (data.type === 'INCOMING_CALL' || data.type === 'CALL_ENDED' || !notification) ? undefined : {
         title: notification.title || 'astroluna',
         body: notification.body || 'N/A'
-      } : undefined,
+      },
       android: {
         priority: 'high',
         ttl: 0,

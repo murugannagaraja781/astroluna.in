@@ -18,8 +18,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -314,6 +314,7 @@ class CallActivity : ComponentActivity() {
                         onEndCall = { endCall() },
                         onEditIntake = { openEditIntake() },
                         onShowRasi = { showRasiChart() },
+                        onShowMatch = { showMatchChart() },
                         isRecording = isRecordingState,
                         onToggleRecording = { toggleRecording() },
                         isReady = isWebRTCInitialized
@@ -1149,9 +1150,19 @@ class CallActivity : ComponentActivity() {
             intent.putExtra("sessionId", sessionId)
             intent.putExtra("toUserId", partnerId)
             startActivity(intent)
+        }
+    }
+
+    private fun showMatchChart() {
+        Log.d(TAG, "showMatchChart() called. clientBirthData is null? ${clientBirthData == null}")
+        if (clientBirthData != null) {
+            val intent = android.content.Intent(this, com.astroluna.ui.chart.MatchDisplayActivity::class.java)
+            intent.putExtra("birthData", clientBirthData.toString())
+            intent.putExtra("sessionId", sessionId)
+            intent.putExtra("toUserId", partnerId)
+            startActivity(intent)
         } else {
-            Log.w(TAG, "showRasiChart() - clientBirthData is NULL")
-            Toast.makeText(this, "ஜோதிடம்: விவரங்கள் இன்னும் வரவில்லை (Waiting for Data...)", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "பொருத்தம்: விவரங்கள் கிடைக்கவில்லை (No Match Data)", Toast.LENGTH_LONG).show()
         }
     }
 }
@@ -1184,6 +1195,7 @@ fun CallScreen(
     onEndCall: () -> Unit,
     onEditIntake: () -> Unit,
     onShowRasi: () -> Unit,
+    onShowMatch: () -> Unit,
     isRecording: Boolean = false,
     onToggleRecording: () -> Unit = {},
     isReady: Boolean = false
@@ -1322,7 +1334,8 @@ fun CallScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (role == "astrologer") {
-                        ControlBtnItem(onClick = onShowRasi, icon = Icons.Default.Star, label = "Jothidam", active = true)
+                        ControlBtnItem(onClick = onShowRasi, icon = Icons.Default.Star, label = "Rasi", active = true)
+                        ControlBtnItem(onClick = onShowMatch, icon = Icons.Default.Favorite, label = "Match", active = true)
                     } else {
                         Spacer(modifier = Modifier.size(48.dp))
                     }
@@ -1341,7 +1354,7 @@ fun CallScreen(
                     if (role == "astrologer") {
                         ControlBtnItem(
                             onClick = onToggleRecording,
-                            icon = if (isRecording) Icons.Default.Check else Icons.Default.AddCircle,
+                            icon = if (isRecording) Icons.Default.Star else Icons.Default.AddCircle,
                             label = if (isRecording) "Stop" else "REC",
                             active = isRecording
                         )
