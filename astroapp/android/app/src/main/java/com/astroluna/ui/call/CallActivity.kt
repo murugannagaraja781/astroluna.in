@@ -1244,9 +1244,9 @@ fun CallScreen(
                 modifier = Modifier.fillMaxSize()
             )
         } else if (callType == "video" && !isReady) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxSize().offset(y = (-80).dp), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = Color(0xFF8E24AA))
-                Text("Initializing Camera...", color = Color.Gray, modifier = Modifier.padding(top = 80.dp))
+                Text("Initializing Camera...", color = Color.Gray, modifier = Modifier.padding(top = 90.dp))
             }
         } else {
             // Audio Call UI Placeholder - Shifted Up to avoid bottom panel overlap
@@ -1269,6 +1269,7 @@ fun CallScreen(
                 .height(110.dp)
                 .shadow(8.dp, RoundedCornerShape(24.dp))
                 .background(Color.White, RoundedCornerShape(24.dp))
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()

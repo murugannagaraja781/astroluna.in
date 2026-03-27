@@ -7283,6 +7283,7 @@
         });
 
         state.peer = p;
+        drainPendingSignals(); // PROCESS QUEUED OFFER/CANDIDATES
         state.localStream = stream;
       } catch (e) {
         console.error(e);
@@ -7292,20 +7293,37 @@
       }
     }
 
-    // Signal Handler
+    // Signal Handler - Enhanced with Queuing
+    window.pendingSignals = [];
     socket.on('signal', d => {
-      if (state.session && d.sessionId === state.session.id && state.peer) {
-        try {
-          state.peer.signal(d.signal);
-        } catch (e) {
-          if (e.message && e.message.includes('wrong state')) {
-            console.warn('[WebRTC] Signal ignored (wrong state)', e.message.trim());
-          } else {
-            console.error('[WebRTC] Signal error', e);
+      if (state.session && d.sessionId === state.session.id) {
+        if (state.peer) {
+          try {
+            state.peer.signal(d.signal);
+          } catch (e) {
+            if (e.message && e.message.includes('wrong state')) {
+              console.warn('[WebRTC] Signal ignored (wrong state)', e.message.trim());
+            } else {
+              console.error('[WebRTC] Signal error', e);
+            }
           }
+        } else {
+          // If we are still waiting for getUserMedia/Peer creation, queue the signal
+          console.log('[WebRTC] Signal queued (Peer not ready)');
+          window.pendingSignals.push(d.signal);
         }
       }
     });
+
+    function drainPendingSignals() {
+      if (state.peer && window.pendingSignals.length > 0) {
+        console.log(`[WebRTC] Draining ${window.pendingSignals.length} queued signals...`);
+        while (window.pendingSignals.length > 0) {
+          const sig = window.pendingSignals.shift();
+          try { state.peer.signal(sig); } catch(e) { console.error('[WebRTC] Draining Error:', e); }
+        }
+      }
+    }
 
     // End Session
     const btnEnd = document.getElementById('btnEnd');
