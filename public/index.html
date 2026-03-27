@@ -23,6 +23,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  
+  <!-- Add Tailwind & daisyUI for Admin Dashboard -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#7C3AED',
+            accentGold: '#c5a028',
+          }
+        }
+      },
+      daisyui: {
+        themes: ["light", "dark", "cupcake", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter", "dim", "nord", "sunset"],
+      }
+    }
+  </script>
   <style>
     :root {
       --primary-bg: #f8fafc;
@@ -4490,6 +4509,17 @@
               <option value="processing">Processing</option>
               <option value="verified">Verified (Green Badge)</option>
             </select>
+  <!-- Screen: Super Admin Dashboard (Revamped with daisyUI) -->
+  <div id="screen-admin" class="hidden min-h-screen bg-base-200">
+    <div class="drawer lg:drawer-open">
+      <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col">
+        <!-- Navbar (Mobile Only) -->
+        <div class="navbar bg-base-100 lg:hidden px-4 border-b border-base-300">
+          <div class="flex-none">
+            <label for="admin-drawer" class="btn btn-square btn-ghost">
+              <i class="fas fa-bars"></i>
+            </label>
           </div>
         </div>
 
@@ -4511,807 +4541,219 @@
         <i class="fas fa-bell" style="cursor: pointer; opacity: 0.8; font-size: 1.2rem;"></i>
         <button onclick="clearSession()"
           style="background: var(--glass-heavy); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: var(--transition);">
-          <i class="fas fa-power-off"></i> Logout
-        </button>
+          <div class="flex-1 px-2">
+            <span class="text-xl font-bold text-primary">AstroLuna Admin</span>
+          </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="p-4 lg:p-4 flex-1 overflow-y-auto bg-base-100/30">
+          
+          <!-- Tab 1: Home (Overview) -->
+          <div id="admin-sect-home" class="admin-tab-section active animate__animated animate__fadeIn">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4 border-b border-white/5 pb-2">
+              <div>
+                <h1 class="text-xl font-black text-secondary tracking-tight">Platform Overview</h1>
+                <p class="text-[9px] text-base-content opacity-30 uppercase tracking-widest font-bold">Real-time Performance & Velocity Velocity</p>
+              </div>
+              <div class="flex gap-2">
+                 <div class="badge badge-accent badge-outline gap-1 px-2 text-[8px] font-black uppercase tracking-tighter h-6">
+                   <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span> SYSTEM LIVE STATUS
+                 </div>
+              </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-center text-sm">
+              <div class="stats shadow bg-base-100 border border-base-300">
+                <div class="stat">
+                  <div class="stat-figure text-primary"><i class="fas fa-wallet fa-2x"></i></div>
+                  <div class="stat-title">Platform Revenue</div>
+                  <div class="stat-value text-primary text-2xl lg:text-3xl" id="u-quickRev">₹0</div>
+                  <div class="stat-desc">Total billed to clients</div>
+                </div>
+              </div>
+              <div class="stats shadow bg-base-100 border border-base-300">
+                <div class="stat">
+                  <div class="stat-figure text-secondary"><i class="fas fa-percentage fa-2x"></i></div>
+                  <div class="stat-title">Admin Profit</div>
+                  <div class="stat-value text-secondary text-2xl lg:text-3xl" id="u-quickProfit">₹0</div>
+                  <div class="stat-desc">Net platform margin</div>
+                </div>
+              </div>
+              <div class="stats shadow bg-base-100 border border-base-300">
+                <div class="stat">
+                  <div class="stat-figure text-accentGold"><i class="fas fa-user-tie fa-2x"></i></div>
+                  <div class="stat-title">Astro Payout</div>
+                  <div class="stat-value text-accentGold text-2xl lg:text-3xl" id="u-quickPayout">₹0</div>
+                  <div class="stat-desc">Total credited to experts</div>
+                </div>
+              </div>
+              <div class="stats shadow bg-base-100 border border-base-300">
+                <div class="stat">
+                  <div class="stat-figure text-info"><i class="fas fa-clock fa-2x"></i></div>
+                  <div class="stat-title">Mins Billed</div>
+                  <div class="stat-value text-info text-2xl lg:text-3xl" id="u-quickMins">0</div>
+                  <div class="stat-desc">Total consultation duration</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              <!-- Revenue Chart Card -->
+              <div class="card bg-base-100 shadow-xl border border-base-300 lg:col-span-2 overflow-hidden">
+                <div class="card-body">
+                  <h3 class="card-title justify-between">
+                    Revenue Insights
+                    <div class="badge badge-secondary badge-outline text-[10px]">Last 30 Days</div>
+                  </h3>
+                  <div class="h-64 mt-4 relative">
+                    <canvas id="revenueChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Counter & Users -->
+              <div class="flex flex-col gap-4">
+                <div class="card bg-primary text-primary-content shadow-xl overflow-hidden relative h-32">
+                  <div class="card-body justify-center py-4">
+                    <div class="stat-title opacity-70 text-xs font-bold">ACTIVE SESSIONS</div>
+                    <div class="text-4xl font-black" id="u-footerSessions">0</div>
+                    <i class="fas fa-phone-alt absolute -right-2 -bottom-2 text-6xl opacity-10"></i>
+                  </div>
+                </div>
+                <div class="card bg-secondary text-secondary-content shadow-xl overflow-hidden relative h-32">
+                  <div class="card-body justify-center py-4">
+                    <div class="stat-title opacity-70 text-xs font-bold">TOTAL REGISTERED USERS</div>
+                    <div class="text-4xl font-black" id="u-footerTotalUsers">0</div>
+                    <i class="fas fa-users absolute -right-2 -bottom-2 text-6xl opacity-10"></i>
+                  </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl border border-base-300 flex-1 min-h-[140px]">
+                   <div class="card-body p-5">
+                      <h3 class="card-title text-xs border-b border-base-200 pb-2 uppercase opacity-40">System Log Stream</h3>
+                      <div id="admin-session-ticker" class="text-[10px] space-y-2 max-h-40 overflow-y-auto mt-2 font-mono">
+                         <div class="opacity-50 italic">Monitoring session activity...</div>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+
+        <footer class="footer footer-center p-4 bg-base-100 border-t border-base-300 text-base-content opacity-50 uppercase tracking-widest text-[10px] font-bold">
+          <div>
+            <p>AstroLuna Platform &copy; 2026 Operational Infrastructure — Super Admin Portal v2.0</p>
+          </div>
+        </footer>
+      </div> 
+
+      <!-- Sidebar Drawer -->
+      <div class="drawer-side z-50">
+        <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label> 
+        <div class="menu p-4 w-72 min-h-full bg-[#0E3A2F] text-white border-r border-[#155243]">
+          <div class="flex items-center gap-3 px-2 py-4 mb-4 border-b border-white/10">
+             <div class="bg-primary p-2 rounded-xl text-white shadow-lg">
+                <i class="fas fa-star text-xl"></i>
+             </div>
+             <div>
+                <span class="text-lg font-black tracking-tighter block leading-none">Astro 5 Star</span>
+                <span class="text-[9px] opacity-60 font-bold uppercase tracking-[0.2em]">Super Admin Panel</span>
+             </div>
+          </div>
+          
+          <ul class="space-y-1 overflow-y-auto pb-20">
+             <li class="menu-title opacity-40 uppercase text-[10px] font-black tracking-widest mt-4">Platform Core</li>
+             <li><a id="anav-home" onclick="navAdmin('home')" class="active py-3 px-4 rounded-xl font-bold"><i class="fas fa-house-chimney w-6 text-primary"></i> Overview</a></li>
+             <li><a id="anav-requests" onclick="navAdmin('requests')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-handshake w-6 text-secondary"></i> Onboarding <span class="badge badge-error badge-sm ml-auto" id="badge-requests">0</span></a></li>
+             <li><a id="anav-payouts" onclick="navAdmin('payouts')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-user-graduate w-6 text-accentGold"></i> Experts</a></li>
+             <li><a id="anav-users" onclick="navAdmin('users')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-users w-6 text-info"></i> Customers</a></li>
+             
+             <li class="menu-title opacity-40 uppercase text-[10px] font-black tracking-widest mt-8">Financial Hub</li>
+             <li><a id="anav-history" onclick="navAdmin('history')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-scroll w-6"></i> Transactions</a></li>
+             <li><a id="anav-referrals" onclick="navAdmin('referrals')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-sack-dollar w-6 text-success"></i> Payouts Requests</a></li>
+             <li><a id="anav-slabs" onclick="navAdmin('slabs')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-percent w-6"></i> Commissions</a></li>
+             
+             <li class="menu-title opacity-40 uppercase text-[10px] font-black tracking-widest mt-8">Engagement Tools</li>
+             <li><a id="anav-broadcast" onclick="navAdmin('broadcast')" class="py-3 px-4 rounded-xl font-bold text-error"><i class="fas fa-bullhorn w-6"></i> Push Broadcast</a></li>
+             <li><a id="anav-slider" onclick="navAdmin('slider')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-images w-6"></i> App Banners</a></li>
+             <li><a id="anav-academy" onclick="navAdmin('academy')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-play-circle w-6"></i> Video Academy</a></li>
+             
+             <li class="menu-title opacity-40 uppercase text-[10px] font-black tracking-widest mt-8">Logistics & Security</li>
+             <li><a id="anav-logs" onclick="navAdmin('logs')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-terminal w-6"></i> Engine Logs</a></li>
+             <li><a id="anav-notifications" onclick="navAdmin('notifications')" class="py-3 px-4 rounded-xl font-bold"><i class="fas fa-bell w-6"></i> System Alerts</a></li>
+          </ul>
+
+          <div class="mt-auto p-4 bg-base-200 rounded-2xl border border-base-300 absolute bottom-4 left-4 right-4">
+             <button onclick="clearSession()" class="btn btn-error btn-block btn-sm shadow-xl border-none"><i class="fas fa-power-off"></i> Administrative Exit</button>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Content Area (Scrollable) -->
-    <div class="admin-content-area">
 
-      <!-- Tab 1: Dashboard (Home) -->
-
-      <div id="admin-sect-home" class="admin-tab-section active">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-          <h2 class="dashboard-title">
-            <i class="fas fa-chart-line"></i> Dashboard Overview
-          </h2>
-          <div class="date-selector">
-            <span class="date-text">Today</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-        </div>
-
-        <!-- Stats Cards Grid -->
-        <div class="stats-grid">
-          <!-- Total Revenue Card -->
-          <div class="stat-card revenue-card">
-            <div class="card-header">
-              <div class="card-icon revenue-icon">
-                <i class="fas fa-rupee-sign"></i>
+    <!-- Admin Edit User Modal (Modern DaisyUI) -->
+    <dialog id="admin_edit_modal_v2" class="modal">
+      <div class="modal-box max-w-sm rounded-[2rem] p-8 shadow-2xl">
+        <h3 class="font-black text-2xl mb-4 text-center">Modify Identity</h3>
+        <input type="hidden" id="adminEditUserId">
+        <div class="flex flex-col items-center gap-4 mb-6">
+           <div class="avatar shadow-2xl">
+              <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden bg-base-300">
+                 <img id="adminEditAvatar" src="https://ui-avatars.com/api/?name=User" />
               </div>
-              <div class="trend-indicator positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>12%</span>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="stat-label">Total Revenue</div>
-              <div id="quickRev" class="stat-value">₹0</div>
-              <div class="stat-subtext">
-                <i class="fas fa-calendar-alt"></i>
-                <span>This month</span>
-              </div>
-            </div>
-            <div class="card-wave"></div>
-          </div>
-
-          <!-- Net Profit Card -->
-          <div class="stat-card profit-card">
-            <div class="card-header">
-              <div class="card-icon profit-icon">
-                <i class="fas fa-chart-line"></i>
-              </div>
-              <div class="trend-indicator positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>8%</span>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="stat-label">Net Profit</div>
-              <div id="quickProfit" class="stat-value">₹0</div>
-              <div class="stat-subtext">
-                <i class="fas fa-percentage"></i>
-                <span>After expenses</span>
-              </div>
-            </div>
-            <div class="card-wave"></div>
-          </div>
-
-          <!-- Astro Payout Card -->
-          <div class="stat-card payout-card">
-            <div class="card-header">
-              <div class="card-icon payout-icon">
-                <i class="fas fa-wallet"></i>
-              </div>
-              <div class="trend-indicator negative">
-                <i class="fas fa-arrow-down"></i>
-                <span>3%</span>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="stat-label">Astro Payout</div>
-              <div id="quickPayout" class="stat-value">₹0</div>
-              <div class="stat-subtext">
-                <i class="fas fa-users"></i>
-                <span>To astrologers</span>
-              </div>
-            </div>
-            <div class="card-wave"></div>
-          </div>
-
-          <!-- Activity Card -->
-          <div class="stat-card activity-card">
-            <div class="card-header">
-              <div class="card-icon activity-icon">
-                <i class="fas fa-clock"></i>
-              </div>
-              <div class="trend-indicator positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>15%</span>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="stat-label">Mins Billed</div>
-              <div id="quickMins" class="stat-value">0</div>
-              <div class="stat-subtext">
-                <i class="fas fa-hourglass-half"></i>
-                <span>Total minutes</span>
-              </div>
-            </div>
-            <div class="card-wave"></div>
-          </div>
+           </div>
+           <input type="file" id="adminFileAvatar" class="hidden" onchange="uploadAvatar(this, true)">
+           <button class="btn btn-xs btn-outline btn-primary font-bold" onclick="document.getElementById('adminFileAvatar').click()">REPLACE PHOTO</button>
         </div>
 
-        <!-- Chart Section -->
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3>Revenue Overview</h3>
-            <div class="chart-legend">
-              <span class="legend-item">
-                <span class="legend-dot revenue-dot"></span>
-                Revenue
-              </span>
-              <span class="legend-item">
-                <span class="legend-dot profit-dot"></span>
-                Profit
-              </span>
+        <div class="form-control w-full mb-4">
+           <label class="label"><span class="label-text font-bold opacity-50 uppercase tracking-widest text-[10px]">Display Name</span></label>
+           <input type="text" id="adminEditName" class="input input-bordered w-full font-bold bg-base-200 border-none shadow-inner" />
+        </div>
+
+        <div id="adminEditAstroFields" class="hidden space-y-4 pt-4 border-t border-base-200 mt-4">
+            <div class="form-control w-full">
+               <label class="label"><span class="label-text font-bold text-secondary uppercase tracking-widest text-[10px]">Call Rate (₹/Min)</span></label>
+               <input type="number" id="adminEditPrice" class="input input-secondary w-full font-black text-xl bg-base-200 border-none shadow-inner" />
             </div>
-          </div>
-          <div class="chart-placeholder">
-            <canvas id="revenueChart"></canvas>
-            <div class="no-data">
-              <i class="fas fa-chart-bar"></i>
-              <p>Chart data will appear here</p>
+            <div class="form-control">
+               <label class="label cursor-pointer justify-start gap-4 p-0">
+                  <input type="checkbox" id="adminEditVerified" class="checkbox checkbox-primary" />
+                  <span class="label-text font-bold opacity-60">Verified Tick Access</span> 
+               </label>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <style>
-        /* Base Styles */
-        .dashboard-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 32px;
-          padding: 0;
-          width: 100%;
-        }
-
-        .dashboard-title {
-          margin: 0;
-          color: var(--text-main);
-          font-size: 1.8rem;
-          font-weight: 800;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          font-family: var(--font-heading);
-        }
-
-        .dashboard-title i {
-          color: var(--accent-gold);
-        }
-
-        .date-selector {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 10px 20px;
-          background: var(--glass);
-          border: 1px solid var(--glass-border);
-          border-radius: 30px;
-          cursor: pointer;
-          font-size: 0.95rem;
-          color: var(--text-main);
-          transition: var(--transition);
-        }
-
-        .date-selector:hover {
-          background: var(--glass-heavy);
-          border-color: var(--accent-gold);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 20px;
-          padding: 0;
-          margin-bottom: 30px;
-          width: 100%;
-        }
-
-        /* Stat Cards */
-        .stat-card {
-          background: var(--secondary-bg);
-          border-radius: var(--radius-xl);
-          padding: 28px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          position: relative;
-          overflow: hidden;
-          transition: var(--transition);
-          border: 1px solid var(--glass-border);
-          box-shadow: var(--box-shadow);
-        }
-
-        .stat-card:hover {
-          transform: translateY(-8px);
-          border-color: var(--accent-gold);
-          background: var(--glass-heavy);
-        }
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 20px;
-        }
-
-        .card-icon {
-          width: 56px;
-          height: 56px;
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-        }
-
-        .revenue-icon {
-          background: linear-gradient(135deg, #10B981, #059669);
-          color: white;
-        }
-
-        .profit-icon {
-          background: linear-gradient(135deg, #8B5CF6, #7C3AED);
-          color: white;
-        }
-
-        .payout-icon {
-          background: linear-gradient(135deg, #F59E0B, #D97706);
-          color: white;
-        }
-
-        .activity-icon {
-          background: linear-gradient(135deg, #3B82F6, #2563EB);
-          color: white;
-        }
-
-        .trend-indicator {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding: 4px 12px;
-          border-radius: 12px;
-          font-size: 0.85rem;
-          font-weight: 600;
-        }
-
-        .trend-indicator.positive {
-          background: #D1FAE5;
-          color: #059669;
-        }
-
-        .trend-indicator.negative {
-          background: #FEE2E2;
-          color: #DC2626;
-        }
-
-        /* Card Content */
-        .card-content {
-          position: relative;
-          z-index: 2;
-        }
-
-        .stat-label {
-          font-size: 0.9rem;
-          color: #6B7280;
-          margin-bottom: 8px;
-          font-weight: 500;
-        }
-
-        .stat-value {
-          font-size: 2.2rem;
-          font-weight: 700;
-          color: #111827;
-          margin-bottom: 12px;
-          line-height: 1;
-        }
-
-        .stat-subtext {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.85rem;
-          color: #9CA3AF;
-        }
-
-        .stat-subtext i {
-          font-size: 0.8rem;
-        }
-
-        /* Card Wave Decoration */
-        .card-wave {
-          position: absolute;
-          bottom: -10px;
-          right: -10px;
-          width: 120px;
-          height: 120px;
-          background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.1) 100%);
-          border-radius: 50%;
-          z-index: 1;
-        }
-
-        /* Chart Section */
-        .chart-container {
-          background: #fff;
-          border-radius: 20px;
-          padding: 24px;
-          margin: 0;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-          width: 100%;
-        }
-
-        .chart-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .chart-header h3 {
-          margin: 0;
-          color: #1F2937;
-          font-size: 1.2rem;
-          font-weight: 600;
-        }
-
-        .chart-legend {
-          display: flex;
-          gap: 20px;
-        }
-
-        .legend-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.9rem;
-          color: #6B7280;
-        }
-
-        .legend-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-        }
-
-        .revenue-dot {
-          background: linear-gradient(135deg, #10B981, #059669);
-        }
-
-        .profit-dot {
-          background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-        }
-
-        .chart-placeholder {
-          height: 200px;
-          background: #F9FAFB;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-        }
-
-        .no-data {
-          text-align: center;
-          color: #9CA3AF;
-        }
-
-        .no-data i {
-          font-size: 3rem;
-          margin-bottom: 16px;
-          opacity: 0.3;
-        }
-
-        .no-data p {
-          margin: 0;
-          font-size: 1rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-          .dashboard-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-          }
-
-          .date-selector {
-            align-self: flex-start;
-          }
-
-          .stats-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-          }
-
-          .stat-card {
-            padding: 20px;
-          }
-
-          .stat-value {
-            font-size: 1.8rem;
-          }
-
-          .card-icon {
-            width: 48px;
-            height: 48px;
-            font-size: 1.2rem;
-          }
-
-          .chart-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-          }
-
-          .chart-legend {
-            width: 100%;
-            justify-content: space-between;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .dashboard-title {
-            font-size: 1.3rem;
-          }
-
-          .stat-card {
-            padding: 16px;
-          }
-
-          .stat-value {
-            font-size: 1.6rem;
-          }
-
-          .chart-container {
-            padding: 16px;
-          }
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .stat-card {
-          animation: fadeIn 0.5s ease-out;
-        }
-
-        .stat-card:nth-child(2) {
-          animation-delay: 0.1s;
-        }
-
-        .stat-card:nth-child(3) {
-          animation-delay: 0.2s;
-        }
-
-        .stat-card:nth-child(4) {
-          animation-delay: 0.3s;
-        }
-      </style>
-
-      <!-- Add Chart.js for future chart implementation -->
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-      <script>
-        // Initialize placeholder chart
-        document.addEventListener('DOMContentLoaded', function () {
-          const ctx = document.getElementById('revenueChart')?.getContext('2d');
-          if (ctx) {
-            new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                  label: 'Revenue',
-                  data: [],
-                  borderColor: '#5c0874',
-                  backgroundColor: 'rgba(92, 8, 116, 0.1)',
-                  borderWidth: 2,
-                  tension: 0.4,
-                  fill: true
-                }, {
-                  label: 'Profit',
-                  data: [],
-                  borderColor: '#F59E0B',
-                  backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                  borderWidth: 2,
-                  tension: 0.4,
-                  fill: true
-                }]
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                  },
-                  x: {
-                    grid: {
-                      display: false
-                    }
-                  }
-                }
-              }
-            });
-          }
-        });
-      </script>
-
-      <!-- Tab 2: Earnings (Full Ledger) -->
-      <div id="admin-sect-earnings" class="admin-tab-section">
-        <h2
-          style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-chart-pie" style="color:#1e3a8a;"></i> Financial Ledger
-        </h2>
-        <div
-          style="background:white; border-radius:16px; border:1px solid #e5e7eb; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
-          <div style="overflow-x:auto;">
-            <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-              <thead
-                style="background:linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-bottom:2px solid #d1d5db;">
-                <tr>
-                  <th style="padding:16px 15px; text-align:left; color:#374151; font-weight:700; font-size:0.85rem;">
-                    Transaction Type</th>
-                  <th style="padding:16px 15px; text-align:center; color:#374151; font-weight:700; font-size:0.85rem;">
-                    Count
-                  </th>
-                  <th style="padding:16px 15px; text-align:right; color:#374151; font-weight:700; font-size:0.85rem;">
-                    Revenue</th>
-                </tr>
-              </thead>
-              <tbody id="fullLedgerBody">
-                <!-- Populated via JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab 3: Payouts (Send Money) -->
-      <div id="admin-sect-payouts" class="admin-tab-section">
-        <h2
-          style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-paper-plane" style="color:#1e3a8a;"></i> Astrologer Payouts
-        </h2>
-
-        <!-- Pending Withdrawals -->
-        <div id="adminWithdrawalsSection" style="margin-bottom: 20px; display: none;">
-          <div
-            style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border:1px solid #fcd34d; border-radius:12px; padding:15px; margin-bottom:15px;">
-            <div style="font-weight:700; color:#92400e; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
-              <i class="fas fa-exclamation-circle"></i> Pending Withdrawal Requests
+            <div class="form-control w-full">
+               <label class="label"><span class="label-text font-bold opacity-50 uppercase tracking-widest text-[10px]">Expert Certification</span></label>
+               <select id="adminEditDocStatus" class="select select-bordered w-full font-bold bg-base-200 border-none shadow-inner">
+                  <option value="none">Not Certified</option>
+                  <option value="processing">In Verification</option>
+                  <option value="verified">Verified Astro</option>
+               </select>
             </div>
-            <div id="adminWithdrawalsList" style="display:flex; flex-direction:column; gap:10px;"></div>
-          </div>
         </div>
 
-        <!-- List of Astrologers -->
-        <div style="margin-bottom: 15px;">
-          <div style="position: relative;">
-            <i class="fas fa-search"
-              style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-            <input type="text" id="adminAstroSearch" oninput="searchAdminAstros()"
-              placeholder="Search astrologer by name or phone..."
-              style="width: 100%; padding: 10px 10px 10px 35px; border-radius: 10px; border: 1px solid #e5e7eb; font-size: 0.9rem; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-          </div>
-        </div>
-        <div id="adminAstroList" style="display:flex; flex-direction:column; gap:12px;">
-          <!-- Populated via JS -->
+        <div class="modal-action grid grid-cols-2 gap-4 mt-8">
+          <button class="btn btn-ghost font-bold rounded-xl" onclick="document.getElementById('admin_edit_modal_v2').close()">CANCEL</button>
+          <button class="btn btn-primary font-black rounded-xl" onclick="saveAdminEditUser()">APPLY SYNC</button>
         </div>
       </div>
-
-      <!-- Tab 4: Users (Customer List) -->
-      <div id="admin-sect-users" class="admin-tab-section">
-        <h2
-          style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-users" style="color:#1e3a8a;"></i> Customer List
-        </h2>
-        <div style="margin-bottom: 15px; position: sticky; top: 0; background: #f9fafb; z-index: 10; padding: 5px 0;">
-          <div style="position: relative;">
-            <i class="fas fa-search"
-              style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-            <input type="text" id="adminUserSearch" oninput="searchAdminUsers()"
-              placeholder="Search by name, phone or ID..."
-              style="width: 100%; padding: 10px 10px 10px 35px; border-radius: 10px; border: 1px solid #e5e7eb; font-size: 0.9rem; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-          </div>
-        </div>
-        <div id="adminClientList" style="display:flex; flex-direction:column; gap:12px;">
-          <!-- Populated via JS -->
-        </div>
-      </div>
-
-      <!-- Tab 5: Academy Management -->
-      <div id="admin-sect-academy" class="admin-tab-section">
-        <h2
-          style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-graduation-cap" style="color:#1e3a8a;"></i> Astro Academy
-        </h2>
-
-        <div
-          style="background:white; padding:15px; border-radius:12px; margin-bottom:15px; border:1px solid #eee; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
-          <h4 style="margin:0 0 10px 0; font-size:0.9rem;">Add New YouTube Video</h4>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <input type="text" id="academyTitle" class="app-input" placeholder="Title (e.g. Daily Horoscope Tips)"
-              style="padding:10px;">
-            <input type="text" id="academyUrl" class="app-input" placeholder="Full YouTube URL" style="padding:10px;">
-            <input type="text" id="academyCategory" class="app-input" placeholder="Category (Basics, Advanced...)"
-              style="padding:10px;">
-            <button class="cosmic-btn" style="margin-top:5px; padding:10px;" onclick="addAcademyVideo()">Add
-              Video</button>
-          </div>
-        </div>
-
-        <div id="adminAcademyList" style="display:flex; flex-direction:column; gap:10px;">
-          <div style="text-align:center; padding:20px; color:#6b7280;">Loading videos...</div>
-        </div>
-      </div>
-
-      <!-- Tab 5: Slider Management -->
-      <div id="admin-sect-slider" class="admin-tab-section hidden">
-        <div class="dashboard-header">
-          <h2 class="dashboard-title">
-            <i class="fas fa-images"></i> App Slider
-          </h2>
-        </div>
-
-        <div class="admin-card">
-          <div class="admin-user-header">
-            <span style="font-weight:bold; color:#1f2937;">Manage Banners</span>
-            <button onclick="fetchAdminBanners()" style="background:none; border:none; color:#3b82f6; cursor:pointer;">
-              <i class="fas fa-sync-alt"></i> Refresh
-            </button>
-          </div>
-
-          <!-- Add New Banner Form -->
-          <div
-            style="background:#f9fafb; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #e5e7eb;">
-            <div style="font-weight:600; margin-bottom:10px; color:#374151;">Add New Banner</div>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              <input type="text" id="bannerTitle" class="app-input" placeholder="Title (e.g. Premium Consultation)"
-                style="padding:10px;">
-              <input type="text" id="bannerSubtitle" class="app-input" placeholder="Subtitle (e.g. 50% Off Today)"
-                style="padding:10px;">
-              <input type="text" id="bannerImageUrl" class="app-input" placeholder="Image URL (https://...)"
-                style="padding:10px;">
-              <div style="display:flex; gap:10px;">
-                <input type="text" id="bannerCta" class="app-input" placeholder="CTA Button Text"
-                  style="padding:10px; flex:1;">
-                <input type="number" id="bannerOrder" class="app-input" placeholder="Order (0,1,2...)"
-                  style="padding:10px; width:80px;">
-              </div>
-              <button class="cosmic-btn" style="margin-top:5px; padding:10px;" onclick="addBanner()">
-                <i class="fas fa-plus-circle"></i> Add Banner
-              </button>
-            </div>
-          </div>
-
-          <!-- Banner List -->
-          <div id="adminBannerList" style="display:flex; flex-direction:column; gap:10px;">
-            <div style="text-align:center; padding:20px; color:#6b7280;">Loading banners...</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab: Referral Withdrawals -->
-      <div id="admin-sect-referrals" class="admin-tab-section">
-        <div class="dashboard-header">
-          <h2 class="dashboard-title">
-            <i class="fas fa-hand-holding-usd"></i> Referral Withdrawals
-          </h2>
-        </div>
-        <div id="adminReferralWithdrawalsList" style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
-          <!-- Items auto-injected -->
-        </div>
-      </div>
-
-      <!-- Tab: Astrologer Requests (Approve/Reject) -->
-      <div id="admin-sect-requests" class="admin-tab-section">
-        <div class="dashboard-header">
-          <h2 class="dashboard-title" style="display:flex; align-items:center; gap:8px;">
-            <i class="fas fa-user-plus" style="color:#7C3AED;"></i> Astrologer Requests
-          </h2>
-        </div>
-        <div id="adminAstroRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-          <div style="text-align:center; padding:30px; color:#9ca3af;">
-            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
-            Loading requests...
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin Footer (Static) -->
-      <div class="admin-footer">
-        <div class="admin-footer-content">
-          <div class="admin-footer-section">
-            <div class="admin-footer-item">
-              <i class="fas fa-chart-bar"></i>
-              <span>Total Users: <strong id="footerTotalUsers">...</strong></span>
-            </div>
-            <div class="admin-footer-item">
-              <i class="fas fa-wallet"></i>
-              <span>Platform Revenue: <strong id="footerRevenue">₹0</strong></span>
-            </div>
-            <div class="admin-footer-item">
-              <i class="fas fa-hourglass-half"></i>
-              <span>Active Sessions: <strong id="footerSessions">0</strong></span>
-            </div>
-          </div>
-          <div class="admin-footer-divider"></div>
-          <div class="admin-footer-section">
-            <div class="admin-footer-item">
-              <i class="fas fa-server"></i>
-              <span>System Status: <strong style="color: #86efac;">Operational</strong></span>
-            </div>
-            <div class="admin-footer-item">
-              <i class="fas fa-clock"></i>
-              <span id="footerTime">--:--</span>
-            </div>
-          </div>
-          <div class="admin-footer-bottom">
-            <div>AstroFiveStar Admin Panel v1.0</div>
-            <div style="margin-top: 4px;">© 2025 All Rights Reserved</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Bottom Nav -->
-    <div class="admin-nav">
-      <div class="admin-nav-item active" id="anav-home" onclick="navAdmin('home')">
-        <i class="fas fa-home"></i>
-        <span>Dash</span>
-      </div>
-      <div class="admin-nav-item" id="anav-earnings" onclick="navAdmin('earnings')">
-        <i class="fas fa-chart-pie"></i>
-        <span>Earnings</span>
-      </div>
-      <div class="admin-nav-item" id="anav-payouts" onclick="navAdmin('payouts')">
-        <i class="fas fa-user-astronaut"></i>
-        <span>Astrologers</span>
-      </div>
-      <div class="admin-nav-item" id="anav-referrals" onclick="navAdmin('referrals')" style="position:relative;">
-        <i class="fas fa-hand-holding-usd"></i>
-        <span>Referrals</span>
-        <div id="badge-referrals" class="hidden"
-          style="position:absolute; top:2px; right:15px; background:red; color:white; border-radius:50%; min-width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; padding:2px; font-weight:bold;">
-          0</div>
-      </div>
-      <div class="admin-nav-item" id="anav-users" onclick="navAdmin('users')">
-        <i class="fas fa-users"></i>
-        <span>Users</span>
-      </div>
-      <div class="admin-nav-item" id="anav-academy" onclick="navAdmin('academy')">
-        <i class="fas fa-graduation-cap"></i>
-        <span>Academy</span>
-      </div>
-      <div class="admin-nav-item" id="anav-slider" onclick="navAdmin('slider')">
-        <i class="fas fa-images"></i>
-        <span>Slider</span>
-      </div>
-      <div class="admin-nav-item" id="anav-requests" onclick="navAdmin('requests')" style="position:relative;">
-        <i class="fas fa-user-plus"></i>
-        <span>Requests</span>
-        <div id="badge-requests" class="hidden"
-          style="position:absolute; top:2px; right:8px; background:#ef4444; color:white; border-radius:50%; min-width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; padding:2px; font-weight:bold;">
-          0</div>
-      </div>
-    </div>
+    </dialog>
   </div>
+
+  <!-- Re-implementing sections that were lost in previous chunk if any, but properly styled -->
+  <!-- Tab: Earnings (Full Ledger Table) -->
+  <!-- (Already moved to Home for now, but keeping sections defined) -->
+  
+  <style>
+    .admin-tab-section { display: none; }
+    .admin-tab-section.active { display: block !important; }
+    .menu li a.active { background-color: oklch(var(--p)) !important; color: white !important; }
+    #screen-admin .card { border-radius: 1.5rem; transition: all 0.3s ease; }
+    #screen-admin .card:hover { transform: translateY(-3px); }
+  </style>
+</div>
 
 
 
@@ -8144,8 +7586,8 @@
     let adminUsersCache = [];
 
     window.navAdmin = function (tab) {
-      // 1. Update Buttons
-      document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+      // 1. Update Menu Active States
+      document.querySelectorAll('.drawer-side .menu a').forEach(el => el.classList.remove('active'));
       const btn = document.getElementById('anav-' + tab);
       if (btn) btn.classList.add('active');
 
@@ -8154,20 +7596,24 @@
       const sect = document.getElementById('admin-sect-' + tab);
       if (sect) sect.classList.add('active');
 
-      // 3. Logic dependent on tab
+      // 3. Auto-close drawer on mobile
+      const drawerToggle = document.getElementById('admin-drawer');
+      if (drawerToggle && drawerToggle.checked) {
+        drawerToggle.checked = false;
+      }
+
+      // 4. Logic dependent on tab
       if (tab === 'home' || tab === 'earnings') {
-        loadAdminLedgerStats(); // Refresh Stats
+        loadAdminLedgerStats(); 
       } else if (tab === 'payouts') {
         const searchInput = document.getElementById('adminAstroSearch');
         if (searchInput) searchInput.value = '';
-        // Filter Astrologers from Cache
         const astros = adminUsersCache.filter(u => u.role === 'astrologer');
         renderAdminAstros(astros);
-        loadAdminWithdrawals(); // Phase 15
+        loadAdminWithdrawals();
       } else if (tab === 'users') {
         const searchInput = document.getElementById('adminUserSearch');
         if (searchInput) searchInput.value = '';
-        // Show all users (Clients & Astrologers) in User Management list
         const allUsers = adminUsersCache.filter(u => u.role !== 'superadmin');
         renderAdminClients(allUsers);
       } else if (tab === 'academy') {
@@ -8178,6 +7624,18 @@
         loadAdminReferralWithdrawals();
       } else if (tab === 'requests') {
         loadAstrologerRequests();
+      } else if (tab === 'history') {
+        loadAdminHistory();
+      } else if (tab === 'photo-approvals') {
+        loadAdminPhotoApprovals();
+      } else if (tab === 'slabs') {
+        loadSlabSettings();
+      } else if (tab === 'reviews') {
+        loadAdminReviews();
+      } else if (tab === 'logs') {
+        loadAdminLogs();
+      } else if (tab === 'notifications') {
+        loadAdminNotifications();
       }
     };
 
@@ -8216,7 +7674,7 @@
     }
 
     function loadAdminDash(user) {
-      enterApp(); // Ensure mobile-view is displayed
+      enterApp(); 
       hideAllScreens();
       sAdmin.classList.remove('hidden');
 
@@ -8224,20 +7682,18 @@
       const globalFooter = document.querySelector('.doc-bottom-nav');
       if (globalFooter) globalFooter.style.display = 'none';
 
-      const anav = document.querySelector('.admin-nav');
-      if (anav) anav.style.display = 'flex';
-      const afoot = document.querySelector('.admin-footer');
-      if (afoot) afoot.classList.add('show');
+      // Ensure admin drawer is closed initially
+      const drawerToggle = document.getElementById('admin-drawer');
+      if (drawerToggle) drawerToggle.checked = false;
 
-      navAdmin('home'); // Default to home tab
-      loadAdminWithdrawals(); // Refresh badges/payouts
+      navAdmin('home'); 
+      loadAdminWithdrawals();
 
       // Fetch initial data
       socket.emit('get-all-users', (res) => {
         if (res.ok) {
           adminUsersCache = res.users;
-          // Refresh current tab if it depends on user list
-          const activeTabEl = document.querySelector('.admin-nav-item.active');
+          const activeTabEl = document.querySelector('.drawer-side .menu a.active');
           if (activeTabEl) {
             const tabId = activeTabEl.id.replace('anav-', '');
             if (tabId === 'users' || tabId === 'payouts') {
@@ -8250,7 +7706,9 @@
 
       // Update footer time
       updateAdminFooterTime();
-      setInterval(updateAdminFooterTime, 60000);
+      if (!window._adminTimeInterval) {
+          window._adminTimeInterval = setInterval(updateAdminFooterTime, 60000);
+      }
     }
 
     function updateAdminFooterTime() {
@@ -8417,64 +7875,310 @@
         else alert('Failed to delete');
       } catch (e) { alert('Network Error'); }
     }
-
     function loadAdminLedgerStats() {
       socket.emit('admin-get-ledger-stats', {}, (res) => {
         if (res.ok) {
-          setText('quickRev', '₹' + (res.stats.totalRevenue || 0));
-          setText('quickProfit', '₹' + (res.stats.adminProfit || 0));
-          setText('quickPayout', '₹' + (res.stats.astroPayout || 0));
-          setText('quickMins', Math.round((res.stats.totalDuration || 0) / 60));
+          // Main Stats Grid
+          setText('u-quickRev', '₹' + (res.stats.totalRevenue || 0));
+          setText('u-quickProfit', '₹' + (res.stats.adminProfit || 0));
+          setText('u-quickPayout', '₹' + (res.stats.astroPayout || 0));
+          setText('u-quickMins', Math.round((res.stats.totalDuration || 0) / 60));
 
+          // Global/Footer Stats
           setText('footerTotalUsers', res.stats.totalUsers || 0);
           setText('footerRevenue', '₹' + (res.stats.totalRevenue || 0));
           setText('footerSessions', res.stats.activeSessions || 0);
 
-          // Update Chart if exists
+          // Update Chart
           const chartInstance = Chart.getChart("revenueChart");
           if (chartInstance) {
-            // Simple mock historical data for visual effect, anchored to real total
             const total = res.stats.totalRevenue || 0;
             const profit = res.stats.adminProfit || 0;
-
-            // Distribute total over last 6 months (mock distribution)
             const spread = [0.1, 0.15, 0.1, 0.2, 0.25, 0.2];
-            const revData = spread.map(x => Math.round(x * total));
-            const profData = spread.map(x => Math.round(x * profit));
-
-            chartInstance.data.datasets[0].data = revData;
-            chartInstance.data.datasets[1].data = profData;
+            chartInstance.data.datasets[0].data = spread.map(x => Math.round(x * total));
+            chartInstance.data.datasets[1].data = spread.map(x => Math.round(x * profit));
             chartInstance.update();
           }
 
           if (res.fullLedger) {
             const tbody = document.getElementById('fullLedgerBody');
-            tbody.innerHTML = '';
-            // Aggregate by type
-            const agg = {};
-            res.fullLedger.forEach(l => {
-              if (!agg[l.type]) agg[l.type] = { count: 0, amount: 0 };
-              agg[l.type].count++;
-              agg[l.type].amount += (l.amount || 0);
-            });
-
-            Object.keys(agg).forEach(k => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                  <td style="padding:16px 15px; border-bottom:1px solid #e5e7eb;">${k.toUpperCase().replace('_', ' ')}</td>
-                  <td style="padding:16px 15px; text-align:center; border-bottom:1px solid #e5e7eb;">${agg[k].count}</td>
-                  <td style="padding:16px 15px; text-align:right; font-weight:700; color:#059669; border-bottom:1px solid #e5e7eb;">₹${agg[k].amount}</td>
-                `;
-              tbody.appendChild(row);
-            });
-          } else {
-            const tbody = document.getElementById('fullLedgerBody');
             if (tbody) {
-              tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#999;">No Data</td></tr>';
+               renderLedgerTable(res.fullLedger);
             }
           }
         }
       });
+    }
+
+    function renderLedgerTable(ledger) {
+        const tbody = document.getElementById('fullLedgerBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const agg = {};
+        ledger.forEach(l => {
+            const type = l.type || 'unknown';
+            if (!agg[type]) agg[type] = { count: 0, amount: 0 };
+            agg[type].count++;
+            agg[type].amount += (l.amount || 0);
+        });
+
+        Object.keys(agg).forEach(k => {
+            const row = document.createElement('tr');
+            row.className = "hover:bg-base-200 transition-colors";
+            row.innerHTML = `
+                <td class="font-bold opacity-70">${k.toUpperCase().replace(/_/g, ' ')}</td>
+                <td class="text-center font-bold">${agg[k].count}</td>
+                <td class="text-right text-success font-black">₹${agg[k].amount}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+    // --- History / Ledger ---
+    async function loadAdminHistory() {
+      const list = document.getElementById('adminHistoryList');
+      const loader = document.getElementById('historyLoading');
+      if (!list) return;
+      loader.classList.remove('hidden');
+      list.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/admin/billing-history');
+        const data = await res.json();
+        loader.classList.add('hidden');
+        if (data.ok && data.history) {
+          renderAdminHistory(data.history);
+        } else {
+          list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">Failed to load history</td></tr>';
+        }
+      } catch (err) {
+        console.error('History Error:', err);
+        loader.classList.add('hidden');
+        list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">Connection error</td></tr>';
+      }
+    }
+
+    function renderAdminHistory(history) {
+      const list = document.getElementById('adminHistoryList');
+      if (!list) return;
+      
+      if (history.length === 0) {
+        list.innerHTML = '<tr><td colspan="7" class="text-center py-20 opacity-40 font-bold uppercase tracking-widest">TRANSACTION LOG EMPTY</td></tr>';
+        return;
+      }
+
+      list.innerHTML = history.map(h => {
+        const date = new Date(h.createdAt).toLocaleString('en-IN', {
+          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+
+        let reasonClass = 'badge-ghost';
+        let reasonLabel = h.reason || 'N/A';
+        if (h.reason === 'first_60') { reasonLabel = 'First Min'; reasonClass = 'badge-error'; }
+        else if (h.reason?.startsWith('slab_')) { reasonLabel = 'Slab ' + h.reason.split('_')[1]; reasonClass = 'badge-success'; }
+
+        return `
+          <tr class="hover:bg-base-200 transition-colors">
+            <td class="text-[10px] font-bold opacity-50">${date}</td>
+            <td>
+              <div class="font-black text-sm text-primary">${h.clientName}</div>
+              <div class="text-[9px] opacity-40 font-bold tracking-tighter">${h.clientPhone}</div>
+            </td>
+            <td>
+              <div class="font-black text-sm text-secondary">${h.astroName}</div>
+              <div class="text-[9px] opacity-40 font-bold tracking-tighter">${h.astroPhone}</div>
+            </td>
+            <td class="font-black text-success">₹${h.chargedToClient}</td>
+            <td class="font-black text-info">₹${h.creditedToAstrologer}</td>
+            <td class="font-black text-error">₹${h.adminAmount}</td>
+            <td class="text-right">
+              <span class="badge ${reasonClass} badge-xs font-black uppercase text-[8px] tracking-tight">
+                ${reasonLabel}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // --- Photo Approvals ---
+    async function loadAdminPhotoApprovals() {
+      const container = document.getElementById('adminPhotoApprovalList');
+      if(!container) return;
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;">Loading photos...</div>';
+      try {
+        const res = await fetch('/api/admin/photo-approvals');
+        const data = await res.json();
+        if(data.ok) renderAdminPhotos(data.list);
+      } catch(e) { container.innerHTML = 'Error loading photos'; }
+    }
+
+    function renderAdminPhotos(list) {
+      const container = document.getElementById('adminPhotoApprovalList');
+      if(list.length === 0) {
+        container.innerHTML = '<div class="text-center py-20 opacity-40 font-bold uppercase tracking-widest text-xs col-span-full">Security Screening Clear — No Pending Photos</div>';
+        return;
+      }
+      container.innerHTML = list.map(u => `
+        <div class="card bg-base-100 shadow-xl border border-base-300 overflow-hidden group">
+          <figure class="relative aspect-square">
+            <img src="${u.pendingImage}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+                <div class="font-black uppercase tracking-widest text-xs">${u.name}</div>
+                <div class="text-[9px] opacity-70 font-bold uppercase">Identity Verification Pending</div>
+            </div>
+          </figure>
+          <div class="card-body p-3 flex-row gap-2">
+            <button class="btn btn-sm btn-success flex-1 font-black rounded-lg" onclick="processPhoto('${u.userId}', 'approved')">APPROVE</button>
+            <button class="btn btn-sm btn-outline btn-error flex-1 font-black rounded-lg" onclick="processPhoto('${u.userId}', 'rejected')">REJECT</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function processPhoto(userId, status) {
+      try {
+        const res = await fetch('/api/admin/photo/process', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({userId, status})
+        });
+        const data = await res.json();
+        if(data.ok) loadAdminPhotoApprovals();
+      } catch(e) { alert('Error processing photo'); }
+    }
+
+    // --- Commission Slabs ---
+    async function loadSlabSettings() {
+      const container = document.getElementById('slabSettingsContainer');
+      if(!container) return;
+      try {
+        const res = await fetch('/api/admin/slabs');
+        const data = await res.json();
+        if(data.ok) {
+          container.innerHTML = Object.keys(data.slabs).map(k => `
+            <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:600; text-transform:capitalize;">${k.replace('slab', 'Slab ')} (%)</span>
+              <input type="number" class="app-input slab-input" data-key="${k}" value="${data.slabs[k]}" style="width:80px; text-align:center;">
+            </div>
+          `).join('');
+        }
+      } catch(e) { container.innerHTML = 'Error loading slabs'; }
+    }
+
+    async function saveSlabSettings() {
+      const inputs = document.querySelectorAll('.slab-input');
+      const slabs = {};
+      inputs.forEach(i => slabs[i.dataset.key] = parseInt(i.value));
+      try {
+        const res = await fetch('/api/admin/slabs', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({slabs})
+        });
+        const data = await res.json();
+        if(data.ok) alert('Slab settings updated!');
+      } catch(e) { alert('Update failed'); }
+    }
+
+    // --- Reviews ---
+    async function loadAdminReviews() {
+      const list = document.getElementById('adminReviewsList');
+      if(!list) return;
+      try {
+        const res = await fetch('/api/admin/reviews');
+        const data = await res.json();
+        if(data.ok) renderAdminReviews(data.reviews);
+      } catch(e) { list.innerHTML = 'Error loading reviews'; }
+    }
+
+    function renderAdminReviews(reviews) {
+      const list = document.getElementById('adminReviewsList');
+      if(reviews.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#9ca3af;">No reviews yet</div>'; return; }
+      list.innerHTML = reviews.map(r => `
+        <div class="admin-card" style="padding:15px; display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="color:var(--accent-gold); margin-bottom:5px;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+            <p style="margin:0; font-size:0.9rem; color:#4b5563;">${r.comment}</p>
+            <div style="font-size:0.75rem; color:#9ca3af; margin-top:10px;">Astro: ${r.astrologerId} | Client: ${r.clientId}</div>
+          </div>
+          <button class="btn-delete" style="padding:6px; border-radius:50%;" onclick="deleteReview('${r._id}')"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteReview(id) {
+      if(!confirm('Delete this review?')) return;
+      try {
+        const res = await fetch('/api/admin/reviews/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if(data.ok) loadAdminReviews();
+      } catch(e) { alert('Failed to delete'); }
+    }
+
+    // --- System Logs ---
+    async function loadAdminLogs() {
+      const term = document.getElementById('adminLogsTerminal');
+      if(!term) return;
+      try {
+        const res = await fetch('/api/admin/system-logs');
+        const data = await res.json();
+        if(data.ok) {
+          term.innerHTML = data.logs.map(l => {
+              let textClass = 'text-slate-300';
+              if(l.type === 'error') textClass = 'text-error font-bold';
+              if(l.type === 'critical') textClass = 'text-error font-black uppercase italic';
+              if(l.type === 'warn') textClass = 'text-warning font-bold';
+              const ts = new Date(l.timestamp).toLocaleTimeString();
+              return `<div class="mb-1 text-[10px] sm:text-xs font-mono"><span class="opacity-40">[${ts}]</span> <span class="bg-primary/20 text-primary-content px-1 rounded uppercase mr-2 font-black text-[9px]">${l.module}</span> <span class="${textClass}">${l.message}</span></div>`;
+          }).join('') || '<div class="text-slate-500 font-mono italic">Accessing Kernel — Logs Null</div>';
+          term.scrollTop = term.scrollHeight;
+        }
+      } catch(e) { term.innerHTML = 'CRITICAL ACCESS ERROR: NODE INTERFACE FAULT'; }
+    }
+
+    // --- System Alerts ---
+    async function loadAdminNotifications() {
+      const list = document.getElementById('adminNotificationsList');
+      if(!list) return;
+      try {
+        const res = await fetch('/api/admin/notifications');
+        const data = await res.json();
+        if(data.ok) renderAdminNotifications(data.notifications);
+      } catch(e) { list.innerHTML = 'Error loading alerts'; }
+    }
+
+    function renderAdminNotifications(notifs) {
+      const list = document.getElementById('adminNotificationsList');
+      if(!notifs || notifs.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#9ca3af;">No recent alerts.</div>'; return; }
+      list.innerHTML = notifs.map(n => `
+        <div class="admin-card" style="padding:12px; border-left:4px solid ${n.type === 'missed_call' ? '#ef4444' : '#3b82f6'}">
+          <div style="font-weight:600; font-size:0.9rem;">${n.title || n.text}</div>
+          <div style="font-size:0.8rem; color:#6b7280; margin-top:4px;">${new Date(n.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    async function sendBroadcastPush() {
+        const title = document.getElementById('bcTitle').value;
+        const body = document.getElementById('bcMessage').value;
+        if(!title || !body) return alert('Title and Message required');
+        
+        if(!confirm('THIS WILL SEND A PUSH NOTIFICATION TO ALL USERS. Continue?')) return;
+        
+        try {
+            const res = await fetch('/api/admin/broadcast', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({title, body})
+            });
+            const data = await res.json();
+            if(data.ok) {
+                alert('Broadcast successful! Sent to ' + data.count + ' users.');
+                document.getElementById('bcTitle').value = '';
+                document.getElementById('bcMessage').value = '';
+            }
+        } catch(e) { alert('Broadcast failed'); }
     }
 
     function formatReason(r) {
@@ -8490,33 +8194,29 @@
       if (el) el.innerHTML = val;
     }
 
-    // --- Admin Edit User Modal Logic ---
+    // --- Admin Edit User Modal Logic (V2) ---
     window.openAdminEditUser = (userId) => {
-      // Find user in local cache
       const u = adminUsersCache.find(x => x.userId === userId);
       if (!u) return alert('User not found in cache');
 
       document.getElementById('adminEditUserId').value = u.userId;
       document.getElementById('adminEditName').value = u.name;
-      document.getElementById('adminEditAvatar').src = u.image || `https://ui-avatars.com/api/?name=${u.name}&background=random`;
-      tempAvatarUrl = ''; // Reset for new edit session
+      document.getElementById('adminEditAvatar').src = u.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random`;
+      tempAvatarUrl = ''; 
 
       const astroFields = document.getElementById('adminEditAstroFields');
       if (u.role === 'astrologer') {
-        astroFields.style.display = 'block';
+        astroFields.classList.remove('hidden');
         document.getElementById('adminEditPrice').value = u.price || 20;
         document.getElementById('adminEditVerified').checked = u.isVerified || false;
-
-        // Handle Document Status
-        // If has documentStatus (new), use it. Else fallback to isDocumentVerified
         let docStatus = u.documentStatus || (u.isDocumentVerified ? 'verified' : 'none');
         document.getElementById('adminEditDocStatus').value = docStatus;
-
       } else {
-        astroFields.style.display = 'none';
+        astroFields.classList.add('hidden');
       }
 
-      document.getElementById('adminEditModal').classList.remove('hidden');
+      const modal = document.getElementById('admin_edit_modal_v2');
+      if (modal) modal.showModal();
     };
 
     window.saveAdminEditUser = () => {
@@ -8525,24 +8225,32 @@
       const u = adminUsersCache.find(x => x.userId === uid);
 
       const updates = { name };
-
       if (u.role === 'astrologer') {
         updates.price = document.getElementById('adminEditPrice').value;
         updates.isVerified = document.getElementById('adminEditVerified').checked;
         updates.documentStatus = document.getElementById('adminEditDocStatus').value;
       }
-
       if (tempAvatarUrl) {
         updates.image = tempAvatarUrl;
       }
 
       socket.emit('admin-update-user-details', { userId: uid, updates }, (res) => {
         if (res.ok) {
-          alert('Updated Successfully');
-          document.getElementById('adminEditModal').classList.add('hidden');
-          loadAdminDash(); // Refresh List
+          alert('Sync Completed Successfully');
+          document.getElementById('admin_edit_modal_v2').close();
+          // Hot-update local cache
+          u.name = name;
+          if (updates.price) u.price = updates.price;
+          if (updates.image) u.image = updates.image;
+          
+          // Re-render current tab
+          const activeTabEl = document.querySelector('.drawer-side .menu a.active');
+          if (activeTabEl) {
+            const tabId = activeTabEl.id.replace('anav-', '');
+            window.navAdmin(tabId);
+          }
         } else {
-          alert('Error: ' + res.error);
+          alert('Sync Failed: ' + res.error);
         }
       });
     };
@@ -8554,62 +8262,65 @@
       container.innerHTML = '';
 
       if (list.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;"><i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>No astrologers found</div>';
+        container.innerHTML = '<div class="text-center py-20 opacity-40 font-bold">NO EXPERTS FOUND</div>';
         return;
       }
 
-      // Sort: Newest First, then Offline Astrologers
-      list.sort((a, b) => {
-        // First sort by newest (by _id)
-        if (a._id && b._id) {
-          const idCompare = b._id.localeCompare(a._id);
-          if (idCompare !== 0) return idCompare;
-        }
-        // Then sort offline astrologers to bottom
-        const aOnline = a.isOnline ? 1 : 0;
-        const bOnline = b.isOnline ? 1 : 0;
-        return bOnline - aOnline;
-      });
+      list.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
 
       list.forEach(u => {
         const div = document.createElement('div');
-        div.className = 'admin-user-card';
-        const onlineStatus = u.isOnline ? '<span style="color:#22c55e; font-weight:600;">🟢 Online</span>' : '<span style="color:#9ca3af; font-weight:600;">⚫ Offline</span>';
+        div.className = 'card bg-base-100 shadow-xl border border-base-300 overflow-hidden mb-4';
+        const statusClass = u.isOnline ? 'badge-success' : 'badge-ghost';
+        const rolePill = 'badge-secondary';
 
         div.innerHTML = `
-            <div class="admin-user-header">
-              <div>
-                <div class="admin-user-name">${u.name}</div>
-                <div style="font-size:0.8rem; color:#9ca3af; margin-top:2px;">${u.phone || 'No Phone'} • ID: ${u.userId.slice(0, 6)}...</div>
-                <div style="font-size:0.75rem; color:#6b7280; margin-top:4px;">
-                  <i class="fas fa-link"></i> Ref: ${u.referredBy ? u.referredBy.slice(0, 8) : 'Direct'}
+            <div class="card-body p-5">
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex gap-4 items-center">
+                   <div class="avatar ${u.isOnline ? 'online' : 'offline'}">
+                      <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <img src="${u.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random`}" />
+                      </div>
+                   </div>
+                   <div>
+                      <h4 class="font-black text-lg leading-tight">${u.name}</h4>
+                      <p class="text-xs opacity-50 font-bold">${u.phone || 'NO PHONE'}</p>
+                      <div class="flex gap-2 mt-1">
+                         <span class="badge ${statusClass} badge-xs font-black uppercase text-[8px]">${u.isOnline ? 'Online' : 'Offline'}</span>
+                         <span class="badge ${rolePill} badge-xs font-black uppercase text-[8px]">EXPERT</span>
+                      </div>
+                   </div>
                 </div>
-                ${u.refStats ? `
-                <div style="font-size:0.65rem; color:#9ca3af; margin-top:4px;">
-                  L1: <b style="color:#7C3AED;">${u.refStats.l1}</b> |
-                  L2: <b style="color:#7C3AED;">${u.refStats.l2}</b> |
-                  L3: <b style="color:#7C3AED;">${u.refStats.l3}</b>
-                </div>` : ''}
-                <div style="font-size:0.75rem; margin-top:4px;">${onlineStatus}</div>
+                <div class="text-right">
+                   <div class="text-success font-black text-xl">₹${u.walletBalance || 0}</div>
+                   <div class="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Balance</div>
+                </div>
               </div>
-              <div style="text-align:right;">
-                <div style="font-weight:700; color:#059669; font-size:1.1rem;">₹${u.walletBalance || 0}</div>
-                <div class="admin-user-role" style="background:#fef3c7; color:#d97706; margin-top:4px;">Astrologer</div>
+
+              <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-base-200">
+                 <div class="text-center">
+                    <div class="text-sm font-black">${u.refStats?.l1 || 0}</div>
+                    <div class="text-[9px] opacity-40 font-bold uppercase">L1 REF</div>
+                 </div>
+                 <div class="text-center">
+                    <div class="text-sm font-black text-secondary">${u.price || 0}</div>
+                    <div class="text-[9px] opacity-40 font-bold uppercase">₹/MIN</div>
+                 </div>
+                 <div class="text-center">
+                    <div class="text-sm font-black text-info">${u.userId.slice(0, 6)}</div>
+                    <div class="text-[9px] opacity-40 font-bold uppercase">UID</div>
+                 </div>
               </div>
-            </div>
-            <div class="admin-actions">
-               <button class="btn-admin btn-wallet" onclick="adminWallet('${u.userId}')" title="Manage Wallet">
-                 <i class="fas fa-wallet"></i> Wallet
-               </button>
-               <button class="btn-admin btn-role" onclick="adminRole('${u.userId}', '${u.role}')" title="Change Role">
-                 <i class="fas fa-user-tag"></i> Role
-               </button>
-               <button class="btn-admin btn-role" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
-                 <i class="fas fa-edit"></i> Edit
-               </button>
-               <button class="btn-admin btn-block" onclick="adminBan('${u.userId}', ${!u.isBanned})" title="${u.isBanned ? 'Unblock User' : 'Block User'}">
-                 <i class="fas fa-ban"></i> ${u.isBanned ? 'Unblock' : 'Block'}
-               </button>
+
+              <div class="card-actions justify-end mt-4 gap-2">
+                 <button class="btn btn-xs btn-outline font-bold rounded-lg" onclick="adminWallet('${u.userId}')"><i class="fas fa-wallet"></i> Wallet</button>
+                 <button class="btn btn-xs btn-outline btn-secondary font-bold rounded-lg" onclick="adminRole('${u.userId}', '${u.role}')"><i class="fas fa-user-tag"></i> Role</button>
+                 <button class="btn btn-xs btn-primary font-bold rounded-lg" onclick="openAdminEditUser('${u.userId}')"><i class="fas fa-edit"></i> Edit</button>
+                 <button class="btn btn-xs ${u.isBanned ? 'btn-error' : 'btn-ghost'} font-bold rounded-lg" onclick="adminBan('${u.userId}', ${!u.isBanned})">
+                    <i class="fas fa-ban"></i>
+                 </button>
+              </div>
             </div>
           `;
         container.appendChild(div);
@@ -8623,66 +8334,65 @@
       container.innerHTML = '';
 
       if (list.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;"><i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>No users found</div>';
+        container.innerHTML = '<div class="text-center py-20 opacity-40 font-bold uppercase tracking-widest text-xs">Access Loop Empty — No Users Found</div>';
         return;
       }
 
-      list.sort((a, b) => {
-        if (a.role === 'astrologer' && b.role !== 'astrologer') return -1; // Astrologers first
-        if (a._id && b._id) return b._id.localeCompare(a._id);
-        return 0;
-      });
+      list.sort((a, b) => (b.role === 'astrologer' ? 1 : 0) - (a.role === 'astrologer' ? 1 : 0));
 
       list.forEach(u => {
         const div = document.createElement('div');
-        div.className = 'admin-user-card';
-
+        div.className = 'card bg-base-100 shadow-xl border border-base-300 overflow-hidden mb-4';
         const isAstro = u.role === 'astrologer';
-        const isVerified = u.isVerified || false;
-        const isDocs = u.isDocumentVerified || false;
+        const rolePill = isAstro ? 'badge-secondary' : 'badge-primary';
 
         div.innerHTML = `
-           <div class="admin-user-header">
-             <div>
-               <div class="admin-user-name">
-                 ${u.name}
-                 ${isVerified ? '<i class="fas fa-check-circle" style="color:#3B82F6;"></i>' : ''}
-               </div>
-               <div style="font-size:0.8rem; color:#9ca3af; margin-top:2px;">${u.phone} • ID: ${u.userId.slice(0, 6)}...</div>
-                <div style="font-size:0.75rem; color:#6b7280; margin-top:4px;">
-                  <i class="fas fa-link"></i> Ref: ${u.referredBy ? u.referredBy.slice(0, 8) : 'Direct'}
+            <div class="card-body p-5">
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex gap-4 items-center">
+                   <div class="avatar">
+                      <div class="w-12 rounded-full shadow-lg ${isAstro ? 'ring ring-secondary' : ''}">
+                        <img src="${u.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random`}" />
+                      </div>
+                   </div>
+                   <div>
+                      <h4 class="font-black text-lg leading-tight flex items-center gap-2">
+                        ${u.name}
+                        ${u.isVerified ? '<i class="fas fa-check-circle text-info text-sm"></i>' : ''}
+                      </h4>
+                      <p class="text-xs opacity-50 font-bold uppercase tracking-tighter">${u.phone || 'GUEST-ACCESS'}</p>
+                      <div class="flex gap-2 mt-1">
+                         <span class="badge ${rolePill} badge-xs font-black uppercase text-[8px] tracking-widest">${u.role}</span>
+                         ${u.isDocumentVerified ? '<span class="badge badge-success badge-xs font-black uppercase text-[8px] tracking-widest">KYC</span>' : ''}
+                      </div>
+                   </div>
                 </div>
-                ${u.refStats ? `
-                <div style="font-size:0.65rem; color:#9ca3af; margin-top:4px;">
-                  L1: <b style="color:#7C3AED;">${u.refStats.l1}</b> |
-                  L2: <b style="color:#7C3AED;">${u.refStats.l2}</b> |
-                  L3: <b style="color:#7C3AED;">${u.refStats.l3}</b>
-                </div>` : ''}
-               <div style="margin-top:5px;">
-                  <span class="user-pill" style="background:${isAstro ? '#fef3c7' : '#EFF6FF'}; color:${isAstro ? '#d97706' : '#1E3A8A'}; font-weight:bold; font-size:0.7rem; padding:2px 8px; border-radius:10px;">${u.role.toUpperCase()}</span>
-                  ${isAstro && isDocs ? '<span style="font-size:0.7rem; color:#059669; margin-left:5px;"><i class="fas fa-file-contract"></i> Docs</span>' : ''}
-               </div>
-             </div>
-             <div style="text-align:right;">
-               <div style="font-weight:700; color:#059669; font-size:1.1rem;">₹${u.walletBalance || 0}</div>
-             </div>
-           </div>
+                <div class="text-right">
+                   <div class="text-success font-black text-xl">₹${u.walletBalance || 0}</div>
+                   <div class="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Balance</div>
+                </div>
+              </div>
 
-           <div class="admin-actions">
-              <button class="btn-admin btn-wallet" onclick="adminWallet('${u.userId}')" title="Add Funds">
-                <i class="fas fa-plus"></i> Wallet
-              </button>
-              <button class="btn-admin btn-role" onclick="adminRole('${u.userId}', '${u.role}')" title="Change User Role">
-                <i class="fas fa-user-tag"></i> Role
-              </button>
-              <button class="btn-admin btn-role" style="background:#6366F1;" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
-                <i class="fas fa-edit"></i> Edit
-              </button>
-              <button class="btn-admin btn-block" onclick="adminBan('${u.userId}', ${!u.isBanned})" style="background:${u.isBanned ? '#EF4444' : '#eee'}; color:${u.isBanned ? 'white' : '#666'};">
-                <i class="fas fa-ban"></i>
-              </button>
+              <div class="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-base-200">
+                  <div class="flex gap-4">
+                     <div>
+                        <div class="text-xs font-black">${u.refStats?.l1 || 0}</div>
+                        <div class="text-[9px] opacity-40 font-bold uppercase">REFS</div>
+                     </div>
+                     <div>
+                        <div class="text-xs font-black text-primary">${u.userId.slice(0, 8)}</div>
+                         <div class="text-[9px] opacity-40 font-bold uppercase">UID</div>
+                     </div>
+                  </div>
+                  <div class="flex gap-1">
+                     <button class="btn btn-square btn-xs btn-outline rounded-lg" onclick="adminWallet('${u.userId}')" title="Wallet"><i class="fas fa-wallet text-[10px]"></i></button>
+                     <button class="btn btn-square btn-xs btn-outline rounded-lg" onclick="adminRole('${u.userId}', '${u.role}')" title="Role"><i class="fas fa-user-tag text-[10px]"></i></button>
+                     <button class="btn btn-square btn-xs btn-primary rounded-lg" onclick="openAdminEditUser('${u.userId}')" title="Edit"><i class="fas fa-edit text-[10px]"></i></button>
+                     <button class="btn btn-square btn-xs ${u.isBanned ? 'btn-error' : 'btn-ghost'} rounded-lg" onclick="adminBan('${u.userId}', ${!u.isBanned})" title="Ban"><i class="fas fa-ban text-[10px]"></i></button>
+                  </div>
+              </div>
             </div>
-           `;
+          `;
         container.appendChild(div);
       });
     }
@@ -8732,21 +8442,19 @@
           alert(res.error || "Failed");
         }
       });
-    };
+    }
 
     function loadAstroWithdrawals() {
       socket.emit('get-my-withdrawals', (res) => {
         const container = document.getElementById('astroWithdrawList');
         const section = document.getElementById('astroPendingWithdrawals');
         if (!container || !section) return;
-
         if (res.ok && res.list && res.list.length > 0) {
           section.style.display = 'block';
           container.innerHTML = res.list.map(w => {
-            let statusColor = '#f59e0b'; // pending
+            let statusColor = '#f59e0b';
             if (w.status === 'approved') statusColor = '#059669';
             if (w.status === 'rejected') statusColor = '#dc2626';
-
             return `
               <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #f3f4f6;">
                 <div>
@@ -8765,6 +8473,7 @@
       });
     }
 
+
     // Admin: Load Pending Withdrawals
     function loadAdminWithdrawals() {
       socket.emit('get-withdrawals', {}, (res) => {
@@ -8772,52 +8481,49 @@
         const section = document.getElementById('adminWithdrawalsSection');
         if (!container || !section) return;
 
-        if (res.ok && res.list && res.list.length > 0) {
-          section.style.display = 'block';
-          container.innerHTML = '';
-          res.list.filter(x => x.status === 'pending' && x.type !== 'referral').forEach(w => {
-            const div = document.createElement('div');
-            div.className = 'admin-card';
-            div.style.borderLeft = '4px solid #F59E0B';
-            div.innerHTML = `
-                      <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                           <div style="font-weight:bold; color:#111;">${w.astroName}</div>
-                           <div style="font-size:0.75rem; color:#999;">${new Date(w.requestedAt).toLocaleString()}</div>
-                        </div>
-                        <div style="text-align:right;">
-                           <div style="font-size:1.2rem; font-weight:bold; color:#DC2626; margin-bottom:5px;">₹${w.amount}</div>
-                           <div style="display:flex; gap:5px;">
-                             <button onclick="adminApproveWithdrawal('${w._id}')"
-                               style="background: #059669; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
-                                Approve
-                             </button>
-                             <button onclick="adminRejectWithdrawal('${w._id}')"
-                               style="background: #DC2626; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
-                                Reject
-                             </button>
-                           </div>
-                        </div>
-                      </div >
-              `;
-            container.appendChild(div);
-          });
-        } else {
-          section.style.display = 'none';
-        }
-
-        // --- Referral Badge Logic ---
         if (res.ok && res.list) {
-          const pendingReferrals = res.list.filter(x => x.status === 'pending' && x.type === 'referral').length;
-          const badge = document.getElementById('badge-referrals');
-          if (badge) {
-            if (pendingReferrals > 0) {
-              badge.innerText = pendingReferrals;
-              badge.classList.remove('hidden');
-            } else {
-              badge.classList.add('hidden');
-            }
+          const pending = res.list.filter(x => x.status === 'pending' && x.type !== 'referral');
+          if (pending.length === 0) {
+              section.classList.add('hidden');
+              container.innerHTML = ''; // Clear content if no pending
+              // Update Badge for Onboarding/Experts if needed, or separate badge
+              const badge = document.getElementById('badge-requests');
+              if (badge) {
+                  badge.classList.add('hidden');
+              }
+              return;
           }
+          
+          section.classList.remove('hidden');
+          container.innerHTML = pending.map(w => `
+              <div class="card bg-warning/10 border border-warning/20 shadow-lg mb-3 overflow-hidden">
+                <div class="card-body p-4">
+                  <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-black text-lg text-warning-content">${w.astroName}</div>
+                        <div class="text-[10px] opacity-50 font-bold">${new Date(w.requestedAt).toLocaleString()}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-black text-error">₹${w.amount}</div>
+                        <div class="flex gap-2 mt-2">
+                             <button class="btn btn-xs btn-success font-black rounded-lg" onclick="adminApproveWithdrawal('${w._id}')">APPROVE</button>
+                             <button class="btn btn-xs btn-ghost btn-outline font-bold border-error text-error rounded-lg" onclick="adminRejectWithdrawal('${w._id}')">REJECT</button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          `).join('');
+          
+          // Update Badge for Onboarding/Experts if needed, or separate badge
+          const badge = document.getElementById('badge-requests');
+          if (badge) {
+              badge.innerText = pending.length;
+              badge.classList.remove('hidden');
+          }
+        } else {
+          section.classList.add('hidden');
+          container.innerHTML = ''; // Clear content on error or no data
         }
       });
     }
@@ -8825,36 +8531,43 @@
     function loadAdminReferralWithdrawals() {
       const container = document.getElementById('adminReferralWithdrawalsList');
       if (!container) return;
-      container.innerHTML = '<div style="text-align:center; padding:20px; color:white;"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div>';
+      container.innerHTML = '<div class="text-center py-20 opacity-40 font-bold">FETCHING PAYOUT QUEUE...</div>';
 
       socket.emit('get-withdrawals', {}, (res) => {
         if (res.ok && res.list) {
           const referrals = res.list.filter(x => x.type === 'referral').sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt));
           if (referrals.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;">No referral withdrawal requests found.</div>';
+            container.innerHTML = '<div class="text-center py-20 opacity-40 font-bold uppercase tracking-widest text-xs">Payout Queue Clear — No Referrals</div>';
+            // Refresh badge too
+            const badge = document.getElementById('badge-referrals');
+            if (badge) {
+              badge.classList.add('hidden');
+            }
             return;
           }
 
           container.innerHTML = referrals.map(w => {
             const isPending = w.status === 'pending';
-            const statusColor = w.status === 'approved' ? '#059669' : (w.status === 'rejected' ? '#dc2626' : '#f59e0b');
+            const statusClass = w.status === 'approved' ? 'badge-success' : (w.status === 'rejected' ? 'badge-error' : 'badge-warning');
 
             return `
-              <div class="admin-card" style="border-left: 4px solid ${statusColor}; background:rgba(255,255,255,0.05); color:white; margin-bottom:10px; padding:15px; border-radius:12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <div style="font-weight:bold; font-size:1.1rem; color:var(--accent-gold);">${w.astroName}</div>
-                    <div style="font-size:0.8rem; color:#9ca3af;">${new Date(w.requestedAt).toLocaleString()}</div>
-                    <div style="margin-top:5px;"><span style="background:${statusColor}33; color:${statusColor}; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">${w.status}</span></div>
-                  </div>
-                  <div style="text-align:right;">
-                    <div style="font-size:1.5rem; font-weight:bold; color:white; margin-bottom:10px;">₹${w.amount}</div>
-                    ${isPending ? `
-                      <div style="display:flex; gap:10px;">
-                        <button onclick="adminApproveWithdrawal('${w._id}')" style="background:#059669; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Approve</button>
-                        <button onclick="adminRejectWithdrawal('${w._id}')" style="background:#dc2626; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Reject</button>
-                      </div>
-                    ` : `<div style="color:#9ca3af; font-size:0.8rem;">Processed on ${w.processedAt ? new Date(w.processedAt).toLocaleDateString() : 'N/A'}</div>`}
+              <div class="card bg-base-100 shadow-xl border border-base-300 mb-4 overflow-hidden">
+                <div class="card-body p-5">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <div class="font-black text-lg text-primary">${w.astroName}</div>
+                      <div class="text-[10px] opacity-50 font-bold mb-2 uppercase">${new Date(w.requestedAt).toLocaleString()}</div>
+                      <span class="badge ${statusClass} badge-xs font-black uppercase text-[8px] tracking-widest">${w.status}</span>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-2xl font-black text-success">₹${w.amount}</div>
+                      ${isPending ? `
+                        <div class="flex gap-2 mt-2">
+                          <button class="btn btn-xs btn-success font-black rounded-lg" onclick="adminApproveWithdrawal('${w._id}')">APPROVE</button>
+                          <button class="btn btn-xs btn-outline btn-error font-bold rounded-lg" onclick="adminRejectWithdrawal('${w._id}')">REJECT</button>
+                        </div>
+                      ` : `<div class="text-[9px] font-bold opacity-30 uppercase mt-1">Processed</div>`}
+                    </div>
                   </div>
                 </div>
               </div>
