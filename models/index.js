@@ -44,7 +44,6 @@ const UserSchema = new mongoose.Schema({
   bankDetails: {
     accountHolder: String, accountNumber: String, bankName: String,
     ifscCode: String, upiId: String
-  }
   },
   pendingImage: { type: String, default: '' },
   photoStatus: { type: String, enum: ['none', 'pending', 'approved', 'rejected'], default: 'none' }
@@ -234,7 +233,6 @@ module.exports = {
   Banner: mongoose.model('Banner', BannerSchema),
   AccountDeletionRequest: mongoose.model('AccountDeletionRequest', AccountDeletionRequestSchema),
   AstrologerApplication: mongoose.model('AstrologerApplication', AstrologerApplicationSchema),
-  Notification: mongoose.model('Notification', NotificationSchema)
   Notification: mongoose.model('Notification', NotificationSchema),
   Review: mongoose.model('Review', ReviewSchema),
   GlobalSettings: mongoose.model('GlobalSettings', GlobalSettingsSchema),

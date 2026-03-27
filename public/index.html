@@ -4462,53 +4462,6 @@
     </div>
   </div>
 
-  <!-- Screen: Super Admin Dashboard -->
-  <div id="screen-admin" class="dashboard-container hidden">
-    <!-- Admin Edit User Modal -->
-    <div id="adminEditModal" class="modal-overlay hidden"
-      style="align-items: center; justify-content: center; z-index: 10001;">
-      <div
-        style="background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 12px; position:relative;">
-        <h3 style="margin-top:0; color:#1e3a8a;">Edit Profile</h3>
-        <input type="hidden" id="adminEditUserId">
-
-        <div style="text-align:center; margin-bottom:15px;">
-          <img id="adminEditAvatar" src=""
-            style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #ddd; margin-bottom:10px;">
-          <br>
-          <input type="file" id="adminFileAvatar" style="display:none" onchange="uploadAvatar(this, true)">
-          <button onclick="document.getElementById('adminFileAvatar').click()"
-            style="padding:5px 10px; font-size:0.8rem; border-radius:5px; border:1px solid #ddd; background:white;">Change
-            Photo</button>
-        </div>
-
-        <div style="margin-bottom:15px;">
-          <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Display Name</label>
-          <input type="text" id="adminEditName" class="app-input" placeholder="User Name">
-        </div>
-
-        <!-- Astrologer Specific Fields -->
-        <div id="adminEditAstroFields"
-          style="display:none; background:#ecfdf5; padding:10px; border-radius:8px; margin-bottom:15px;">
-          <div style="font-size:0.8rem; color:#065f46; font-weight:bold; margin-bottom:10px;">Astrologer Settings</div>
-
-          <div style="margin-bottom:10px;">
-            <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Call Rate (₹/min)</label>
-            <input type="number" id="adminEditPrice" class="app-input" placeholder="20">
-          </div>
-
-          <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-            <label style="font-size:0.9rem; color:#333;">Verified (Blue Tick)</label>
-            <input type="checkbox" id="adminEditVerified" style="width:20px; height:20px;">
-          </div>
-
-          <div>
-            <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Document Verification</label>
-            <select id="adminEditDocStatus" class="app-input">
-              <option value="none">Without Doc</option>
-              <option value="processing">Processing</option>
-              <option value="verified">Verified (Green Badge)</option>
-            </select>
   <!-- Screen: Super Admin Dashboard (Revamped with daisyUI) -->
   <div id="screen-admin" class="hidden min-h-screen bg-base-200">
     <div class="drawer lg:drawer-open">
@@ -4521,26 +4474,6 @@
               <i class="fas fa-bars"></i>
             </label>
           </div>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:10px;">
-          <button class="btn-admin" style="background:#e5e7eb; color:#333;"
-            onclick="document.getElementById('adminEditModal').classList.add('hidden')">Cancel</button>
-          <button class="btn-admin" style="background:#1e40af;" onclick="saveAdminEditUser()">Save Changes</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-header"
-      style="background: var(--secondary-bg); border-bottom: 1px solid var(--glass-border); color:white; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-      <div
-        style="font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; font-family: var(--font-heading); color: var(--accent-gold);">
-        <i class="fas fa-shield-alt"></i> MASTER ADMIN
-      </div>
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <i class="fas fa-bell" style="cursor: pointer; opacity: 0.8; font-size: 1.2rem;"></i>
-        <button onclick="clearSession()"
-          style="background: var(--glass-heavy); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: var(--transition);">
           <div class="flex-1 px-2">
             <span class="text-xl font-bold text-primary">AstroLuna Admin</span>
           </div>

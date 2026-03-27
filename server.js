@@ -41,13 +41,8 @@ function logActivity(type, message, details = null) {
   }
   console.log(logStr);
 
-  // Optional: Also write to a persistent activity log file
   // Also write to MongoDB SystemLog collection
   try {
-    fs.appendFileSync('activity.log', logStr + '\n');
-  } catch (err) {
-    // console.error('Failed to write to activity.log');
-  }
     SystemLog.create({
       type: 'info', // defaults to info, can be improved to match activity type
       module: type,

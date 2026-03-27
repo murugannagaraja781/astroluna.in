@@ -555,7 +555,6 @@ fun PlanetGridTab(data: ChartData) {
                     Text(text = nakName, modifier = Modifier.weight(2.5f), style = detailStyle)
 
                     // Pada (Blue)
-                    Text(text = p.nakshatraPada.toString(), modifier = Modifier.weight(1f), style = detailStyle)
                     Text(text = (p.nakshatraPada ?: 0).toString(), modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Star Lord (Blue)
@@ -576,10 +575,8 @@ fun PlanetGridTab(data: ChartData) {
 
 fun formatDegreeOnly(degreeStr: String?): String {
     if (degreeStr == null) return ""
-    // degreeStr is "Leo 15° 30' 45\"" or "Leo 15°30'45\""
     val regex = """(\d+°\s*\d+'\s*\d+")""".toRegex()
     val match = regex.find(degreeStr)
-    return match?.value ?: degreeStr.split(" ").last()
     return match?.value ?: degreeStr.split(" ").lastOrNull() ?: ""
 }
 
@@ -612,17 +609,14 @@ fun DashaNodeInternal(period: DashaPeriod) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(enabled = hasSub) { expanded = !expanded }
                 .clickable { if (hasSub) expanded = !expanded }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val levelIndent = (period.level - 1) * 20
             val levelIndent = ((period.level ?: 1) - 1) * 20
             Spacer(Modifier.width(levelIndent.dp))
 
             // Icon/Prefix based on level
-            val iconColor = when(period.level) {
             val iconColor = when(period.level ?: 1) {
                 1 -> TraditionalRed
                 2 -> Color(0xFF2E7D32)
@@ -653,8 +647,6 @@ fun DashaNodeInternal(period: DashaPeriod) {
                         4 -> "பிரத்யந்தரம்"
                         else -> "சிக்ஷ்ம"
                     },
-                    fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = if(period.level == 1) 16.sp else 14.sp
                     fontWeight = if((period.level ?: 1) == 1) FontWeight.Bold else FontWeight.Medium,
                     fontSize = if((period.level ?: 1) == 1) 16.sp else 14.sp
                 )
@@ -669,7 +661,6 @@ fun DashaNodeInternal(period: DashaPeriod) {
 
             if (hasSub) {
                 Icon(
-                    if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
                     imageVector = if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.Gray
@@ -681,10 +672,8 @@ fun DashaNodeInternal(period: DashaPeriod) {
             period.subPeriods?.forEach { child ->
                 DashaNodeInternal(child)
             }
-            Divider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
             Divider(Modifier.padding(start = (((period.level ?: 1)) * 20).dp), color = Color.White.copy(alpha = 0.05f))
         }
-        if (period.level == 1) {
         if ((period.level ?: 1) == 1) {
             Divider(color = Color.White.copy(alpha = 0.1f))
         }
