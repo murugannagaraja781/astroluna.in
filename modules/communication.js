@@ -43,6 +43,13 @@ module.exports = function(io, shared) {
           socketToUser.set(socket.id, resolvedUserId);
           socket.join(resolvedUserId); 
 
+          // Update FCM token if provided via socket
+          if (data && data.fcmToken) {
+            user.fcmToken = data.fcmToken;
+            user.save().catch(e => console.error('[FCM] Error saving token via socket:', e));
+            console.log(`[FCM] Token updated via socket for ${user.name}`);
+          }
+
           safeAck(cb, {
             ok: true,
             userId: user.userId,

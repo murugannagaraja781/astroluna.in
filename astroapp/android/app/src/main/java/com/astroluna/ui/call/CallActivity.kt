@@ -664,9 +664,11 @@ class CallActivity : ComponentActivity() {
         if (isInitiator) {
             statusText = "Calling..."
 
-            SocketManager.registerUser(myUserId) { success ->
-                if (success) {
-                    runOnUiThread {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                val fcmToken = if (task.isSuccessful) task.result else null
+                SocketManager.registerUser(myUserId, fcmToken) { success ->
+                    if (success) {
+                        runOnUiThread {
                         val connectPayload = JSONObject().apply {
                              put("sessionId", sessionId)
                         }
@@ -698,9 +700,11 @@ class CallActivity : ComponentActivity() {
             }
         } else {
             statusText = "Connecting..."
-            SocketManager.registerUser(myUserId) { success ->
-                if (success) {
-                    runOnUiThread {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                val fcmToken = if (task.isSuccessful) task.result else null
+                SocketManager.registerUser(myUserId, fcmToken) { success ->
+                    if (success) {
+                        runOnUiThread {
                         val payload = JSONObject().apply {
                             put("sessionId", sessionId)
                             put("toUserId", partnerId)

@@ -54,10 +54,13 @@ object SocketManager {
         }
     }
 
-    fun registerUser(userId: String, callback: ((Boolean) -> Unit)? = null) {
+    fun registerUser(userId: String, fcmToken: String? = null, callback: ((Boolean) -> Unit)? = null) {
         currentUserId = userId
         val data = JSONObject()
         data.put("userId", userId)
+        if (fcmToken != null) {
+            data.put("fcmToken", fcmToken)
+        }
 
         socket?.emit("register", data, Ack { args ->
             val success = if (args != null && args.isNotEmpty()) {

@@ -83,16 +83,26 @@ class CallForegroundService : Service() {
         }
 
         // --- Default: Incoming Call Notification ---
+        val callerId = intent?.getStringExtra("callerId") ?: "Unknown"
         val callerName = intent?.getStringExtra("callerName") ?: "Unknown caller"
         val callId = intent?.getStringExtra("callId") ?: ""
+        val callType = intent?.getStringExtra("callType") ?: "audio"
+        val birthData = intent?.getStringExtra("birthData")
+        val iceServers = intent?.getStringExtra("iceServers")
 
         Log.d(TAG, "Starting foreground service for call from: $callerName")
 
         // Create intent to open IncomingCallActivity when notification is tapped
         val notificationIntent = Intent(this, IncomingCallActivity::class.java).apply {
-            this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                         Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                         Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("callerId", callerId)
             putExtra("callerName", callerName)
             putExtra("callId", callId)
+            putExtra("callType", callType)
+            putExtra("birthData", birthData)
+            putExtra("iceServers", iceServers)
         }
 
         val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

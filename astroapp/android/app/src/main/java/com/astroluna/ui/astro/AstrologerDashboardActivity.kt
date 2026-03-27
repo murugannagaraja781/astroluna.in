@@ -129,9 +129,13 @@ class AstrologerDashboardActivity : ComponentActivity() {
     private fun setupSocket(userId: String?) {
         SocketManager.init()
         if (userId != null) {
-            SocketManager.registerUser(userId) { success ->
-                if (success) {
-                    // Status is managed by DB flag on server
+            // Fetch the latest FCM token to ensure we can receive calls
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                val fcmToken = if (task.isSuccessful) task.result else null
+                SocketManager.registerUser(userId, fcmToken) { success ->
+                    if (success) {
+                        // All good
+                    }
                 }
             }
         }

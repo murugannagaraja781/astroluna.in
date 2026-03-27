@@ -331,7 +331,10 @@ class HomeActivity : AppCompatActivity() {
         val socket = SocketManager.getSocket()
         val session = tokenManager.getUserSession()
         if (session != null) {
-            SocketManager.registerUser(session.userId ?: "")
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                val fcmToken = if (task.isSuccessful) task.result else null
+                SocketManager.registerUser(session.userId ?: "", fcmToken)
+            }
         }
 
         socket?.on("astro-list") { args ->
