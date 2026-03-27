@@ -4480,17 +4480,19 @@
         </div>
 
         <!-- Main Content Area -->
-        <main class="p-4 lg:p-8 flex-1 overflow-y-auto">
+        <main class="p-4 lg:p-4 flex-1 overflow-y-auto bg-base-100/30">
           
           <!-- Tab 1: Home (Overview) -->
           <div id="admin-sect-home" class="admin-tab-section active animate__animated animate__fadeIn">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4 border-b border-white/5 pb-2">
               <div>
-                <h1 class="text-3xl font-black text-secondary">Control Center</h1>
-                <p class="text-xs text-base-content opacity-50 uppercase tracking-widest font-bold">Real-time Performance Metrics</p>
+                <h1 class="text-xl font-black text-secondary tracking-tight">Platform Overview</h1>
+                <p class="text-[9px] text-base-content opacity-30 uppercase tracking-widest font-bold">Real-time Performance & Velocity Velocity</p>
               </div>
-              <div class="badge badge-error badge-outline gap-1 animate-pulse p-4">
-                <i class="fas fa-satellite-dish"></i> Live Stream Active
+              <div class="flex gap-2">
+                 <div class="badge badge-accent badge-outline gap-1 px-2 text-[8px] font-black uppercase tracking-tighter h-6">
+                   <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span> SYSTEM LIVE STATUS
+                 </div>
               </div>
             </div>
 
@@ -4584,14 +4586,14 @@
       <!-- Sidebar Drawer -->
       <div class="drawer-side z-50">
         <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label> 
-        <div class="menu p-4 w-72 min-h-full bg-base-100 text-base-content border-r border-base-300">
-          <div class="flex items-center gap-3 px-2 py-8 mb-6 border-b border-base-200">
+        <div class="menu p-4 w-72 min-h-full bg-[#0E3A2F] text-white border-r border-[#155243]">
+          <div class="flex items-center gap-3 px-2 py-4 mb-4 border-b border-white/10">
              <div class="bg-primary p-2 rounded-xl text-white shadow-lg">
-                <i class="fas fa-moon text-2xl"></i>
+                <i class="fas fa-star text-xl"></i>
              </div>
              <div>
-                <span class="text-xl font-black tracking-tight text-secondary">AstroLuna</span>
-                <div class="badge badge-primary badge-xs font-black uppercase tracking-tighter">Super Portal</div>
+                <span class="text-lg font-black tracking-tighter block leading-none">Astro 5 Star</span>
+                <span class="text-[9px] opacity-60 font-bold uppercase tracking-[0.2em]">Super Admin Panel</span>
              </div>
           </div>
           
@@ -4678,72 +4680,13 @@
   <!-- (Already moved to Home for now, but keeping sections defined) -->
   
   <style>
+    .admin-tab-section { display: none; }
     .admin-tab-section.active { display: block !important; }
     .menu li a.active { background-color: oklch(var(--p)) !important; color: white !important; }
-    #screen-admin .card { border-radius: 2rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    #screen-admin .card:hover { transform: translateY(-5px); }
+    #screen-admin .card { border-radius: 1.5rem; transition: all 0.3s ease; }
+    #screen-admin .card:hover { transform: translateY(-3px); }
   </style>
-
-    </div>
-
-    <!-- Bottom Nav -->
-    <div class="admin-nav" style="flex-wrap: wrap; height: auto; padding: 10px; gap: 5px; justify-content: center;">
-      <div class="admin-nav-item active" id="anav-home" onclick="navAdmin('home')">
-        <i class="fas fa-home"></i> <span>Dash</span>
-      </div>
-      <div class="admin-nav-item" id="anav-requests" onclick="navAdmin('requests')" style="position:relative;">
-        <i class="fas fa-user-plus"></i> <span>Requests</span>
-        <div id="badge-requests" class="hidden admin-badge">0</div>
-      </div>
-      <div class="admin-nav-item" id="anav-photo-approvals" onclick="navAdmin('photo-approvals')">
-        <i class="fas fa-user-circle"></i> <span>Photos</span>
-      </div>
-      <div class="admin-nav-item" id="anav-payouts" onclick="navAdmin('payouts')">
-        <i class="fas fa-user-astronaut"></i> <span>Astros</span>
-      </div>
-      <div class="admin-nav-item" id="anav-users" onclick="navAdmin('users')">
-        <i class="fas fa-users"></i> <span>Users</span>
-      </div>
-      <div class="admin-nav-item" id="anav-referrals" onclick="navAdmin('referrals')" style="position:relative;">
-        <i class="fas fa-hand-holding-usd"></i> <span>Payouts</span>
-      </div>
-      <div class="admin-nav-item" id="anav-earnings" onclick="navAdmin('earnings')">
-        <i class="fas fa-chart-line"></i> <span>Performance</span>
-      </div>
-      <div class="admin-nav-item" id="anav-history" onclick="navAdmin('history')">
-        <i class="fas fa-history"></i> <span>History</span>
-      </div>
-      <div class="admin-nav-item" id="anav-slabs" onclick="navAdmin('slabs')">
-        <i class="fas fa-percent"></i> <span>Slabs</span>
-      </div>
-      <div class="admin-nav-item" id="anav-reviews" onclick="navAdmin('reviews')">
-        <i class="fas fa-star"></i> <span>Reviews</span>
-      </div>
-      <div class="admin-nav-item" id="anav-academy" onclick="navAdmin('academy')">
-        <i class="fas fa-graduation-cap"></i> <span>Academy</span>
-      </div>
-      <div class="admin-nav-item" id="anav-broadcast" onclick="navAdmin('broadcast')">
-        <i class="fas fa-bullhorn"></i> <span>Broadcast</span>
-      </div>
-      <div class="admin-nav-item" id="anav-logs" onclick="navAdmin('logs')">
-        <i class="fas fa-terminal"></i> <span>Logs</span>
-      </div>
-      <div class="admin-nav-item" id="anav-slider" onclick="navAdmin('slider')">
-        <i class="fas fa-images"></i> <span>Banners</span>
-      </div>
-      <div class="admin-nav-item" id="anav-notifications" onclick="navAdmin('notifications')">
-        <i class="fas fa-bell"></i> <span>Alerts</span>
-      </div>
-    </div>
-  </div>
-
-  <style>
-    .admin-badge {
-      position: absolute; top: 2px; right: 5px; background: #ef4444; color: white; border-radius: 50%; 
-      min-width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; 
-      padding: 2px; font-weight: bold;
-    }
-  </style>
+</div>
 
 
 
