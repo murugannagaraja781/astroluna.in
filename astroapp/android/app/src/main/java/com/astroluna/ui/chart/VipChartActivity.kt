@@ -400,13 +400,9 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
                                 val signNo = signIdx + 1
                                 val occupants = mutableListOf<String>()
                                 if (signEn == ascSign) occupants.add("As")
-<<<<<<< HEAD
-                                 planets.filter { it.signName == signEn }.forEach { p -> p.name?.let { occupants.add(it) } }
-=======
-                                planets.filter { it.signName == signEn }.forEach { p ->
+                                 planets.filter { it.signName == signEn }.forEach { p ->
                                     p.name?.let { occupants.add(it) }
                                 }
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
 
                                 Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(signNo.toString(), fontSize = 10.sp, color = TraditionalRed.copy(0.6f), modifier = Modifier.align(Alignment.Start))
@@ -527,11 +523,7 @@ fun PlanetGridTab(data: ChartData) {
                      Row(modifier = Modifier.weight(1.5f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         val pName = p.name ?: "Unk"
                         Text(
-<<<<<<< HEAD
-                            text = planetAbbrTamil[pName] ?: pName.take(3),
-=======
                             text = planetAbbrTamil[p.name ?: ""] ?: (p.name ?: "??").take(3),
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
                             color = Color.Red,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -561,12 +553,8 @@ fun PlanetGridTab(data: ChartData) {
                     Text(text = planetAbbrTamil[p.starLord ?: ""] ?: p.starLord?.take(2) ?: "-", modifier = Modifier.weight(1f), style = detailStyle)
 
                     // Sign (Blue)
-<<<<<<< HEAD
                     val sName = p.signName ?: ""
                     Text(text = signTamil[sName] ?: sName, modifier = Modifier.weight(2f), style = detailStyle)
-=======
-                    Text(text = signTamil[p.signName ?: ""] ?: (p.signName ?: "-"), modifier = Modifier.weight(2f), style = detailStyle)
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
                 }
             }
         }
@@ -625,22 +613,14 @@ fun DashaNodeInternal(period: DashaPeriod) {
             }
 
             Box(Modifier.size(32.dp).background(iconColor.copy(0.1f), CircleShape), contentAlignment = Alignment.Center) {
-<<<<<<< HEAD
-                Text(planetAbbrTamil[period.lord] ?: period.lord?.take(2) ?: "", color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-=======
                 Text(planetAbbrTamil[period.lord ?: ""] ?: (period.lord ?: "??").take(2), color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
             }
 
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
                 Text(
-<<<<<<< HEAD
-                    text = "${planetTamil[period.lord] ?: period.lord ?: ""} " + when(period.level) {
-=======
                     text = "${planetTamil[period.lord ?: ""] ?: (period.lord ?: "Unknown")} " + when(period.level ?: 1) {
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
                         1 -> "மகா தசை"
                         2 -> "புக்தி"
                         3 -> "ஆந்தரம்"
@@ -650,13 +630,7 @@ fun DashaNodeInternal(period: DashaPeriod) {
                     fontWeight = if((period.level ?: 1) == 1) FontWeight.Bold else FontWeight.Medium,
                     fontSize = if((period.level ?: 1) == 1) 16.sp else 14.sp
                 )
-<<<<<<< HEAD
-                val startStr = period.start?.take(10)?.replace("-", ".") ?: ""
-                val endStr = period.end?.take(10)?.replace("-", ".") ?: ""
-                Text("$startStr - $endStr", fontSize = 11.sp, color = Color.Gray)
-=======
                 Text("${(period.start ?: "....-..-..").take(10).replace("-", ".")} - ${(period.end ?: "....-..-..").take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
->>>>>>> d390b88debdf3d8e191b5c028533737ed7986d7e
             }
 
             if (hasSub) {

@@ -18,7 +18,8 @@ const {
   User, Session, CallRequest, PairMonth,
   BillingLedger, Withdrawal, Payment,
   AstrologerApplication, Notification, ChatMessage,
-  AcademyVideo, Banner, AccountDeletionRequest
+  AcademyVideo, Banner, AccountDeletionRequest,
+  Review, GlobalSettings, SystemLog
 } = require('./models');
 const billingModule = require('./modules/billing');
 const communicationModule = require('./modules/communication');
