@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -247,6 +248,7 @@ class CallActivity : ComponentActivity() {
             callDurationSeconds = savedInstanceState.getInt("callDurationSeconds")
             sessionId = savedInstanceState.getString("sessionId")
             partnerId = savedInstanceState.getString("partnerId")
+            isInitiator = savedInstanceState.getBoolean("isInitiator", false)
         }
 
         // --- GLOBAL STATE FIX: Mark call as active to prevent duplicate starts ---
@@ -656,27 +658,34 @@ class CallActivity : ComponentActivity() {
             SocketManager.registerUser(myUserId) { success ->
                 if (success) {
                     runOnUiThread {
+                        Log.d(TAG, "Initiator registered, joining room $sessionId")
                         val connectPayload = JSONObject().apply {
                              put("sessionId", sessionId)
                         }
                         SocketManager.getSocket()?.emit("session-connect", connectPayload, io.socket.client.Ack { args ->
+                            Log.d(TAG, "session-connect ack received")
                             if (args != null && args.isNotEmpty()) {
                                 try {
                                     val response = args[0] as? JSONObject
                                     val dynamicIce = response?.optJSONArray("iceServers")
                                     if (dynamicIce != null) {
+                                        Log.d(TAG, "Updating ICE from session-connect ack")
                                         runOnUiThread { updateIceServers(dynamicIce) }
                                     }
-                                } catch (e: Exception) { e.printStackTrace() }
+                                } catch (e: Exception) { Log.e(TAG, "Failed to parse session-connect ack", e) }
                             }
                         })
 
-                        // NEW: Start WebRTC connection immediately as initiator
+                        // Start WebRTC connection immediately as initiator
                         if (::peerConnection.isInitialized) {
-                            createOffer()
                             Log.d(TAG, "Initiator creating initial offer")
+                            createOffer()
+                        } else {
+                            Log.e(TAG, "PeerConnection NOT initialized during createOffer attempt")
                         }
                     }
+                } else {
+                    Log.e(TAG, "Initiator registration FAILED")
                 }
             }
         } else {
@@ -684,6 +693,7 @@ class CallActivity : ComponentActivity() {
             SocketManager.registerUser(myUserId) { success ->
                 if (success) {
                     runOnUiThread {
+                        Log.d(TAG, "Receiver registered, joining room $sessionId")
                         val payload = JSONObject().apply {
                             put("sessionId", sessionId)
                             put("toUserId", partnerId)
@@ -696,6 +706,8 @@ class CallActivity : ComponentActivity() {
                         }
                         SocketManager.getSocket()?.emit("session-connect", connectPayload)
                     }
+                } else {
+                    Log.e(TAG, "Receiver registration FAILED")
                 }
             }
         }
@@ -827,6 +839,7 @@ class CallActivity : ComponentActivity() {
                         put("toUserId", partnerId)
                         put("signal", signalData)
                     }
+                    Log.d(TAG, "Sending candidate signal to $partnerId")
                     sendSignal(payload)
                 }
             }
@@ -988,13 +1001,17 @@ class CallActivity : ComponentActivity() {
         val signal = data.optJSONObject("signal") ?: data
         var type = signal.optString("type")
         if (type.isEmpty() && signal.has("candidate")) type = "candidate"
+        
+        Log.d(TAG, "Received signal: $type")
 
         when (type) {
             "offer" -> {
                 val descriptionStr = signal.optJSONObject("sdp")?.optString("sdp") ?: signal.optString("sdp")
+                Log.d(TAG, "Handling offer signal. Initialized: ${::peerConnection.isInitialized}")
                 if (descriptionStr.isNotEmpty() && ::peerConnection.isInitialized) {
-                    peerConnection.setRemoteDescription(object : SimpleSdpObserver() {
+                    peerConnection.setRemoteDescription(object : SimpleSdpObserver("setRemoteDescription(OFFER)") {
                         override fun onSetSuccess() {
+                            super.onSetSuccess()
                             createAnswer()
                             drainRemoteCandidates()
                         }
@@ -1003,9 +1020,11 @@ class CallActivity : ComponentActivity() {
             }
             "answer" -> {
                 val descriptionStr = signal.optJSONObject("sdp")?.optString("sdp") ?: signal.optString("sdp")
+                Log.d(TAG, "Handling answer signal. Initialized: ${::peerConnection.isInitialized}")
                 if (descriptionStr.isNotEmpty() && ::peerConnection.isInitialized) {
-                    peerConnection.setRemoteDescription(object : SimpleSdpObserver() {
+                    peerConnection.setRemoteDescription(object : SimpleSdpObserver("setRemoteDescription(ANSWER)") {
                         override fun onSetSuccess() {
+                            super.onSetSuccess()
                             drainRemoteCandidates()
                         }
                     }, SessionDescription(SessionDescription.Type.ANSWER, descriptionStr))
@@ -1020,8 +1039,10 @@ class CallActivity : ComponentActivity() {
                 if (sdp.isNotEmpty() && sdpMLineIndex != -1 && ::peerConnection.isInitialized) {
                     val candidate = IceCandidate(sdpMid, sdpMLineIndex, sdp)
                     if (peerConnection.remoteDescription == null) {
+                        Log.d(TAG, "Queuing received candidate (Remote description not set)")
                         pendingIceCandidates.add(candidate)
                     } else {
+                        Log.d(TAG, "Adding received candidate directly")
                         peerConnection.addIceCandidate(candidate)
                     }
                 }
@@ -1036,10 +1057,11 @@ class CallActivity : ComponentActivity() {
             mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", if(callType == "video") "true" else "false"))
         }
 
-        peerConnection.createOffer(object : SimpleSdpObserver() {
+        peerConnection.createOffer(object : SimpleSdpObserver("createOffer") {
             override fun onCreateSuccess(desc: SessionDescription?) {
                 if (!::peerConnection.isInitialized) return
-                peerConnection.setLocalDescription(SimpleSdpObserver(), desc)
+                Log.d(TAG, "createOffer SUCCESS, setting LocalDescription")
+                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(OFFER)"), desc)
                 val signalData = JSONObject().apply {
                     put("type", "offer")
                     put("sdp", desc?.description)
@@ -1048,6 +1070,7 @@ class CallActivity : ComponentActivity() {
                     put("toUserId", partnerId)
                     put("signal", signalData)
                 }
+                Log.d(TAG, "Sending offer to $partnerId")
                 sendSignal(payload)
             }
         }, constraints)
@@ -1059,9 +1082,10 @@ class CallActivity : ComponentActivity() {
             mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", if(callType == "video") "true" else "false"))
         }
 
-        peerConnection.createAnswer(object : SimpleSdpObserver() {
+        peerConnection.createAnswer(object : SimpleSdpObserver("createAnswer") {
             override fun onCreateSuccess(desc: SessionDescription?) {
-                peerConnection.setLocalDescription(SimpleSdpObserver(), desc)
+                Log.d(TAG, "createAnswer SUCCESS, setting LocalDescription")
+                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(ANSWER)"), desc)
                 val signalData = JSONObject().apply {
                     put("type", "answer")
                     put("sdp", desc?.description)
@@ -1070,6 +1094,7 @@ class CallActivity : ComponentActivity() {
                     put("toUserId", partnerId)
                     put("signal", signalData)
                 }
+                Log.d(TAG, "Sending answer to $partnerId")
                 sendSignal(payload)
             }
         }, constraints)
@@ -1157,11 +1182,11 @@ class CallActivity : ComponentActivity() {
 }
 
 // openHelper for simplified observer
-open class SimpleSdpObserver : SdpObserver {
-    override fun onCreateSuccess(p0: SessionDescription?) {}
-    override fun onSetSuccess() {}
-    override fun onCreateFailure(p0: String?) {}
-    override fun onSetFailure(p0: String?) {}
+open class SimpleSdpObserver(private val name: String = "SdpObserver") : SdpObserver {
+    override fun onCreateSuccess(p0: SessionDescription?) { Log.d("CallActivity", "$name: onCreateSuccess") }
+    override fun onSetSuccess() { Log.d("CallActivity", "$name: onSetSuccess") }
+    override fun onCreateFailure(p0: String?) { Log.e("CallActivity", "$name: onCreateFailure: $p0") }
+    override fun onSetFailure(p0: String?) { Log.e("CallActivity", "$name: onSetFailure: $p0") }
 }
 
 @Composable
@@ -1205,14 +1230,16 @@ fun CallScreen(
                 Text("Initializing Camera...", color = Color.Gray, modifier = Modifier.padding(top = 80.dp))
             }
         } else {
-            // Audio Call UI Placeholder
+            // Audio Call UI Placeholder / Center Profile
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                 Icon(
-                     painter = painterResource(id = R.drawable.ic_person_placeholder),
-                     contentDescription = "User",
-                     tint = Color.Gray,
-                     modifier = Modifier.size(120.dp)
-                 )
+                Box(modifier = Modifier.size(160.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF2C3E50))
+                    .border(3.dp, Color(0xFFFFD700), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                   Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFFFFD700), modifier = Modifier.size(100.dp))
+                }
             }
         }
 

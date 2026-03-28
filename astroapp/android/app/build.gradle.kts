@@ -5,7 +5,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-
     id("kotlin-kapt")
 }
 
@@ -18,7 +17,7 @@ android {
         targetSdk = 35
         versionCode = 9
         versionName = "1.0.0.9"
-        multiDexEnabled = true
+        multiDexEnabled = false
     }
 
     signingConfigs {
@@ -43,13 +42,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             isMinifyEnabled = false

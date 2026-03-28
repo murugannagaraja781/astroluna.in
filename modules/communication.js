@@ -314,7 +314,7 @@ module.exports = function(io, shared) {
           const fromUserId = dbSession.fromUserId;
           if (accept) {
             User.updateOne({ userId: astrologerId }, { isBusy: true }).then(() => broadcastAstroUpdate());
-            io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || dbSession.type, accept: true });
+            io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || dbSession.type, accept: true, iceServers: ICE_SERVERS });
             safeAck(cb, { ok: true, fromUserId });
           } else {
             io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, accept: false });
@@ -352,7 +352,7 @@ module.exports = function(io, shared) {
               }
             }
           });
-          io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true });
+          io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true, iceServers: ICE_SERVERS });
           console.log(`[Signal] ${astrologerId} answered ${sessionId} (Native). Peer: ${fromUserId}`);
           safeAck(cb, { ok: true, fromUserId });
         } else {
