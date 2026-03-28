@@ -102,6 +102,15 @@ module.exports = function(io, state, shared) {
           });
         }
       }
+
+      // reliable CALL_ENDED signal (FCM fallback)
+      [clientId, astrologerId].forEach(async (uid) => {
+        const u = await User.findOne({ userId: uid }, { fcmToken: 1 });
+        if (u?.fcmToken) {
+           sendFcmV1Push(u.fcmToken, { type: 'CALL_ENDED', sessionId }, null);
+           console.log(`[FCM] Sent CALL_ENDED to ${uid}`);
+        }
+      });
     } catch (err) { console.error('[Session] Cleanup error:', err); }
   }
 

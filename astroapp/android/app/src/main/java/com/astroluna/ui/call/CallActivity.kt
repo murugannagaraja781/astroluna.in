@@ -104,6 +104,20 @@ class CallActivity : ComponentActivity() {
     private var isWebRTCInitialized = false
     private var lastBackPressTime by mutableLongStateOf(0L)
 
+    // Receiver for CALL_ENDED signal from FCM
+    private val callEndingReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            val sid = intent?.getStringExtra("sessionId")
+            Log.d(TAG, "Received CALL_ENDED broadcast for session: $sid")
+            if (sid == null || sid == sessionId) {
+                runOnUiThread {
+                    Toast.makeText(this@CallActivity, "Call Ended", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
+    }
+
     // Summary Dialog State
     private var showSummaryDialog by mutableStateOf(false)
     private var summaryReason by mutableStateOf("")
@@ -287,6 +301,13 @@ class CallActivity : ComponentActivity() {
         tokenManager = TokenManager(this)
         session = tokenManager.getUserSession()
         val role = session?.role
+
+        // Register termination receiver
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(callEndingReceiver, IntentFilter("com.astroluna.CALL_ENDED"), RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(callEndingReceiver, IntentFilter("com.astroluna.CALL_ENDED"))
+        }
 
         // Set Content
         setContent {
@@ -1106,10 +1127,16 @@ class CallActivity : ComponentActivity() {
     }
 
     private fun endCall() {
-        stopBackgroundService()
-        stopRecording()
+        Log.d(TAG, "Ending call for session: $sessionId")
+        statusText = "Ending Call..."
+        
+        // Stop billing and notify other party immediately via server
         SocketManager.endSession(sessionId)
-        finish()
+        
+        // Small delay to ensure server receives the signal before we close locally
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            finish()
+        }, 500)
     }
 
     override fun finish() {
@@ -1122,6 +1149,9 @@ class CallActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        try {
+            unregisterReceiver(callEndingReceiver)
+        } catch (e: Exception) {}
         if (isRecordingState) {
             try { stopRecording() } catch (e: Exception) { e.printStackTrace() }
         }

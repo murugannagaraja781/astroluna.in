@@ -150,11 +150,17 @@ class FCMService : FirebaseMessagingService() {
             when (messageType) {
                 "INCOMING_CALL" -> handleIncomingCall(data)
                 "CALL_ENDED" -> {
-                    Log.d(TAG, "Call ended - clearing notification and opening app")
+                    Log.d(TAG, "Call ended - clearing notification and broadcasting intent")
                     val notificationManager = getSystemService(NotificationManager::class.java)
                     notificationManager.cancel(CALL_NOTIFICATION_ID)
 
-                    // User Request: Open app when call ends
+                    // NEW: Broadcast to active activities
+                    val endIntent = Intent("com.astroluna.CALL_ENDED").apply {
+                        putExtra("sessionId", data["sessionId"])
+                    }
+                    sendBroadcast(endIntent)
+
+                    // User Request: Open app when call ends (if needed)
                     try {
                         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
                         launchIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
