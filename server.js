@@ -102,7 +102,7 @@ app.use((err, req, res, next) => {
 
 // Database & Listen
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/astrofive';
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');
     server.listen(process.env.PORT || 5000, '0.0.0.0', () => {
