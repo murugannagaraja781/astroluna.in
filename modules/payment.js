@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const axios = require('axios');
 const { User, Payment, BillingLedger } = require('../models');
 
 module.exports = function(io, shared) {
