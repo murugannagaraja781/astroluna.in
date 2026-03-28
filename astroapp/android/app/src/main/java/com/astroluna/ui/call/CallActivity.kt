@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -40,6 +41,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.media.MediaRecorder
 import android.os.Build
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.BroadcastReceiver
 import java.io.File
 // Note: Recording icons replaced with core Check/AddCircle
 import com.astroluna.R
@@ -105,8 +110,8 @@ class CallActivity : ComponentActivity() {
     private var lastBackPressTime by mutableLongStateOf(0L)
 
     // Receiver for CALL_ENDED signal from FCM
-    private val callEndingReceiver = object : android.content.BroadcastReceiver() {
-        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+    private val callEndingReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
             val sid = intent?.getStringExtra("sessionId")
             Log.d(TAG, "Received CALL_ENDED broadcast for session: $sid")
             if (sid == null || sid == sessionId) {
@@ -337,6 +342,7 @@ class CallActivity : ComponentActivity() {
                         onEndCall = { endCall() },
                         onEditIntake = { openEditIntake() },
                         onShowRasi = { showRasiChart() },
+                        onMatchJothagam = { showMatchChart() },
                         isRecording = isRecordingState,
                         onToggleRecording = { toggleRecording() },
                         isReady = isWebRTCInitialized
@@ -847,7 +853,11 @@ class CallActivity : ComponentActivity() {
 
             override fun onIceCandidate(candidate: IceCandidate?) {
                 if (candidate != null) {
-                    Log.d(TAG, "Generated ICE Candidate (${candidate.sdpMid}): ${candidate.sdp}")
+                    val candidateType = if (candidate.sdp.contains("typ relay")) "RELAY" 
+                                       else if (candidate.sdp.contains("typ srflx")) "STUN" 
+                                       else "HOST"
+                    Log.d(TAG, "Generated ICE Candidate [$candidateType] (${candidate.sdpMid}): ${candidate.sdp}")
+                    
                     val signalData = JSONObject().apply {
                          put("type", "candidate")
                          put("candidate", JSONObject().apply {
@@ -1209,6 +1219,14 @@ class CallActivity : ComponentActivity() {
             Toast.makeText(this, "ஜோதிடம்: விவரங்கள் இன்னும் வரவில்லை (Waiting for Data...)", Toast.LENGTH_LONG).show()
         }
     }
+
+    private fun showMatchChart() {
+        Log.d(TAG, "showMatchChart() called")
+        val intent = android.content.Intent(this, com.astroluna.ui.chart.MatchDisplayActivity::class.java)
+        intent.putExtra("sessionId", sessionId)
+        intent.putExtra("toUserId", partnerId)
+        startActivity(intent)
+    }
 }
 
 // openHelper for simplified observer
@@ -1239,6 +1257,7 @@ fun CallScreen(
     onEndCall: () -> Unit,
     onEditIntake: () -> Unit,
     onShowRasi: () -> Unit,
+    onMatchJothagam: () -> Unit = {},
     isRecording: Boolean = false,
     onToggleRecording: () -> Unit = {},
     isReady: Boolean = false
@@ -1380,6 +1399,7 @@ fun CallScreen(
                 ) {
                     if (role == "astrologer") {
                         ControlBtnItem(onClick = onShowRasi, icon = Icons.Default.Star, label = "Jothidam", active = true)
+                        ControlBtnItem(onClick = onMatchJothagam, icon = Icons.Default.Favorite, label = "Match", active = true)
                     } else {
                         Spacer(modifier = Modifier.size(48.dp))
                     }
@@ -1396,6 +1416,7 @@ fun CallScreen(
                     }
 
                     if (role == "astrologer") {
+                        ControlBtnItem(onClick = onEditIntake, icon = Icons.Default.Edit, label = "Edit", active = true)
                         ControlBtnItem(
                             onClick = onToggleRecording,
                             icon = if (isRecording) Icons.Default.Check else Icons.Default.AddCircle,

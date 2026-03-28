@@ -353,6 +353,8 @@ fun IntakeScreen(
                 stateName = storedState
                 countryName = storedCountry
             }
+            if (countryName.isBlank()) countryName = "India"
+            if (stateName.isBlank()) stateName = "Tamil Nadu" // Defaulting to TN as common for this app
             latitude = prefs.getFloat("latitude", 0f).toDouble().takeIf { it != 0.0 }
             longitude = prefs.getFloat("longitude", 0f).toDouble().takeIf { it != 0.0 }
             timezone = prefs.getFloat("timezone", 5.5f).toDouble()

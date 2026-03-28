@@ -21,3 +21,19 @@
 
 # Keep Kotlin metadata
 -keep class kotlin.Metadata { *; }
+
+# Socket.IO
+-keep class io.socket.** { *; }
+-keep class okhttp3.** { *; }
+-dontwarn io.socket.**
+
+# WebRTC (Stream SDK)
+-keep class org.webrtc.** { *; }
+-keep class io.getstream.webrtc.** { *; }
+-dontwarn org.webrtc.**
+-dontwarn io.getstream.webrtc.**
+
+# JNI
+-keepclasseswithmembernames class * {
+    native <methods>;
+}

@@ -63,13 +63,13 @@ fun CSCScreen(viewModel: CityViewModel, onFinalSelect: (LocationItem) -> Unit) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Select Location", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(bottom = 16.dp))
 
-        // Country Selector
-        DropdownSelector(
-            label = "Country",
-            selectedItem = uiState.selectedCountry?.name,
-            items = uiState.countries,
-            onSelect = { viewModel.onCountrySelected(it) }
-        )
+        // Country Selector (Hidden as only India is available)
+        // DropdownSelector(
+        //     label = "Country",
+        //     selectedItem = uiState.selectedCountry?.name,
+        //     items = uiState.countries,
+        //     onSelect = { viewModel.onCountrySelected(it) }
+        // )
 
         Spacer(modifier = Modifier.height(16.dp))
 

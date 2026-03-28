@@ -18,6 +18,11 @@ android {
         versionCode = 9
         versionName = "1.0.0.9"
         multiDexEnabled = false
+
+        ndk {
+            // Support both 32-bit and 64-bit architectures (Required by Play Store)
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
+        }
     }
 
     signingConfigs {
@@ -42,13 +47,14 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true // Enabled for Play Store (shrinks app size)
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            // Use release signing config if keystore.properties exists, else it will fail at build time (which is good)
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false

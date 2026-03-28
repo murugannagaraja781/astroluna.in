@@ -127,8 +127,8 @@ fun FreeHoroscopeScreen(
     var amPm by remember { mutableStateOf("AM") }
 
     // Place
-    var countryName by remember { mutableStateOf("") }
-    var stateName by remember { mutableStateOf("") }
+    var countryName by remember { mutableStateOf("India") }
+    var stateName by remember { mutableStateOf("Tamil Nadu") }
     var cityName by remember { mutableStateOf("") }
     var timezoneId by remember { mutableStateOf<String?>(null) }
     var latitude by remember { mutableStateOf<Double?>(null) }
