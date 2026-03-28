@@ -1,6 +1,7 @@
 package com.astroluna.ui.call
 
 import android.content.Context
+import android.media.AudioManager
 import android.util.Log
 import com.astroluna.data.remote.SocketManager
 import io.socket.client.Ack
@@ -165,7 +166,15 @@ class CallConnectivityManager(
         })
     }
 
+    private fun configureAudio(callType: String) {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.isSpeakerphoneOn = (callType == "video")
+        Log.d(TAG, "[Audio] Configured for $callType | Speaker: ${audioManager.isSpeakerphoneOn}")
+    }
+
     fun startMedia(callType: String) {
+        configureAudio(callType)
         val audioSource = peerConnectionFactory?.createAudioSource(MediaConstraints())
         localAudioTrack = peerConnectionFactory?.createAudioTrack("101", audioSource)
         peerConnection?.addTrack(localAudioTrack)
@@ -207,13 +216,19 @@ class CallConnectivityManager(
         }, MediaConstraints())
     }
 
-    fun addIceCandidate(candidate: IceCandidate) {
+    private fun addIceCandidate(candidate: IceCandidate) {
+        Log.d(TAG, "[Signal] Adding ICE Candidate from $partnerId")
         peerConnection?.addIceCandidate(candidate)
     }
 
-    fun handleRemoteSdp(sdp: String, type: String) {
+    private fun handleRemoteSdp(sdp: String, type: String) {
+        Log.d(TAG, "[Signal] Received $type from $partnerId")
         val sdpType = if (type == "offer") SessionDescription.Type.OFFER else SessionDescription.Type.ANSWER
-        peerConnection?.setRemoteDescription(SimpleSdpObserver(), SessionDescription(sdpType, sdp))
+        peerConnection?.setRemoteDescription(object : SimpleSdpObserver() {
+            override fun onSetSuccess() {
+                Log.d(TAG, "[Signal] Remote SDP Set Success")
+            }
+        }, SessionDescription(sdpType, sdp))
         if (type == "offer") createAnswer()
     }
 
@@ -239,6 +254,10 @@ class CallConnectivityManager(
 
     fun cleanup() {
         try {
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            audioManager.mode = AudioManager.MODE_NORMAL
+            audioManager.isSpeakerphoneOn = false
+
             videoCapturer?.stopCapture()
             videoCapturer?.dispose()
             peerConnection?.close()

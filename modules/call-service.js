@@ -31,11 +31,12 @@ try {
   const serviceAccountPath = path.join(__dirname, '..', 'firebase-service-account.json');
   if (fs.existsSync(serviceAccountPath)) {
     const firebaseServiceAccount = require(serviceAccountPath);
+    const projectId = firebaseServiceAccount.project_id || 'unknown';
     callApp = admin.initializeApp({ credential: admin.credential.cert(firebaseServiceAccount) }, 'callServiceApp');
-    console.log('✓ Call Service: Firebase Admin SDK initialized');
+    console.log(`✓ Call Service: Firebase Admin SDK initialized for project: ${projectId}`);
   }
 } catch (error) {
-  console.warn('✗ Call Service: Failed to initialize Firebase');
+  console.warn('✗ Call Service: Failed to initialize Firebase:', error.message);
 }
 
 async function sendFcmV1Push(fcmToken, data, notification) {
@@ -48,7 +49,13 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const result = await callApp.messaging().send(message);
     return { success: true, messageId: result };
   } catch (err) {
-    console.error('[FCM] Send error:', err.message);
+    const tokenStart = fcmToken ? fcmToken.substring(0, 10) : 'none';
+    const tokenEnd = fcmToken ? fcmToken.substring(fcmToken.length - 10) : 'none';
+    console.error(`[FCM] Send error: ${err.message} | Token: ${tokenStart}...${tokenEnd}`);
+    
+    if (err.message.includes('not found')) {
+        console.warn('👉 POSSIBLE CAUSE: The project ID in your service account JSON might not match the project that generated the mobile app token.');
+    }
     return { success: false, error: err.message };
   }
 }
