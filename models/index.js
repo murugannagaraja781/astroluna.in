@@ -44,9 +44,7 @@ const UserSchema = new mongoose.Schema({
   bankDetails: {
     accountHolder: String, accountNumber: String, bankName: String,
     ifscCode: String, upiId: String
-  },
-  pendingImage: { type: String, default: '' },
-  photoStatus: { type: String, enum: ['none', 'pending', 'approved', 'rejected'], default: 'none' }
+  }
 });
 
 const CallRequestSchema = new mongoose.Schema({
@@ -195,31 +193,6 @@ const NotificationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const ReviewSchema = new mongoose.Schema({
-  sessionId: String,
-  clientId: String,
-  astrologerId: String,
-  rating: { type: Number, min: 1, max: 5 },
-  comment: String,
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
-  createdAt: { type: Date, default: Date.now }
-});
-
-const GlobalSettingsSchema = new mongoose.Schema({
-  key: { type: String, unique: true },
-  value: mongoose.Schema.Types.Mixed,
-  updatedAt: { type: Date, default: Date.now }
-});
-
-const SystemLogSchema = new mongoose.Schema({
-  type: { type: String, enum: ['info', 'warn', 'error', 'critical'], default: 'info' },
-  module: String,
-  message: String,
-  details: Object,
-  timestamp: { type: Date, default: Date.now }
-});
-SystemLogSchema.index({ timestamp: 1 }, { expireAfterSeconds: 15 * 24 * 60 * 60 }); // 15 days TTL
-
 module.exports = {
   User: mongoose.model('User', UserSchema),
   CallRequest: mongoose.model('CallRequest', CallRequestSchema),
@@ -233,8 +206,5 @@ module.exports = {
   Banner: mongoose.model('Banner', BannerSchema),
   AccountDeletionRequest: mongoose.model('AccountDeletionRequest', AccountDeletionRequestSchema),
   AstrologerApplication: mongoose.model('AstrologerApplication', AstrologerApplicationSchema),
-  Notification: mongoose.model('Notification', NotificationSchema),
-  Review: mongoose.model('Review', ReviewSchema),
-  GlobalSettings: mongoose.model('GlobalSettings', GlobalSettingsSchema),
-  SystemLog: mongoose.model('SystemLog', SystemLogSchema)
+  Notification: mongoose.model('Notification', NotificationSchema)
 };

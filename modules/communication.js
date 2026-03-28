@@ -43,13 +43,6 @@ module.exports = function(io, shared) {
           socketToUser.set(socket.id, resolvedUserId);
           socket.join(resolvedUserId); 
 
-          // Update FCM token if provided via socket
-          if (data && data.fcmToken) {
-            user.fcmToken = data.fcmToken;
-            user.save().catch(e => console.error('[FCM] Error saving token via socket:', e));
-            console.log(`[FCM] Token updated via socket for ${user.name}`);
-          }
-
           safeAck(cb, {
             ok: true,
             userId: user.userId,
@@ -166,16 +159,12 @@ module.exports = function(io, shared) {
       try {
         const { toUserId, type, birthData } = data || {};
         const fromUserId = socketToUser.get(socket.id);
-        if (!fromUserId) return safeAck(cb, { ok: false, error: 'You are not registered (send register first)' });
-        if (!toUserId || !type) return safeAck(cb, { ok: false, error: 'Missing target user or session type' });
+        if (!fromUserId || !toUserId || !type) return safeAck(cb, { ok: false, error: 'Missing data' });
 
         const toUser = await User.findOne({ userId: toUserId });
         const fromUser = await User.findOne({ userId: fromUserId });
 
-        if (!toUser) {
-           console.error(`[Signal] Session failed: Target user ${toUserId} does not exist in database`);
-           return safeAck(cb, { ok: false, error: 'Target user not found in database' });
-        }
+        if (!toUser) return safeAck(cb, { ok: false, error: 'Target not found' });
 
         if (userActiveSession.has(toUserId)) {
           const sid = userActiveSession.get(toUserId);
@@ -325,8 +314,8 @@ module.exports = function(io, shared) {
           const fromUserId = dbSession.fromUserId;
           if (accept) {
             User.updateOne({ userId: astrologerId }, { isBusy: true }).then(() => broadcastAstroUpdate());
-            io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || dbSession.type, accept: true, iceServers: ICE_SERVERS });
-            safeAck(cb, { ok: true, fromUserId, iceServers: ICE_SERVERS });
+            io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || dbSession.type, accept: true });
+            safeAck(cb, { ok: true, fromUserId });
           } else {
             io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, accept: false });
             endSessionRecord(sessionId);
@@ -363,9 +352,9 @@ module.exports = function(io, shared) {
               }
             }
           });
-          io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true, iceServers: ICE_SERVERS });
+          io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || session.type, accept: true });
           console.log(`[Signal] ${astrologerId} answered ${sessionId} (Native). Peer: ${fromUserId}`);
-          safeAck(cb, { ok: true, fromUserId, iceServers: ICE_SERVERS });
+          safeAck(cb, { ok: true, fromUserId });
         } else {
           io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, accept: false });
           endSessionRecord(sessionId);
@@ -375,24 +364,10 @@ module.exports = function(io, shared) {
     });
 
     // --- Signaling Relay ---
-    socket.on('signal', async (data) => {
-      let { sessionId, toUserId, signal } = data || {};
+    socket.on('signal', (data) => {
+      const { sessionId, toUserId, signal } = data || {};
       const fromUserId = socketToUser.get(socket.id);
-      if (!fromUserId || !sessionId || !signal) return;
-
-      // Fallback: If toUserId is missing or unknown, find it from the session
-      if (!toUserId || toUserId === 'Unknown') {
-        const session = activeSessions.get(sessionId) || await Session.findOne({ sessionId });
-        if (session) {
-          const users = session.users || [session.fromUserId, session.toUserId];
-          toUserId = users.find(u => u && u !== fromUserId);
-        }
-      }
-
-      if (!toUserId || toUserId === 'Unknown') {
-        console.warn(`[Signal] Cannot relay signal: Target user Unknown for session ${sessionId}`);
-        return;
-      }
+      if (!fromUserId || !sessionId || !toUserId || !signal) return;
 
       const type = signal.type || (signal.candidate ? 'ice-candidate' : 'unknown');
       console.log(`[Signal] Relay ${type} from ${fromUserId} to ${toUserId} | Session: ${sessionId}`);
@@ -428,22 +403,13 @@ module.exports = function(io, shared) {
 
 
     // --- Session Connect (Room Join) ---
-    socket.on('session-connect', async (data, cb) => {
+    socket.on('session-connect', (data, cb) => {
       try {
         const { sessionId } = data || {};
         if (sessionId) {
           socket.join(sessionId);
           logActivity('session', `Socket ${socket.id} joined room ${sessionId}`);
-          
-          let toUserId;
-          const session = activeSessions.get(sessionId) || await Session.findOne({ sessionId });
-          if (session) {
-             const fromUserId = socketToUser.get(socket.id);
-             const users = session.users || [session.fromUserId, session.toUserId];
-             toUserId = users.find(u => u && u !== fromUserId);
-          }
-          
-          safeAck(cb, { ok: true, iceServers: ICE_SERVERS, toUserId });
+          safeAck(cb, { ok: true, iceServers: ICE_SERVERS });
         } else {
           safeAck(cb, { ok: false, error: 'No sessionId' });
         }
@@ -476,75 +442,6 @@ module.exports = function(io, shared) {
           sendFcmV1Push(toUser.fcmToken, payload, null);
         }
       } catch (err) { console.error('chat-message error', err); }
-    });
-
-    // --- Super Admin Handlers ---
-    socket.on('admin-get-ledger-stats', async (data, cb) => {
-      const fromUserId = socketToUser.get(socket.id);
-      const user = await User.findOne({ userId: fromUserId });
-      if (!user || user.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
-
-      try {
-        const ledger = await BillingLedger.find();
-        const stats = {
-          totalRevenue: 0,
-          adminProfit: 0,
-          astroPayout: 0,
-          totalDuration: 0,
-          totalUsers: await User.countDocuments({ role: { $ne: 'superadmin' } }),
-          activeSessions: activeSessions.size
-        };
-
-        ledger.forEach(l => {
-          stats.totalRevenue += (l.chargedToClient || 0);
-          stats.adminProfit += (l.adminAmount || 0);
-          stats.astroPayout += (l.creditedToAstrologer || 0);
-          // If we want minutes, we'd sum durations, but here we can approximate from charged amounts or add a duration field to ledger
-          // For now, let's just sum the credited amounts
-        });
-
-        // Sum actual sessions duration from DB sessions
-        const allSessions = await Session.find({ status: 'completed' });
-        allSessions.forEach(s => {
-          stats.totalDuration += (s.duration || 0);
-        });
-
-        safeAck(cb, { ok: true, stats, fullLedger: ledger });
-      } catch (e) {
-        console.error('admin-get-ledger-stats error', e);
-        safeAck(cb, { ok: false, error: 'Server error' });
-      }
-    });
-
-    socket.on('admin-update-user-details', async (data, cb) => {
-      const fromUserId = socketToUser.get(socket.id);
-      const admin = await User.findOne({ userId: fromUserId });
-      if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
-
-      try {
-        const { userId, updates } = data;
-        await User.updateOne({ userId }, updates);
-        logActivity('admin', `User ${userId} details updated by admin`, updates);
-        safeAck(cb, { ok: true });
-        
-        // Broadcast update to all astrologers if it's an astro update
-        broadcastAstroUpdate();
-      } catch (e) {
-        console.error('admin-update-user-details error', e);
-        safeAck(cb, { ok: false, error: 'Server error' });
-      }
-    });
-
-    // --- System Log Handler ---
-    socket.on('admin-get-logs', async (data, cb) => {
-      const fromUserId = socketToUser.get(socket.id);
-      const admin = await User.findOne({ userId: fromUserId });
-      if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
-
-      try {
-          const logs = await fs.promises.readFile('activity.log', 'utf8').catch(() => '');
-          safeAck(cb, { ok: true, logs });
-      } catch (e) { safeAck(cb, { ok: false }); }
     });
 
     socket.on('disconnect', () => {

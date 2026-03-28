@@ -284,15 +284,12 @@ class ChatActivity : ComponentActivity() {
         viewModel.startListeners()
         val myUserId = TokenManager(this).getUserSession()?.userId
         if (myUserId != null) {
-            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-                val fcmToken = if (task.isSuccessful) task.result else null
-                SocketManager.registerUser(myUserId, fcmToken) {
-                    // Socket registered - now emit pending accept if any
-                    if (pendingAccept && sessionId != null && toUserId != null) {
-                        pendingAccept = false
-                        viewModel.acceptSession(sessionId!!, toUserId!!)
-                        android.util.Log.d("ChatActivity", "Emitted acceptSession after socket registration")
-                    }
+            SocketManager.registerUser(myUserId) {
+                // Socket registered - now emit pending accept if any
+                if (pendingAccept && sessionId != null && toUserId != null) {
+                    pendingAccept = false
+                    viewModel.acceptSession(sessionId!!, toUserId!!)
+                    android.util.Log.d("ChatActivity", "Emitted acceptSession after socket registration")
                 }
             }
         }
