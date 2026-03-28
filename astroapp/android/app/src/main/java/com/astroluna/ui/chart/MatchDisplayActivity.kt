@@ -118,16 +118,16 @@ class MatchDisplayActivity : ComponentActivity() {
             val response = apiInterface.getRasiEngMatching(payload)
             if (response.isSuccessful && response.body() != null) {
                 val jsonResponse = response.body()!!.toString()
-                android.util.Log.d("MatchDisplay", "API Response: ${jsonResponse.take(200)}")
+                android.util.Log.d("MatchDisplay", "API Success: ${jsonResponse.take(200)}")
                 generateMatchHtml(jsonResponse)
             } else {
                 val errorMsg = response.errorBody()?.string() ?: "Unknown API Error"
-                android.util.Log.e("MatchDisplay", "API Error: ${response.code()} - $errorMsg")
+                android.util.Log.e("MatchDisplay", "API Error: $errorMsg")
                 "ERROR: API returned ${response.code()}: $errorMsg"
             }
         } catch (e: Exception) {
-            android.util.Log.e("MatchDisplay", "Exception during fetch: ${e.message}", e)
-            "ERROR: ${e.localizedMessage ?: "Unknown Exception"}"
+            android.util.Log.e("MatchDisplay", "Fetch Exception", e)
+            "ERROR: ${e.localizedMessage}"
         }
     }
 
@@ -205,10 +205,16 @@ class MatchDisplayActivity : ComponentActivity() {
                 </div>
 
                 <script>
-                    try {
-                        const root = $jsonResponse;
-                        const data = root.data; // Access the nested data object
-                        let html = '';
+                    window.onload = function() {
+                        try {
+                            const root = $jsonResponse;
+                            const data = root.data;
+                            
+                            if (!data || !data.boy || !data.girl) {
+                                document.getElementById('content').innerHTML = '<div style="color:#C62828;text-align:center;padding:20px;"><h3>Match Data Not Available</h3><p>Birth details might be incorrect or missing.</p></div>';
+                                return;
+                            }
+                            let html = '';
 
                         if (data) {
                             html += '<div class="info-row"><span class="info-label">Boy Star</span><span class="info-value">' + data.boy.nakshatra + ' (' + data.boy.rasi + ')</span></div>';

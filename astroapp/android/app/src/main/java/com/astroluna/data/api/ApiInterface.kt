@@ -101,4 +101,11 @@ interface ApiInterface {
 
     @retrofit2.http.GET("api/astrology/astrologers")
     suspend fun getAstrologers(): Response<com.google.gson.JsonObject>
+
+    @retrofit2.http.Multipart
+    @POST("api/user/upload-photo")
+    suspend fun uploadPhoto(
+        @retrofit2.http.Part("userId") userId: okhttp3.RequestBody,
+        @retrofit2.http.Part photo: okhttp3.MultipartBody.Part
+    ): Response<com.google.gson.JsonObject>
 }

@@ -605,50 +605,78 @@ fun IntakeScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF4A148C), Color(0xFF7B1FA2), Color(0xFFAB47BC))
+    Scaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
+                title = {
+                    Text(
+                        "Consultation Details",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onClose) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
                 )
             )
-    ) {
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.statusBarsPadding(),
-                    title = {
-                        Text(
-                            "Consultation Details",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onClose) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent
-                    )
-                )
-            }
-        ) { padding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)) {
-                Column(
+        },
+        bottomBar = {
+            if (!isWaiting) {
+                Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .navigationBarsPadding()
-                        .imePadding()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .fillMaxWidth()
+                        .shadow(16.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
+                    color = Color.White.copy(alpha = 0.98f)
                 ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .navigationBarsPadding()
+                    ) {
+                        Button(
+                            onClick = { submit() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .shadow(8.dp, RoundedCornerShape(16.dp)),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = PeacockGreen)
+                        ) {
+                            val btnText = if (isEditMode) "Save Changes" 
+                                         else if (callType == "free_horoscope") "View Chart"
+                                         else if (callType == "match") "Check Marriage Match"
+                                         else "Start Consultation"
+                            Text(
+                                btnText,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    ) { padding ->
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
                     // Personal Details Card
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -1008,32 +1036,7 @@ fun IntakeScreen(
                         }
                     }
 
-                    Button(
-                        onClick = { submit() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(16.dp),
-                                spotColor = PeacockGreen
-                            ),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = PeacockGreen)
-                    ) {
-                        Text(
-                            if (isEditMode) "Update Details" else "Start Consultation",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = RoyalMidnightBlue
-                        )
-                    }
-
-                    Spacer(Modifier.height(32.dp))
-                }
-
-                // Vibrant Green Booking Confirmed Dialog
-                if (isWaiting) {
+                    if (isWaiting) {
                     val months = listOf("", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
                     val mName = months.getOrElse(month.toIntOrNull() ?: 0) { "" }
                     val displayDate = "$day $mName, $year"

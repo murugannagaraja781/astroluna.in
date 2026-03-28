@@ -66,6 +66,12 @@ class TokenManager(context: Context) {
         saveUserSession(updated)
     }
 
+    fun updateProfileImage(imageUrl: String) {
+        val session = getUserSession() ?: return
+        val updated = session.copy(image = imageUrl)
+        saveUserSession(updated)
+    }
+
     // Daily Progress Management
     fun getDailyProgress(): Int {
         return sharedPreferences.getInt("daily_progress", 0)

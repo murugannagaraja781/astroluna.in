@@ -13,6 +13,25 @@ const admin = require('firebase-admin'); // Firebase Admin for Mobile App
 const { DateTime } = require('luxon');
 const { fetchDailyHoroscope } = require("./utils/rasiEng/horoscopeData");
 
+// MULTER CONFIG FOR PROFILE PHOTOS
+const photoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = './public/uploads/profile';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    const userId = req.body.userId || 'unknown';
+    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+    cb(null, `profile_${userId}_${Date.now()}${ext}`);
+  }
+});
+
+const photoUpload = multer({ 
+  storage: photoStorage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
 // MODULAR EXPORTS - New separation architecture
 const {
   User, Session, CallRequest, PairMonth,
@@ -496,6 +515,41 @@ app.post('/api/astrologer/register', async (req, res) => {
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).json({ ok: false, error: 'Internal server error' });
+  }
+});
+
+// Profile Photo Upload API
+app.post('/api/user/upload-photo', photoUpload.single('photo'), async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId || !req.file) {
+      return res.status(400).json({ ok: false, error: 'Missing userId or photo' });
+    }
+
+    const imageUrl = `/uploads/profile/${req.file.filename}`;
+    
+    // Update User in DB
+    const user = await User.findOneAndUpdate(
+      { userId },
+      { image: imageUrl },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ ok: false, error: 'User not found' });
+    }
+
+    console.log(`[Photo Upload] Updated photo for user ${userId}: ${imageUrl}`);
+    
+    // Broadcast update if it's an astrologer
+    if (user.role === 'astrologer') {
+      await broadcastAstroUpdate();
+    }
+
+    res.json({ ok: true, imageUrl });
+  } catch (err) {
+    console.error('Photo upload error:', err);
+    res.status(500).json({ ok: false, error: 'Failed to upload photo' });
   }
 });
 

@@ -74,6 +74,11 @@ import com.astroluna.ui.theme.CosmicGradients
 import com.astroluna.ui.theme.CosmicShapes
 
 import com.astroluna.ui.theme.CosmicAppTheme
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 // REMOVED LOCAL COLORS - Using CosmicTheme
 
@@ -97,10 +102,52 @@ class AstrologerDashboardActivity : ComponentActivity() {
                         sessionName = session?.name ?: "Astrologer",
                         sessionId = session?.userId ?: "ID: ????",
                         initialWallet = session?.walletBalance ?: 0.0,
+                        initialImage = session?.image,
                         onLogout = { performLogout() },
                         onWithdraw = { showWithdrawDialog() }
                     )
                 }
+            }
+        }
+    }
+
+    private fun uploadProfilePhoto(uri: Uri, userId: String, onComplete: (String?) -> Unit) {
+        val inputStream = contentResolver.openInputStream(uri) ?: return
+        val file = File(cacheDir, "upload_profile.jpg")
+        val outputStream = java.io.FileOutputStream(file)
+        inputStream.copyTo(outputStream)
+        outputStream.close()
+        inputStream.close()
+
+        val requestFile = file.asRequestBody("image/*".toMediaType())
+        val body = MultipartBody.Part.createFormData("photo", file.name, requestFile)
+        val userIdPart = userId.toRequestBody("text/plain".toMediaType())
+
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            try {
+                val response = com.astroluna.data.api.ApiClient.api.uploadPhoto(userIdPart, body)
+                if (response.isSuccessful) {
+                    val imageUrl = response.body()?.optString("imageUrl")
+                    if (imageUrl != null) {
+                        tokenManager.updateProfileImage(imageUrl)
+                        runOnUiThread { 
+                            onComplete(imageUrl)
+                            Toast.makeText(this@AstrologerDashboardActivity, "Photo updated successfully", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        runOnUiThread { onComplete(null) }
+                    }
+                } else {
+                    runOnUiThread { 
+                        val err = response.errorBody()?.string() ?: "Unknown error"
+                        android.util.Log.e("Upload", "Failed: $err")
+                        onComplete(null)
+                        Toast.makeText(this@AstrologerDashboardActivity, "Upload failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread { onComplete(null) }
             }
         }
     }
@@ -272,10 +319,12 @@ fun AstrologerDashboardScreen(
     sessionName: String,
     sessionId: String,
     initialWallet: Double,
+    initialImage: String? = null,
     onLogout: () -> Unit,
     onWithdraw: () -> Unit
 ) {
     var walletBalance by remember { mutableDoubleStateOf(initialWallet) }
+    var profileImage by remember { mutableStateOf(initialImage) }
 
     // Separate service states
     var isChatOnline by remember { mutableStateOf(false) }
@@ -309,6 +358,18 @@ fun AstrologerDashboardScreen(
     ) { isGranted ->
         if (!isGranted) {
             Toast.makeText(context, "Notification permission is recommended for call alerts", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            (context as? AstrologerDashboardActivity)?.uploadProfilePhoto(uri, sessionId) { newUrl ->
+                if (newUrl != null) {
+                    profileImage = newUrl
+                }
+            }
         }
     }
 
@@ -450,7 +511,7 @@ fun AstrologerDashboardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val colors = CosmicAppTheme.colors
-                // Skeuomorphic Avatar
+                // Skeuomorphic Avatar - Clickable to change
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -462,23 +523,56 @@ fun AstrologerDashboardScreen(
                             )
                         )
                         .border(
-                           BorderStroke(
-                               2.dp,
-                               Brush.linearGradient(
-                                   colors = listOf(Color.White.copy(alpha = 0.9f), colors.accent.copy(alpha = 0.4f))
-                               )
-                           ),
-                           CircleShape
+                            BorderStroke(
+                                2.dp,
+                                Brush.linearGradient(
+                                    colors = listOf(Color.White.copy(alpha = 0.9f), colors.accent.copy(alpha = 0.4f))
+                                )
+                            ),
+                            CircleShape
                         )
-                        .shadow(4.dp, CircleShape),
+                        .shadow(4.dp, CircleShape)
+                        .clickable {
+                            photoPickerLauncher.launch(
+                                androidx.activity.result.PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        sessionName.take(1),
-                        color = Color.White,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 20.sp
-                    )
+                    if (!profileImage.isNullOrEmpty()) {
+                        val fullUrl = if (profileImage!!.startsWith("http")) profileImage!! 
+                                     else com.astroluna.utils.Constants.SERVER_URL + profileImage!!
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(fullUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Profile Photo",
+                            modifier = Modifier.fillMaxSize().clip(CircleShape),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            sessionName.take(1),
+                            color = colors.accent,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 20.sp
+                        )
+                    }
+                    
+                    // Small "Edit" overlay Badge
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(18.dp)
+                            .background(colors.accent, CircleShape)
+                            .border(1.dp, Color.White, CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Default.AddCircle, null, tint = Color.White, modifier = Modifier.size(10.dp))
+                    }
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {

@@ -54,7 +54,7 @@ android {
                 "proguard-rules.pro"
             )
             // Use release signing config if keystore.properties exists, else it will fail at build time (which is good)
-            signingConfig = signingConfigs.getByName("release")
+            // signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false
