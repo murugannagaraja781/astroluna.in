@@ -60,21 +60,27 @@ const PHONEPE_CLIENT_ID = (process.env.PHONEPE_CLIENT_ID || "").trim();
 const PHONEPE_CLIENT_VERSION = (process.env.PHONEPE_CLIENT_VERSION || "1").trim();
 const PHONEPE_CLIENT_SECRET = (process.env.PHONEPE_CLIENT_SECRET || "").trim();
 // WebRTC TURN Server Config
-const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:turn.astroluna.in:3478?transport=udp";
-const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:turn.astroluna.in:3478?transport=tcp";
-const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:turn.astroluna.in:5349";
+const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:turn.free.expressturn.com:3478?transport=udp";
+const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:turn.free.expressturn.com:3478?transport=tcp";
+const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:turn.free.expressturn.com:5349";
 const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
 const ICE_SERVERS = [
-  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] },
+  { 
+    urls: [
+      "stun:stun.l.google.com:19302", 
+      "stun:stun1.l.google.com:19302", 
+      "stun:stun2.l.google.com:19302",
+      "stun:stun3.l.google.com:19302",
+      "stun:stun4.l.google.com:19302"
+    ] 
+  },
   {
     urls: [
       TURN_SERVER_URL,
       TURN_SERVER_URL_TCP,
-      TURN_SERVER_URL_TLS,
-      "turns:turn.astroluna.in:5349?transport=tcp",
-      "turn:turn.astroluna.in:3478?transport=udp"
+      TURN_SERVER_URL_TLS
     ],
     username: TURN_SERVER_USERNAME,
     credential: TURN_SERVER_PASSWORD
