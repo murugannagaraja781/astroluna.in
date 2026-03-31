@@ -111,7 +111,7 @@ class AstrologerDashboardActivity : ComponentActivity() {
         }
     }
 
-    private fun uploadProfilePhoto(uri: Uri, userId: String, onComplete: (String?) -> Unit) {
+    fun uploadProfilePhoto(uri: Uri, userId: String, onComplete: (String?) -> Unit) {
         val inputStream = contentResolver.openInputStream(uri) ?: return
         val file = File(cacheDir, "upload_profile.jpg")
         val outputStream = java.io.FileOutputStream(file)
@@ -127,7 +127,7 @@ class AstrologerDashboardActivity : ComponentActivity() {
             try {
                 val response = com.astroluna.data.api.ApiClient.api.uploadPhoto(userIdPart, body)
                 if (response.isSuccessful) {
-                    val imageUrl = response.body()?.optString("imageUrl")
+                    val imageUrl = response.body()?.get("imageUrl")?.asString
                     if (imageUrl != null) {
                         tokenManager.updateProfileImage(imageUrl)
                         runOnUiThread { 

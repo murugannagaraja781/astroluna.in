@@ -76,79 +76,89 @@ val planetAbbrTamil = mapOf(
     "Ketu" to "கேது", "Ascendant" to "லக்", "As" to "லக்", "Mandi" to "மாந்தி"
 )
 
+import com.google.gson.annotations.SerializedName
+
 // --- Updated Data Models ---
-data class ChartResponse(val success: Boolean, val data: ChartData)
+data class ChartResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("data") val data: ChartData?
+)
+
 data class ChartData(
-    val planets: List<Planet>? = null,
-    val houses: HouseData? = null,
-    val panchanga: Panchanga? = null,
-    val dasha: List<DashaPeriod>? = null,
-    val transits: List<Transit>? = null,
-    val tamilDate: TamilDate? = null,
-    val kpSignificators: KPSignificators? = null,
-    val navamsa: NavamsaData? = null
+    @SerializedName("planets") val planets: List<Planet>? = null,
+    @SerializedName("houses") val houses: HouseData? = null,
+    @SerializedName("panchanga") val panchanga: Panchanga? = null,
+    @SerializedName("dasha") val dasha: List<DashaPeriod>? = null,
+    @SerializedName("transits") val transits: List<Transit>? = null,
+    @SerializedName("tamilDate") val tamilDate: TamilDate? = null,
+    @SerializedName("navamsa") val navamsa: NavamsaData? = null
 )
 
 data class Planet(
-    val name: String,
-    val signName: String,
-    val longitude: Double = 0.0,
-    val isRetrograde: Boolean = false,
-    val signIndex: Int = 0,
-    val house: Int = 0,
-    val nakshatra: String? = null,
-    val nakshatraPada: Int = 0,
-    val degreeFormatted: String? = null,
-    val signLord: String? = null,
-    val starLord: String? = null,
-    val subLord: String? = null
+    @SerializedName("name") val name: String,
+    @SerializedName("signName") val signName: String,
+    @SerializedName("longitude") val longitude: Double = 0.0,
+    @SerializedName("isRetrograde") val isRetrograde: Boolean = false,
+    @SerializedName("signIndex") val signIndex: Int = 0,
+    @SerializedName("house") val house: Int = 0,
+    @SerializedName("nakshatra") val nakshatra: String? = null,
+    @SerializedName("nakshatraPada") val nakshatraPada: Int = 0,
+    @SerializedName("degreeFormatted") val degreeFormatted: String? = null,
+    @SerializedName("signLord") val signLord: String? = null,
+    @SerializedName("starLord") val starLord: String? = null,
+    @SerializedName("subLord") val subLord: String? = null
 )
 
 data class HouseData(
-    val cusps: List<Double>,
-    val details: List<HouseDetail>,
-    val ascendantDetails: HouseDetail
+    @SerializedName("cusps") val cusps: List<Double>,
+    @SerializedName("details") val details: List<HouseDetail>? = null,
+    @SerializedName("ascendantDetails") val ascendantDetails: HouseDetail? = null
 )
 
 data class HouseDetail(
-    val signName: String,
-    val signAbbr: String? = null,
-    val nakshatra: String? = null,
-    val nakshatraPada: Int = 0,
-    val starLord: String? = null,
-    val subLord: String? = null,
-    val degreeFormatted: String? = null
+    @SerializedName("signName") val signName: String,
+    @SerializedName("signAbbr") val signAbbr: String? = null,
+    @SerializedName("nakshatra") val nakshatra: String? = null,
+    @SerializedName("nakshatraPada") val nakshatraPada: Int = 0,
+    @SerializedName("starLord") val starLord: String? = null,
+    @SerializedName("subLord") val subLord: String? = null,
+    @SerializedName("degreeFormatted") val degreeFormatted: String? = null
 )
 
 data class Panchanga(
-    val tithi: PanchangaValue? = null,
-    val nakshatra: PanchangaValue? = null,
-    val yoga: PanchangaValue? = null,
-    val karana: PanchangaValue? = null,
-    val vara: PanchangaValue? = null,
-    val sunrise: String? = null,
-    val sunset: String? = null,
-    val moonSign: String? = null,
-    val sunSign: String? = null
+    @SerializedName("tithi") val tithi: PanchangaValue? = null,
+    @SerializedName("nakshatra") val nakshatra: PanchangaValue? = null,
+    @SerializedName("yoga") val yoga: PanchangaValue? = null,
+    @SerializedName("karana") val karana: PanchangaValue? = null,
+    @SerializedName("vara") val vara: PanchangaValue? = null,
+    @SerializedName("sunrise") val sunrise: String? = null,
+    @SerializedName("sunset") val sunset: String? = null,
+    @SerializedName("moonSign") val moonSign: String? = null,
+    @SerializedName("sunSign") val sunSign: String? = null
 )
 
-data class PanchangaValue(val name: String)
+data class PanchangaValue(@SerializedName("name") val name: String)
 data class DashaPeriod(
-    val lord: String,
-    val start: String,
-    val end: String,
-    val level: Int,
-    val subPeriods: List<DashaPeriod>? = null
+    @SerializedName("lord") val lord: String,
+    @SerializedName("start") val start: String,
+    @SerializedName("end") val end: String,
+    @SerializedName("level") val level: Int,
+    @SerializedName("subPeriods") val subPeriods: List<DashaPeriod>? = null
 )
-data class Transit(val name: String, val signName: String, val isRetrograde: Boolean)
-data class TamilDate(val day: Int, val month: String, val year: String)
+data class Transit(
+    @SerializedName("name") val name: String,
+    @SerializedName("signName") val signName: String,
+    @SerializedName("isRetrograde") val isRetrograde: Boolean
+)
+data class TamilDate(
+    @SerializedName("day") val day: Int,
+    @SerializedName("month") val month: String,
+    @SerializedName("year") val year: String
+)
 data class NavamsaData(
-    val planets: List<Planet>? = null,
-    val ascendantSign: String? = null
+    @SerializedName("planets") val planets: List<Planet>? = null,
+    @SerializedName("ascendantSign") val ascendantSign: String? = null
 )
-data class KPSignificators(val planetView: List<KPPlanet>?, val houseView: List<KPHouse>?)
-data class KPPlanet(val name: String, val levelA: List<Int>, val levelB: List<Int>, val levelC: List<Int>, val levelD: List<Int>)
-data class KPHouse(val house: Int, val level1: List<String>, val level2: List<String>, val level3: List<String>, val level4: List<String>, val lord: String)
 
 class VipChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,19 +218,17 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
 
     LaunchedEffect(Unit) {
         isLoading = true
-        errorMessage = null // Clear previous error
-        scope.launch {
-            try {
-                val result = fetchFullChart(birthData)
-                if (result == null) {
-                    errorMessage = "Server returned empty data or error. Check logs."
-                }
-                setChartState(result)
-            } catch (e: Exception) {
-                errorMessage = "Failed to fetch chart data: ${e.localizedMessage ?: "Unknown error"}"
-            } finally {
-                isLoading = false
+        errorMessage = null
+        try {
+            val result = fetchFullChart(birthData)
+            if (result == null) {
+                errorMessage = "Server returned empty data. Please try again."
             }
+            setChartState(result)
+        } catch (e: Exception) {
+            errorMessage = "Connect Error: ${e.localizedMessage ?: "Unknown network issue"}"
+        } finally {
+            isLoading = false
         }
     }
 
@@ -496,8 +504,8 @@ fun PlanetGridTab(data: ChartData) {
     if (asc != null) {
         planets.add(Planet(
             name = "Ascendant",
-            signName = asc.signName,
-            degreeFormatted = asc.degreeFormatted,
+            signName = asc.signName ?: "",
+            degreeFormatted = asc.degreeFormatted ?: "",
             nakshatra = asc.nakshatra,
             nakshatraPada = asc.nakshatraPada,
             starLord = asc.starLord

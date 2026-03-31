@@ -5,8 +5,8 @@ const { SIGN_LORDS } = require('./config');
 /**
  * Get full planet data with KP details
  */
-function getPlanetsWithDetails(jd, houseCusps, ayanamsaName = 'Lahiri') {
-    const rawPlanets = swissEph.getAllPlanets(jd, ayanamsaName);
+function getPlanetsWithDetails(jd, lat, lng, houseCusps, ayanamsaName = 'Lahiri') {
+    const rawPlanets = swissEph.getAllPlanets(jd, lat, lng, ayanamsaName);
 
     return rawPlanets.map(p => {
         const sign = swissEph.getSign(p.longitude);

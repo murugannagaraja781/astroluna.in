@@ -93,7 +93,7 @@ async function handleFullChart(req, res, input = {}) {
         const muhurtas = getMuhurtas(jd, lat, lng);
 
         // Map planets (depends on houses)
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa).map(p => ({
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa).map(p => ({
             ...p,
             degreeFormatted: formatLongitude(p.longitude)
         }));
@@ -224,7 +224,7 @@ router.post('/quick', (req, res) => {
         const jd = swissEph.julday(utc.year, utc.month, utc.day, utc.hour + utc.minute / 60 + utc.second / 3600);
 
         const houses = getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa);
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa);
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa);
 
         res.json({
             success: true,

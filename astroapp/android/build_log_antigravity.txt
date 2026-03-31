@@ -1,65 +1,462 @@
-> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+Starting a Gradle Daemon, 3 incompatible Daemons could not be reused, use --status for details
+> Task :app:clean
+> Task :app:buildKotlinToolingMetadata
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:dataBindingMergeDependencyArtifactsRelease UP-TO-DATE
-> Task :app:generateReleaseResValues UP-TO-DATE
-> Task :app:generateReleaseResources UP-TO-DATE
-> Task :app:processReleaseGoogleServices UP-TO-DATE
-> Task :app:mergeReleaseResources UP-TO-DATE
-> Task :app:packageReleaseResources UP-TO-DATE
-> Task :app:parseReleaseLocalResources UP-TO-DATE
-> Task :app:dataBindingGenBaseClassesRelease UP-TO-DATE
-> Task :app:checkReleaseAarMetadata UP-TO-DATE
-> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
-> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
-> Task :app:extractDeepLinksRelease UP-TO-DATE
-> Task :app:processReleaseMainManifest UP-TO-DATE
-> Task :app:processReleaseManifest UP-TO-DATE
-> Task :app:processReleaseManifestForPackage UP-TO-DATE
-> Task :app:processReleaseResources UP-TO-DATE
-> Task :app:kaptGenerateStubsReleaseKotlin UP-TO-DATE
-> Task :app:kaptReleaseKotlin UP-TO-DATE
-> Task :app:compileReleaseKotlin UP-TO-DATE
-> Task :app:javaPreCompileRelease UP-TO-DATE
-> Task :app:compileReleaseJavaWithJavac UP-TO-DATE
-> Task :app:extractProguardFiles UP-TO-DATE
-> Task :app:generateReleaseLintVitalReportModel UP-TO-DATE
-> Task :app:lintVitalAnalyzeRelease UP-TO-DATE
-> Task :app:lintVitalReportRelease UP-TO-DATE
-> Task :app:lintVitalRelease
-> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
-> Task :app:mergeReleaseNativeLibs UP-TO-DATE
-> Task :app:stripReleaseDebugSymbols UP-TO-DATE
-> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
-> Task :app:mergeReleaseArtProfile UP-TO-DATE
-> Task :app:expandReleaseArtProfileWildcards UP-TO-DATE
-> Task :app:mergeReleaseGeneratedProguardFiles UP-TO-DATE
-> Task :app:processReleaseJavaRes UP-TO-DATE
-> Task :app:mergeReleaseJavaResource UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsRelease
+> Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:generateReleaseResources FROM-CACHE
+> Task :app:processReleaseGoogleServices FROM-CACHE
+> Task :app:mergeReleaseResources FROM-CACHE
+> Task :app:packageReleaseResources FROM-CACHE
+> Task :app:parseReleaseLocalResources FROM-CACHE
+> Task :app:dataBindingGenBaseClassesRelease FROM-CACHE
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:processReleaseMainManifest FROM-CACHE
+> Task :app:processReleaseManifest FROM-CACHE
+> Task :app:processReleaseManifestForPackage FROM-CACHE
+> Task :app:processReleaseResources FROM-CACHE
+> Task :app:kaptGenerateStubsReleaseKotlin FROM-CACHE
+> Task :app:kaptReleaseKotlin FROM-CACHE
+> Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseStartupProfile UP-TO-DATE
-> Task :app:minifyReleaseWithR8 UP-TO-DATE
-> Task :app:compileReleaseArtProfile UP-TO-DATE
-> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseAssets UP-TO-DATE
-> Task :app:compressReleaseAssets UP-TO-DATE
-> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
-> Task :app:processApplicationManifestReleaseForBundle UP-TO-DATE
-> Task :app:bundleReleaseResources UP-TO-DATE
-> Task :app:shrinkReleaseRes UP-TO-DATE
-> Task :app:optimizeReleaseResources UP-TO-DATE
-> Task :app:collectReleaseDependencies UP-TO-DATE
-> Task :app:sdkReleaseDependencyData UP-TO-DATE
-> Task :app:validateSigningRelease UP-TO-DATE
-> Task :app:writeReleaseAppMetadata UP-TO-DATE
-> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
-> Task :app:packageRelease UP-TO-DATE
-> Task :app:createReleaseApkListingFileRedirect UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:stripReleaseDebugSymbols
+
+> Task :app:compileReleaseKotlin
+e: Daemon compilation failed: Could not connect to Kotlin compile daemon
+java.lang.RuntimeException: Could not connect to Kotlin compile daemon
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:218)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:175)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:135)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:73)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:194)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:127)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:169)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:132)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:164)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:133)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1575)
+
+Failed to compile with Kotlin daemon: java.lang.RuntimeException: Could not connect to Kotlin compile daemon
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:218)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:175)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:135)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:73)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:194)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:127)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:169)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:132)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:164)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:133)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1575)
+Using fallback strategy: Compile without Kotlin daemon
+Try ./gradlew --stop if this issue persists.
+
+> Task :app:compressReleaseAssets FROM-CACHE
+> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processApplicationManifestReleaseForBundle
+> Task :app:bundleReleaseResources FROM-CACHE
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:generateReleaseFeatureMetadata FROM-CACHE
+> Task :app:configureReleaseDependencies
+> Task :app:parseReleaseIntegrityConfig UP-TO-DATE
+
+> Task :app:compileReleaseKotlin
+exception: app/src/main/java/com/astroluna/CallForegroundService.kt:73:13: warning: 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
+exception:             stopForeground(true)
+exception:             ^
+exception: app/src/main/java/com/astroluna/CallForegroundService.kt:79:37: warning: unnecessary safe call on a non-null receiver of type Intent?
+exception:             val partnerName = intent?.getStringExtra("partnerName") ?: "Client"
+exception:                                     ^
+exception: app/src/main/java/com/astroluna/CallForegroundService.kt:236:13: warning: 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
+exception:             stopForeground(true)
+exception:             ^
+exception: app/src/main/java/com/astroluna/FCMService.kt:343:30: warning: 'FULL_WAKE_LOCK: Int' is deprecated. Deprecated in Java
+exception:                 PowerManager.FULL_WAKE_LOCK or
+exception:                              ^
+exception: app/src/main/java/com/astroluna/FCMService.kt:344:38: warning: 'ACQUIRE_CAUSES_WAKEUP: Int' is deprecated. Deprecated in Java
+exception:                         PowerManager.ACQUIRE_CAUSES_WAKEUP or
+exception:                                      ^
+exception: app/src/main/java/com/astroluna/IncomingCallActivity.kt:134:15: warning: unnecessary safe call on a non-null receiver of type Intent
+exception:         intent?.let {
+exception:               ^
+exception: app/src/main/java/com/astroluna/data/remote/SocketManager.kt:27:44: warning: elvis operator (?:) always returns the left operand of non-nullable type String
+exception:             val url = Constants.SERVER_URL ?: "http://10.0.2.2:3000"
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:59: warning: parameter 'limit' is never used
+exception:     suspend fun fetchHistoryFromServer(sessionId: String, limit: Int = 50, before: Long? = null): Boolean {
+exception:                                                           ^
+exception: app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:76: warning: parameter 'before' is never used
+exception:     suspend fun fetchHistoryFromServer(sessionId: String, limit: Int = 50, before: Long? = null): Boolean {
+exception:                                                                            ^
+exception: app/src/main/java/com/astroluna/ui/academy/AcademyActivity.kt:136:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:143:9: warning: variable 'userId' is never used
+exception:     val userId = remember { tokenManager.getUserSession()?.userId ?: "" }
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:299:74: warning: 'CallMissed: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.CallMissed
+exception:                             if(note.type == "missed_call") Icons.Default.CallMissed else Icons.Default.Info,
+exception:                                                                          ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:293:40: warning: 'create(MediaType?, String): RequestBody' is deprecated. Moved to extension function. Put the 'content' argument first to fix Java
+exception:         val body = okhttp3.RequestBody.create(
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:324:5: warning: parameter 'onWithdraw' is never used
+exception:     onWithdraw: () -> Unit
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:613:40: warning: 'ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp
+exception:                     Icon(Icons.Default.ExitToApp, null, tint = Color.White)
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:712:21: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:                     Divider(color = colors.cardStroke.copy(alpha = 0.1f))
+exception:                     ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:790:26: warning: 'CircularProgressIndicator(Float, Modifier = ..., Color = ..., Dp = ..., Color = ..., StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda
+exception:                          CircularProgressIndicator(
+exception:                          ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:897:41: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                 "Chat" to Icons.Default.Send,
+exception:                                         ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:1014:38: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                 icon = Icons.Default.Send,
+exception:                                      ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerHistoryActivity.kt:104:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:80:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = cyan)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:245:36: warning: 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
+exception:         colors = TextFieldDefaults.outlinedTextFieldColors(
+exception:                                    ^
+exception: app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:279:36: warning: 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
+exception:         colors = TextFieldDefaults.outlinedTextFieldColors(
+exception:                                    ^
+exception: app/src/main/java/com/astroluna/ui/auth/OtpVerificationActivity.kt:129:5: warning: parameter 'phone' is never used
+exception:     phone: String,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:465:22: warning: 'setter for isSpeakerphoneOn: Boolean' is deprecated. Deprecated in Java
+exception:         audioManager.isSpeakerphoneOn = on
+exception:                      ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:497:17: warning: 'constructor MediaRecorder()' is deprecated. Deprecated in Java
+exception:                 MediaRecorder()
+exception:                 ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:647:18: warning: this declaration overrides deprecated member but not marked as deprecated itself. Please add @Deprecated annotation or suppress. See https://youtrack.jetbrains.com/issue/KT-47902 for details
+exception:     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+exception:                  ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:648:15: warning: 'onRequestPermissionsResult(Int, Array<String>, IntArray): Unit' is deprecated. This method has been deprecated in favor of using the Activity Result API
+exception:       which brings increased type safety via an {@link ActivityResultContract} and the prebuilt
+exception:       contracts for common intents available in
+exception:       {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for
+exception:       testing, and allow receiving results in separate, testable classes independent from your
+exception:       activity. Use
+exception:       {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)} passing
+exception:       in a {@link RequestMultiplePermissions} object for the {@link ActivityResultContract} and
+exception:       handling the result in the {@link ActivityResultCallback#onActivityResult(Object) callback}.
+exception:         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+exception:               ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:994:40: warning: elvis operator (?:) always returns the left operand of non-nullable type String
+exception:                 summaryReason = reason ?: ""
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1092:42: warning: the corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
+exception:             override fun onCreateSuccess(desc: SessionDescription?) {
+exception:                                          ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1117:42: warning: the corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
+exception:             override fun onCreateSuccess(desc: SessionDescription?) {
+exception:                                          ^
+exception: app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1247:5: warning: parameter 'isBillingActive' is never used
+exception:     isBillingActive: Boolean,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:35:38: warning: variable 'birthData' initializer is redundant
+exception:         var birthData: JSONObject? = null
+exception:                                      ^
+exception: app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:54:42: warning: unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
+exception:                     birthData = birthData!!,
+exception:                                          ^
+exception: app/src/main/java/com/astroluna/ui/chart/MatchDisplayActivity.kt:36:38: warning: variable 'birthData' initializer is redundant
+exception:         var birthData: JSONObject? = null
+exception:                                      ^
+exception: app/src/main/java/com/astroluna/ui/chart/MatchDisplayActivity.kt:55:42: warning: unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
+exception:                     birthData = birthData!!,
+exception:                                          ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:246:71: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                     IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = NeonCyan) }
+exception:                                                                       ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:309:40: warning: 'Indicator(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Use SecondaryIndicator instead.
+exception:                         TabRowDefaults.Indicator(
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:334:50: warning: unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+exception:                         0 -> ChartsTab(chartState!!, birthData)
+exception:                                                  ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:335:54: warning: unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+exception:                         1 -> PlanetGridTab(chartState!!)
+exception:                                                      ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:336:44: warning: unnecessary safe call on a non-null receiver of type ChartData?
+exception:                         2 -> if (chartState?.dasha != null) DashaListTab(chartState!!.dasha!!)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:336:84: warning: unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+exception:                         2 -> if (chartState?.dasha != null) DashaListTab(chartState!!.dasha!!)
+exception:                                                                                    ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:366:9: warning: variable 'ascIdx' is never used
+exception:     val ascIdx = if (ascSign.isNotEmpty()) signNames.indexOf(ascSign) else -1
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:670:49: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                     if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
+exception:                                                 ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:670:78: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                     if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
+exception:                                                                              ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:681:13: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:             Divider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
+exception:             ^
+exception: app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:684:13: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:             Divider(color = Color.White.copy(alpha = 0.1f))
+exception:             ^
+exception: app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:365:86: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = Color.White) } },
+exception:                                                                                      ^
+exception: app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:477:21: warning: variable 'color' is never used
+exception:                 val color = Color.Transparent
+exception:                     ^
+exception: app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:486:45: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                          Icon(Icons.Default.Send, contentDescription = "Reply", tint = Color.Gray)
+exception:                                             ^
+exception: app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:667:40: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                     Icon(Icons.Default.Send, "Send")
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/city/CitySearchActivity.kt:118:21: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:                     Divider()
+exception:                     ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:64:17: warning: variable 'customBg' is never used
+exception:             val customBg = com.astroluna.utils.PageThemeManager.getPageColor(context, pageName, com.astroluna.utils.PageThemeManager.ATTR_BG, 0)
+exception:                 ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:65:17: warning: variable 'customCard' is never used
+exception:             val customCard = com.astroluna.utils.PageThemeManager.getPageColor(context, pageName, com.astroluna.utils.PageThemeManager.ATTR_CARD, 0)
+exception:                 ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:66:17: warning: variable 'customFont' is never used
+exception:             val customFont = com.astroluna.utils.PageThemeManager.getPageColor(context, pageName, com.astroluna.utils.PageThemeManager.ATTR_FONT, 0)
+exception:                 ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:67:17: warning: variable 'customBtn' is never used
+exception:             val customBtn = com.astroluna.utils.PageThemeManager.getPageColor(context, pageName, com.astroluna.utils.PageThemeManager.ATTR_BUTTON, 0)
+exception:                 ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:78:21: warning: variable 'selectedRasiItem' is never used
+exception:                 var selectedRasiItem by remember { mutableStateOf<ComposeRasiItem?>(null) }
+exception:                     ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:272:13: warning: variable 'socket' is never used
+exception:         val socket = SocketManager.getSocket()
+exception:             ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1050:5: warning: parameter 'isTamil' is never used
+exception:     isTamil: Boolean,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1051:5: warning: parameter 'onToggleLanguage' is never used
+exception:     onToggleLanguage: () -> Unit
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1202:9: warning: variable 'showChat' is never used
+exception:     val showChat = (selectedTab == 0 || selectedTab == 1)
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1203:9: warning: variable 'showVideo' is never used
+exception:     val showVideo = (selectedTab == 0 || selectedTab == 2 || selectedTab == 3)
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1204:9: warning: variable 'showCall' is never used
+exception:     val showCall = (selectedTab == 0 || selectedTab == 3)
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1340:46: warning: 'Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat
+exception:                         icon = Icons.Default.Chat,
+exception:                                              ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1385:74: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:             Triple("Chat", androidx.compose.material.icons.Icons.Default.Send, 1),
+exception:                                                                          ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1684:9: warning: variable 'context' is never used
+exception:     val context = LocalContext.current
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1835:78: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:             Icon(imageVector = androidx.compose.material.icons.Icons.Default.Send, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.Black)
+exception:                                                                              ^
+exception: app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:209:47: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                                 Icons.Default.ArrowBack,
+exception:                                               ^
+exception: app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:357:65: warning: 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+exception:                             trailingIcon = { Icon(Icons.Default.List, "Pick Time", tint = neonCyan) },
+exception:                                                                 ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:148:5: warning: parameter 'partnerName' is never used
+exception:     partnerName: String,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:149:5: warning: parameter 'partnerImage' is never used
+exception:     partnerImage: String?,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:296:33: warning: unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
+exception:             val d = existingData!!
+exception:                                 ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:622:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:790:69: warning: 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+exception:                                 trailingIcon = { Icon(Icons.Default.List, "Pick Time", tint = PeacockGreen) },
+exception:                                                                     ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:988:73: warning: 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+exception:                                     trailingIcon = { Icon(Icons.Default.List, "Pick Time", tint = PeacockGreen) },
+exception:                                                                         ^
+exception: app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:1132:37: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:                                     Divider(
+exception:                                     ^
+exception: app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:21:35: warning: 'PhonePe' is deprecated. Deprecated in Java
+exception: import com.phonepe.intent.sdk.api.PhonePe
+exception:                                   ^
+exception: app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:290:57: warning: elvis operator (?:) always returns the left operand of non-nullable type String?
+exception:                              handlePaymentResult(status ?: "unknown")
+exception:                                                         ^
+exception: app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:450:53: warning: elvis operator (?:) always returns the left operand of non-nullable type String?
+exception:                          handlePaymentResult(status ?: "unknown")
+exception:                                                     ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:81:5: warning: parameter 'id' is never used
+exception:     id: String,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:85:5: warning: parameter 'image' is never used
+exception:     image: String,
+exception:     ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:95:9: warning: variable 'yellowAccent' is never used
+exception:     val yellowAccent = Color(0xFFFFD54F)
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:103:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:216:51: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                     StatItem(icon = Icons.Default.Send, value = "49k Mins")
+exception:                                                   ^
+exception: app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:240:46: warning: 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+exception:                         icon = Icons.Default.Send,
+exception:                                              ^
+exception: app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:103:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:202:57: warning: 'create(MediaType?, File): RequestBody' is deprecated. Moved to extension function. Put the 'file' argument first to fix Java
+exception:         .addFormDataPart("file", file.name, RequestBody.create("image/*".toMediaTypeOrNull(), file))
+exception:                                                         ^
+exception: app/src/main/java/com/astroluna/ui/settings/SettingsActivity.kt:80:40: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                     Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = CosmicAppTheme.colors.accent)
+exception:                                        ^
+exception: app/src/main/java/com/astroluna/ui/settings/ThemeSettingsActivity.kt:157:44: warning: 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+exception:                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+exception:                                            ^
+exception: app/src/main/java/com/astroluna/ui/theme/Theme.kt:63:13: warning: variable 'pageFooter' is never used
+exception:         val pageFooter = pm.getPageColor(context, activityName, pm.ATTR_FOOTER, -1)
+exception:             ^
+exception: app/src/main/java/com/astroluna/ui/theme/Theme.kt:87:20: warning: 'setter for statusBarColor: Int' is deprecated. Deprecated in Java
+exception:             window.statusBarColor = Color.White.toArgb() // Pure White
+exception:                    ^
+exception: app/src/main/java/com/astroluna/ui/theme/Theme.kt:88:20: warning: 'setter for navigationBarColor: Int' is deprecated. Deprecated in Java
+exception:             window.navigationBarColor = Color.White.toArgb()
+exception:                    ^
+exception: app/src/main/java/com/astroluna/ui/theme/ThemeModels.kt:60:19: warning: parameter 'theme' is never used
+exception:     fun getColors(theme: AppTheme): ThemeColors = PremiumTemplate
+exception:                   ^
+exception: app/src/main/java/com/astroluna/ui/wallet/PaymentStatusActivity.kt:89:9: warning: variable 'bgColor' is never used
+exception:     val bgColor = if (isSuccess) Color(0xFFE8F5E9) else Color(0xFFFBE9E7)
+exception:         ^
+exception: app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:415:37: warning: 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+exception:                                     Divider(color = Color.White.copy(alpha = 0.1f), thickness = 0.5.dp, modifier = Modifier.padding(vertical = 4.dp))
+exception:                                     ^
+exception: app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:425:41: warning: name shadowed: amt
+exception:                                     val amt = amountInput.toIntOrNull() ?: 0
+exception:                                         ^
+exception: app/src/main/java/com/astroluna/utils/CallState.kt:17:24: warning: parameter 'newSessionId' is never used
+exception:     fun canReceiveCall(newSessionId: String?): Boolean {
+exception:                        ^
+
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseGeneratedProguardFiles UP-TO-DATE
+> Task :app:processReleaseJavaRes
+> Task :app:expandReleaseArtProfileWildcards
+> Task :app:mergeReleaseJavaResource
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:minifyReleaseWithR8
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:buildReleasePreBundle
+> Task :app:packageReleaseBundle
+> Task :app:shrinkReleaseRes
+> Task :app:optimizeReleaseResources FROM-CACHE
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
 > Task :app:assembleRelease
+> Task :app:shrinkBundleReleaseResources
+> Task :app:signReleaseBundle
+> Task :app:produceReleaseBundleIdeListingFile
+> Task :app:createReleaseBundleListingFileRedirect
+> Task :app:bundleRelease
 
 [Incubating] Problems report is available at: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/build/reports/problems/problems-report.html
 
@@ -69,5 +466,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 18s
-56 actionable tasks: 2 executed, 54 up-to-date
+BUILD SUCCESSFUL in 30m 16s
+65 actionable tasks: 42 executed, 20 from cache, 3 up-to-date

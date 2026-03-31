@@ -169,7 +169,7 @@ class AstronomyEngine {
         };
     }
 
-    getAllPlanets(jd, ayanamsaName = 'Lahiri') {
+    getAllPlanets(jd, lat, lng, ayanamsaName = 'Lahiri') {
         const ids = [0, 1, 2, 3, 4, 5, 6];
         const result = ids.map(id => {
             const data = this.calcPlanetSidereal(jd, id, ayanamsaName);
@@ -182,7 +182,7 @@ class AstronomyEngine {
         result.push({ id: 11, name: 'Ketu', longitude: (rahu.longitude + 180) % 360, latitude: 0, distance: 1, longitudeSpeed: rahu.longitudeSpeed, isRetrograde: true });
 
         // Add Mandi (Gulika)
-        const mandiLon = this.getMandiLongitude(jd, ayanamsaName);
+        const mandiLon = this.getMandiLongitude(jd, lat, lng, ayanamsaName);
         result.push({
             id: 100,
             name: 'Mandi',
@@ -196,8 +196,8 @@ class AstronomyEngine {
         return result;
     }
 
-    getMandiLongitude(jd, ayanamsaName = 'Lahiri') {
-        const sunrise = this.getSunrise(jd);
+    getMandiLongitude(jd, lat, lng, ayanamsaName = 'Lahiri') {
+        const sunrise = this.getSunrise(jd, lat, lng);
         const dateInfo = this.revjul(jd);
         const jsDate = new Date(dateInfo.year, dateInfo.month - 1, dateInfo.day);
         const dayOfWeek = jsDate.getDay(); // 0=Sun, 1=Mon...
@@ -207,7 +207,7 @@ class AstronomyEngine {
         const hoursAfterSunrise = dayMandiGhatikas[dayOfWeek] * 0.4;
 
         const mandiJD = sunrise + (hoursAfterSunrise / 24);
-        const ascData = this.getHouses(mandiJD, 13.0, 80.0, 'Placidus', ayanamsaName); // Use Ascendant at Mandi Time
+        const ascData = this.getHouses(mandiJD, lat, lng, 'Placidus', ayanamsaName); // Use Ascendant at Mandi Time
         return ascData.ascendant;
     }
 

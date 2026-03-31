@@ -15,8 +15,8 @@ android {
         applicationId = "com.astroluna"
         minSdk = 21
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.0.9"
+        versionCode = 1
+        versionName = "1.0"
         multiDexEnabled = false
 
         ndk {
@@ -54,7 +54,7 @@ android {
                 "proguard-rules.pro"
             )
             // Use release signing config if keystore.properties exists, else it will fail at build time (which is good)
-            // signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false
