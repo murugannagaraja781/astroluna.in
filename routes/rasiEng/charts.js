@@ -97,7 +97,7 @@ async function handleFullChart(req, res, input = {}) {
         // Map planets (depends on houses)
         const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa).map(p => ({
             ...p,
-            degreeFormatted: formatDegree(p.longitude, p.signIndex)
+            degreeFormatted: formatLongitude(p.longitude)
         }));
 
         // Calculate detailed Dasha
