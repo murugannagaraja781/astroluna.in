@@ -133,12 +133,13 @@ async function handleFullChart(req, res, input = {}) {
         }
 
         // Get Current Transits
-        const rawTransits = swissEph.getAllPlanets(transitJD, ayanamsa);
+        console.log('[Chart] Calculating Transits for JD:', transitJD, 'at', lat, lng);
+        const rawTransits = swissEph.getAllPlanets(transitJD, lat, lng, ayanamsa);
         const transits = rawTransits.map(t => {
             const sign = swissEph.getSign(t.longitude);
             return {
                 name: t.name,
-                signName: sign.name,
+                signName: sign?.name || 'Unknown',
                 isRetrograde: t.isRetrograde
             };
         });
@@ -190,15 +191,15 @@ async function handleFullChart(req, res, input = {}) {
             }
         };
 
-        console.log('Generating full chart for:', { date, time, lat, lng });
+        console.log('[Chart] Sending success response...');
         res.json({
             success: true,
             version: "v5.5",
             data: chartData
         });
     } catch (error) {
-        console.error('Charts Full API error:', error);
-        res.status(500).json({ error: error.message || 'Calculation failed' });
+        console.error('[Chart] FATAL API error:', error);
+        res.status(500).json({ success: false, error: error.message || 'Calculation failed' });
     }
 }
 

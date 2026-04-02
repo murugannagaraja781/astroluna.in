@@ -484,8 +484,9 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
                                     Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                                         occupants.forEach { pName ->
                                             val fontSize = if (occupants.size > 3) 10.sp else 12.sp
+                                            val displayName = if (pName != null) (planetAbbrTamil[pName] ?: pName.let { if (it.length >= 3) it.take(3) else it }) else "??"
                                             Text(
-                                                text = planetAbbrTamil[pName] ?: pName.take(3),
+                                                text = displayName,
                                                 fontSize = fontSize,
                                                 fontWeight = FontWeight.Bold,
                                                 color = if(pName == "As") Color.Blue else Color.Black,
@@ -524,7 +525,10 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
     }
 }
 
-fun getMonthName(m: Int): String = listOf("", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[m]
+fun getMonthName(m: Int): String {
+    val months = listOf("", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    return if (m in 1..12) months[m] else if (m == 0) "" else "M$m"
+}
 
 @Composable
 fun PlanetGridTab(data: ChartData) {
@@ -595,8 +599,9 @@ fun PlanetGridTab(data: ChartData) {
                 ) {
                     // Planet Name (Red)
                     Row(modifier = Modifier.weight(1.5f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        val pTitle = if (p.name != null) (planetAbbrTamil[p.name] ?: p.name!!.let { if(it.length>=3) it.take(3) else it }) else "??"
                         Text(
-                            text = planetAbbrTamil[p.name] ?: p.name.take(3),
+                            text = pTitle,
                             color = Color.Red,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
