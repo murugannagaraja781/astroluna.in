@@ -759,8 +759,9 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
         if (!response.isSuccessful) {
              val code = response.code()
              android.util.Log.w("VipChart", "POST failed (Code: $code), trying GET fallback...")
+             val dateStr = String.format("%04d-%02d-%02d", birthData.optInt("year"), birthData.optInt("month"), birthData.optInt("day"))
              response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChartFallback(
-                 date = String.format("%04d-%02d-%02d", birthData.optInt("year"), birthData.optInt("month"), birthData.optInt("day")),
+                 date = dateStr,
                  time = String.format("%02d:%02d", birthData.optInt("hour"), birthData.optInt("minute")),
                  lat = birthData.optDouble("latitude", 13.0827),
                  lng = birthData.optDouble("longitude", 80.2707),

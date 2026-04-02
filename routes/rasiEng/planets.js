@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
         const houses = getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa);
 
         // Get planets with full details
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa);
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa);
 
         res.json({
             success: true,

@@ -9,7 +9,7 @@ echo "=========================================="
 
 # Variables
 APP_DIR="/var/www/Astroluna"
-REPO_URL="https://github.com/murugannagaraja781/Astroluna.git"
+REPO_URL="https://github.com/murugannagaraja781/astroluna.in.git"
 APP_NAME="astroluna"
 
 # Step 1: Setup Swap if memory is low (Mandatory for 512MB RAM)

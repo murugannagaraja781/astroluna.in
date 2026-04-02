@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
         const jd = swissEph.julday(utc.year, utc.month, utc.day, utc.hour + utc.minute / 60);
 
         const houses = getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa);
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa);
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa);
 
         const kpSignificators = getKPSignificators(planets, houses);
 
@@ -53,7 +53,7 @@ router.post('/ruling', (req, res) => {
         const jd = swissEph.julday(now.year, now.month, now.day, now.hour + now.minute / 60);
 
         const houses = getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa);
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa);
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa);
 
         const moon = planets.find(p => p.name === 'Moon');
         if (!moon) {
@@ -102,7 +102,7 @@ router.post('/analyze', (req, res) => {
         const jd = swissEph.julday(utc.year, utc.month, utc.day, utc.hour + utc.minute / 60);
 
         const houses = getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa);
-        const planets = getPlanetsWithDetails(jd, houses.cusps, ayanamsa);
+        const planets = getPlanetsWithDetails(jd, lat, lng, houses.cusps, ayanamsa);
         const kpData = getKPSignificators(planets, houses);
 
         const analysis = analyzeHouseSignificators(targetHouses, kpData);
