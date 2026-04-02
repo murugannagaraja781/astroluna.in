@@ -269,6 +269,7 @@ module.exports = function(io, shared) {
       } else {
         const session = activeSessions.get(sessionId);
         if (session) {
+          if (session.status === 'active') return; // Guard against double start
           session.status = 'active';
           session.actualBillingStart = Date.now(); // Start per-minute billing
           
@@ -326,7 +327,7 @@ module.exports = function(io, shared) {
 
         const fromUserId = session.users.find(u => u !== astrologerId);
         if (accept) {
-          if (session.status === 'active') return safeAck(cb, { ok: true, fromUserId });
+          if (session.status === 'active') return safeAck(cb, { ok: true, fromUserId }); // Guard against double start
           session.status = 'active';
           session.actualBillingStart = Date.now(); // Start per-minute billing
 
@@ -466,13 +467,42 @@ module.exports = function(io, shared) {
     });
   });
 
-  setInterval(() => {
+  setInterval(async () => {
     const now = Date.now();
     for (const [sessionId, session] of activeSessions) {
       if (!session.actualBillingStart || now < session.actualBillingStart) continue;
-      session.elapsedBillableSeconds = (session.elapsedBillableSeconds || 0) + 1;
-      if (session.elapsedBillableSeconds % 60 === 0) {
-        processBillingCharge(sessionId, 60, session.elapsedBillableSeconds / 60, 'slab');
+      
+      // Calculate elapsed time precisely
+      const elapsedTotalSeconds = Math.floor((now - session.actualBillingStart) / 1000);
+      session.elapsedBillableSeconds = elapsedTotalSeconds;
+
+      // 1. Per-minute charging
+      if (elapsedTotalSeconds > 0 && elapsedTotalSeconds % 60 === 0) {
+        // Only charge if we haven't charged for this minute yet
+        const minuteIndex = Math.floor(elapsedTotalSeconds / 60);
+        if (session.lastChargedMinute !== minuteIndex) {
+          session.lastChargedMinute = minuteIndex;
+          processBillingCharge(sessionId, 60, minuteIndex, 'slab');
+        }
+      }
+
+      // 2. ITEM 2: Per-Second Balance Check (Accurate shutdown)
+      // Check every 2 seconds to balance performance and accuracy
+      if (elapsedTotalSeconds % 2 === 0) {
+         try {
+           const client = await User.findOne({ userId: session.clientId }, { walletBalance: 1, price: 1 });
+           const astro = await User.findOne({ userId: session.astrologerId }, { price: 1 });
+           if (client && astro) {
+             const rate = astro.price || 20;
+             // If balance is strictly less than what's needed for the NEXT second, end it.
+             // Or simply if balance is 0 or less.
+             if (client.walletBalance <= 0) {
+                console.log(`[Billing] Immediate shutdown for ${session.sessionId}: Balance exhausted (₹${client.walletBalance})`);
+                const { endSessionRecord } = require('./billing')(io, { activeSessions, userActiveSession }, shared);
+                endSessionRecord(sessionId, 'insufficient_funds');
+             }
+           }
+         } catch (e) { console.error('Per-second balance check failed', e); }
       }
     }
   }, 1000);

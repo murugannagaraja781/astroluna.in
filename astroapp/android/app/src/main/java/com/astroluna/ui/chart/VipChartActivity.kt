@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.astroluna.ui.theme.CosmicAppTheme
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +77,6 @@ val planetAbbrTamil = mapOf(
     "Ketu" to "கேது", "Ascendant" to "லக்", "As" to "லக்", "Mandi" to "மாந்தி"
 )
 
-import com.google.gson.annotations.SerializedName
 
 // --- Updated Data Models ---
 data class ChartResponse(
@@ -139,10 +139,10 @@ data class Panchanga(
 
 data class PanchangaValue(@SerializedName("name") val name: String)
 data class DashaPeriod(
-    @SerializedName("lord") val lord: String,
-    @SerializedName("start") val start: String,
-    @SerializedName("end") val end: String,
-    @SerializedName("level") val level: Int,
+    @SerializedName("lord") val lord: String? = null,
+    @SerializedName("start") val start: String? = null,
+    @SerializedName("end") val end: String? = null,
+    @SerializedName("level") val level: Int = 1,
     @SerializedName("subPeriods") val subPeriods: List<DashaPeriod>? = null
 )
 data class Transit(
@@ -161,16 +161,47 @@ data class NavamsaData(
 )
 
 class VipChartActivity : ComponentActivity() {
+    private var updateReceiver: android.content.BroadcastReceiver? = null
+    private val birthDataState = mutableStateOf<JSONObject>(JSONObject("{}"))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val birthDataStr = intent.getStringExtra("birthData") ?: "{}"
-        val birthData = JSONObject(birthDataStr)
+        birthDataState.value = JSONObject(birthDataStr)
+
+        // Register receiver for real-time updates during call
+        updateReceiver = object : android.content.BroadcastReceiver() {
+            override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+                val newDataStr = intent?.getStringExtra("birthData")
+                if (newDataStr != null) {
+                    try {
+                        val newData = JSONObject(newDataStr)
+                        // This will trigger recomposition and the LaunchedEffect(birthDataState.value)
+                        birthDataState.value = newData
+                        android.util.Log.d("VipChart", "Received real-time update in ChartActivity")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        val filter = android.content.IntentFilter("com.astroluna.REFRESH_CHART")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(updateReceiver, filter, android.content.Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(updateReceiver, filter)
+        }
 
         setContent {
             CosmicAppTheme {
-                VipChartScreen(birthData) { finish() }
+                VipChartScreen(birthDataState.value) { finish() }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateReceiver?.let { unregisterReceiver(it) }
     }
 }
 
@@ -216,7 +247,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(birthData) {
         isLoading = true
         errorMessage = null
         try {
@@ -226,7 +257,8 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             }
             setChartState(result)
         } catch (e: Exception) {
-            errorMessage = "Connect Error: ${e.localizedMessage ?: "Unknown network issue"}"
+            android.util.Log.e("VipChart", "Initial load failed", e)
+            errorMessage = "Connect Error (${e.javaClass.simpleName}): ${e.localizedMessage ?: "Unknown issue"}"
         } finally {
             isLoading = false
         }
@@ -297,7 +329,8 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                                     }
                                     setChartState(result)
                                 } catch (e: Exception) {
-                                    errorMessage = "Failed to fetch chart data: ${e.localizedMessage ?: "Unknown error"}"
+                                    android.util.Log.e("VipChart", "Retry failed", e)
+                                    errorMessage = "Fetch Failed (${e.javaClass.simpleName}): ${e.localizedMessage ?: "Unknown issue"}"
                                 } finally {
                                     isLoading = false
                                 }
@@ -653,14 +686,16 @@ fun DashaNodeInternal(period: DashaPeriod) {
             }
 
             Box(Modifier.size(32.dp).background(iconColor.copy(0.1f), CircleShape), contentAlignment = Alignment.Center) {
-                Text(planetAbbrTamil[period.lord] ?: period.lord.take(2), color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                val abbr = if (period.lord != null) (planetAbbrTamil[period.lord] ?: period.lord!!.take(2)) else "??"
+                Text(abbr, color = iconColor, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
 
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
+                val lordName = if (period.lord != null) (planetTamil[period.lord] ?: period.lord!!) else "Unknown"
                 Text(
-                    text = "${planetTamil[period.lord] ?: period.lord} " + when(period.level) {
+                    text = "$lordName " + when(period.level) {
                         1 -> "மகா தசை"
                         2 -> "புக்தி"
                         3 -> "ஆந்தரம்"
@@ -670,7 +705,10 @@ fun DashaNodeInternal(period: DashaPeriod) {
                     fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
                     fontSize = if(period.level == 1) 16.sp else 14.sp
                 )
-                Text("${period.start.take(10).replace("-", ".")} - ${period.end.take(10).replace("-", ".")}", fontSize = 11.sp, color = Color.Gray)
+                val dateRange = if (period.start != null && period.end != null) {
+                    "${period.start!!.take(10).replace("-", ".")} - ${period.end!!.take(10).replace("-", ".")}"
+                } else "Date Unknown"
+                Text(dateRange, fontSize = 11.sp, color = Color.Gray)
             }
 
             if (hasSub) {
@@ -706,8 +744,11 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
 
         android.util.Log.d("VipChart", "Payload (POST): $payload")
         
+        // Ensure the API client is using the latest base URL if it was updated
+        val api = com.astroluna.data.api.ApiClient.api
+        
         // Strategy 1: POST (Standard)
-        var response = com.astroluna.data.api.ApiClient.api.getRasiEngBirthChart(payload)
+        var response = api.getRasiEngBirthChart(payload)
         
         // Strategy 2: GET Fallback if POST fails (Cloudflare often blocks large POSTs)
         if (!response.isSuccessful) {

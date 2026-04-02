@@ -10,7 +10,10 @@ const { getTamilDate } = require('../../utils/rasiEng/tamilDate');
 
 const router = express.Router();
 
-router.get('/test', (req, res) => {
+    router.post('/test-post', (req, res) => {
+        res.json({ ok: true, received: req.body });
+    });
+    router.get('/test', (req, res) => {
     try {
         const jd = swissEph.julday(2026, 3, 26, 12);
         const signs = swissEph.getSign(0);
@@ -80,15 +83,14 @@ async function handleFullChart(req, res, input = {}) {
         const jd = swissEph.julday(utc.year, utc.month, utc.day, utc.hour + utc.minute / 60 + utc.second / 3600);
 
         // Calculate all data in parallel for speed
-        console.log('Generating full chart for:', { date, time, lat, lng });
-
+        console.log('[Chart] Generating houses, panchanga, tamil date...');
         const [houses, panchanga, transitJD, tamilDateData] = await Promise.all([
             getHouseCusps(jd, lat, lng, 'Placidus', ayanamsa),
             getPanchanga(jd, lat, lng, ayanamsa),
             swissEph.julday(DateTime.now().toUTC().year, DateTime.now().toUTC().month, DateTime.now().toUTC().day, DateTime.now().toUTC().hour + DateTime.now().toUTC().minute / 60),
             getTamilDate(dt, ayanamsa)
         ]);
-        console.log('Progress: Houses & Panchanga OK');
+        console.log('[Chart] Houses & Panchanga OK');
 
         const muhurtas = getMuhurtas(jd, lat, lng);
 

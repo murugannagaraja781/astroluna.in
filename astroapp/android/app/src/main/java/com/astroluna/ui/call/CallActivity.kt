@@ -174,6 +174,13 @@ class CallActivity : ComponentActivity() {
                      val newData = JSONObject(dataStr)
                      clientBirthData = newData
                      Toast.makeText(this, "Details Updated", Toast.LENGTH_SHORT).show()
+                     
+                     // 1. Broadcast locally so any open Chart/Match activities refresh
+                     val refreshIntent = android.content.Intent("com.astroluna.REFRESH_CHART")
+                     refreshIntent.putExtra("birthData", newData.toString())
+                     sendBroadcast(refreshIntent)
+
+                     // 2. Signal to peer so their charts refresh
                      SocketManager.getSocket()?.emit("client-birth-chart", JSONObject().apply {
                          put("sessionId", sessionId)
                          put("toUserId", partnerId)
@@ -1090,18 +1097,21 @@ class CallActivity : ComponentActivity() {
 
         peerConnection.createOffer(object : SimpleSdpObserver("createOffer") {
             override fun onCreateSuccess(desc: SessionDescription?) {
-                if (!::peerConnection.isInitialized) return
-                Log.d(TAG, "createOffer SUCCESS, setting LocalDescription")
-                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(OFFER)"), desc)
+                if (!::peerConnection.isInitialized || desc == null) return
+                Log.d(TAG, "createOffer SUCCESS, munging SDP and setting LocalDescription")
+                val mungedSdp = mungeSdp(desc.description)
+                val mungedDesc = SessionDescription(desc.type, mungedSdp)
+                
+                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(OFFER)"), mungedDesc)
                 val signalData = JSONObject().apply {
                     put("type", "offer")
-                    put("sdp", desc?.description)
+                    put("sdp", mungedSdp)
                 }
                 val payload = JSONObject().apply {
                     put("toUserId", partnerId)
                     put("signal", signalData)
                 }
-                Log.d(TAG, "Sending offer to $partnerId")
+                Log.d(TAG, "Sending munged offer to $partnerId")
                 sendSignal(payload)
             }
         }, constraints)
@@ -1115,20 +1125,116 @@ class CallActivity : ComponentActivity() {
 
         peerConnection.createAnswer(object : SimpleSdpObserver("createAnswer") {
             override fun onCreateSuccess(desc: SessionDescription?) {
-                Log.d(TAG, "createAnswer SUCCESS, setting LocalDescription")
-                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(ANSWER)"), desc)
+                if (desc == null) return
+                Log.d(TAG, "createAnswer SUCCESS, munging SDP and setting LocalDescription")
+                val mungedSdp = mungeSdp(desc.description)
+                val mungedDesc = SessionDescription(desc.type, mungedSdp)
+
+                peerConnection.setLocalDescription(SimpleSdpObserver("setLocalDescription(ANSWER)"), mungedDesc)
                 val signalData = JSONObject().apply {
                     put("type", "answer")
-                    put("sdp", desc?.description)
+                    put("sdp", mungedSdp)
                 }
                 val payload = JSONObject().apply {
                     put("toUserId", partnerId)
                     put("signal", signalData)
                 }
-                Log.d(TAG, "Sending answer to $partnerId")
+                Log.d(TAG, "Sending munged answer to $partnerId")
                 sendSignal(payload)
             }
         }, constraints)
+    }
+
+    private fun mungeSdp(sdp: String): String {
+        var modifiedSdp = sdp
+        try {
+            // 1. Prefer Opus for Audio
+            modifiedSdp = preferCodec(modifiedSdp, "audio", "opus")
+            
+            // 2. Prefer VP8/H264 for Video
+            modifiedSdp = preferCodec(modifiedSdp, "video", "VP8")
+            modifiedSdp = preferCodec(modifiedSdp, "video", "H264")
+
+            // 3. Bandwidth Control (b=AS)
+            // Application Specific (AS) bitrate in kbps
+            val audioBitrate = 64
+            val videoBitrate = 1024 // 1 Mbps
+            
+            val lines = modifiedSdp.split("\r\n").toMutableList()
+            var currentMedia: String? = null
+            var i = 0
+            while (i < lines.size) {
+                val line = lines[i]
+                if (line.startsWith("m=audio")) {
+                    currentMedia = "audio"
+                } else if (line.startsWith("m=video")) {
+                    currentMedia = "video"
+                }
+                
+                // Add b=AS after c= line in each media section
+                if (line.startsWith("c=IN") && currentMedia != null) {
+                    val bitrate = if (currentMedia == "audio") audioBitrate else videoBitrate
+                    lines.add(i + 1, "b=AS:$bitrate")
+                    i++
+                }
+                
+                // 4. Jitter Buffer / Audio Tuning (minptime)
+                if (currentMedia == "audio" && line.startsWith("a=rtpmap") && line.contains("opus")) {
+                    // Find the payload type
+                    val pt = line.split(" ")[0].split(":")[1]
+                    // Add minptime hint for stability
+                    lines.add(i + 1, "a=fmtp:$pt minptime=20; useinbandfec=1; maxaveragebitrate=64000")
+                    i++
+                }
+                i++
+            }
+            modifiedSdp = lines.joinToString("\r\n")
+
+            Log.d(TAG, "SDP Munged Successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "SDP Munging failed", e)
+        }
+        return modifiedSdp
+    }
+
+    private fun preferCodec(sdp: String, mediaType: String, codecName: String): String {
+        val lines = sdp.split("\r\n")
+        val result = mutableListOf<String>()
+        var inMediaSection = false
+        
+        for (line in lines) {
+            if (line.startsWith("m=$mediaType")) {
+                inMediaSection = true
+                val parts = line.split(" ")
+                if (parts.size > 3) {
+                    val mHeader = parts.subList(0, 3).joinToString(" ")
+                    val payloadTypes = parts.subList(3, parts.size).toMutableList()
+                    
+                    // Find the payload type for the desired codec
+                    var targetPt: String? = null
+                    for (searchLine in lines) {
+                        if (searchLine.startsWith("a=rtpmap:") && searchLine.contains(codecName, ignoreCase = true)) {
+                            val pt = searchLine.split(":")[1].split(" ")[0]
+                            if (payloadTypes.contains(pt)) {
+                                targetPt = pt
+                                break
+                            }
+                        }
+                    }
+                    
+                    if (targetPt != null) {
+                        payloadTypes.remove(targetPt)
+                        payloadTypes.add(0, targetPt)
+                        result.add("$mHeader ${payloadTypes.joinToString(" ")}")
+                        continue
+                    }
+                }
+            } else if (line.startsWith("m=")) {
+                inMediaSection = false
+            }
+            result.add(line)
+        }
+        return result.joinToString("\r\n")
     }
 
     private fun sendSignal(payload: JSONObject) {

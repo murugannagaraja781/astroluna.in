@@ -28,16 +28,16 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 class MatchDisplayActivity : ComponentActivity() {
+    private var updateReceiver: android.content.BroadcastReceiver? = null
+    private val birthDataState = mutableStateOf<JSONObject>(JSONObject("{}"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val birthDataStr = intent.getStringExtra("birthData")
-        var birthData: JSONObject? = null
-
         if (birthDataStr != null) {
             try {
-                birthData = JSONObject(birthDataStr)
+                birthDataState.value = JSONObject(birthDataStr)
             } catch (e: Exception) {
                 Toast.makeText(this, "Invalid Data", Toast.LENGTH_SHORT).show()
                 finish()
@@ -49,14 +49,41 @@ class MatchDisplayActivity : ComponentActivity() {
             return
         }
 
+        // Register receiver for real-time updates during call
+        updateReceiver = object : android.content.BroadcastReceiver() {
+            override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+                val newDataStr = intent?.getStringExtra("birthData")
+                if (newDataStr != null) {
+                    try {
+                        val newData = JSONObject(newDataStr)
+                        birthDataState.value = newData
+                        android.util.Log.d("MatchDisplay", "Received real-time update in MatchActivity")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        val filter = android.content.IntentFilter("com.astroluna.REFRESH_CHART")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(updateReceiver, filter, android.content.Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(updateReceiver, filter)
+        }
+
         setContent {
             CosmicAppTheme {
                 MatchDisplayScreen(
-                    birthData = birthData!!,
+                    birthData = birthDataState.value,
                     onFetchMatch = { bData -> fetchMatchHtml(bData) }
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateReceiver?.let { unregisterReceiver(it) }
     }
 
     private suspend fun fetchMatchHtml(birthData: JSONObject): String? = withContext(Dispatchers.IO) {
@@ -279,7 +306,7 @@ fun MatchDisplayScreen(
     var isLoading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(birthData) {
         val result = onFetchMatch(birthData)
         if (result != null) {
             htmlContent = result
