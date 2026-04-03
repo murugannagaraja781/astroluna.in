@@ -7452,7 +7452,15 @@
     let callingInterval = null;
     let callingTimeout = null;
 
-    window.requestSession = (targetId, type) => {
+    window.requestSession = (targetId, type, birthData = null) => {
+      // MANDATORY INTAKE CHECK
+      if (!birthData && (!state.me || !state.me.intakeDetails || !state.me.intakeDetails.topic)) {
+        console.log('[Session] Intake details missing, showing form first');
+        window.pendingCallType = type;
+        window.showChatWithBirthChart(targetId);
+        return;
+      }
+
       const titles = { chat: 'Chat', audio: 'Audio Call', video: 'Video Call' };
 
       // 1. Create 30s Countdown Loader Modal
@@ -7484,11 +7492,11 @@
       let timeLeft = totalTime;
       const circumference = 2 * Math.PI * 40; // ~251
 
-      callingInterval = setInterval(() => {
+      let callingInterval = setInterval(() => {
         timeLeft--;
-        textDisplay.textContent = timeLeft;
+        if (textDisplay) textDisplay.textContent = timeLeft;
         const offset = circumference - (timeLeft / totalTime) * circumference;
-        progressCircle.style.strokeDashoffset = offset;
+        if (progressCircle) progressCircle.style.strokeDashoffset = offset;
 
         if (timeLeft <= 0) {
           cancelCalling('No answer from astrologer.');
@@ -7501,20 +7509,32 @@
 
       function cancelCalling(reason) {
         clearInterval(callingInterval);
-        clearTimeout(callingTimeout);
         if (document.getElementById('calling-modal')) document.getElementById('calling-modal').remove();
         if (reason) alert(reason);
-        // Also emit end-session if we created one? The server handles timeout usually.
       }
 
       // 3. Emit Request
-      socket.emit('request-session', { toUserId: targetId, type }, (res) => {
+      const payload = { toUserId: targetId, type };
+      if (birthData) payload.birthData = birthData;
+      else if (state.me && state.me.birthDetails && state.me.intakeDetails) {
+         // Auto-inject if already saved
+         const bd = state.me.birthDetails;
+         const id = state.me.intakeDetails;
+         const [y, m, d] = bd.dob.split('-').map(Number);
+         const [h, min] = bd.tob.split(':').map(Number);
+         payload.birthData = {
+           name: state.me.name,
+           gender: id.gender, marital: id.marital, occupation: id.occupation, topic: id.topic, partner: id.partner,
+           year: y, month: m, day: d, hour: h, minute: min,
+           latitude: bd.lat, longitude: bd.lon, city: bd.pob, timezone: 5.5
+         };
+      }
+
+      socket.emit('request-session', payload, (res) => {
         if (res.ok) {
-          // Store pending session details for when 'session-answered' comes
           state.tempSessionId = res.sessionId;
           state.tempTargetId = targetId;
           state.tempType = type;
-          // DO NOT initSession yet. Wait for 'session-answered'.
           console.log('[Session] Request sent, waiting for acceptance...', res.sessionId);
         } else {
           cancelCalling('Request failed: ' + res.error);
@@ -9305,8 +9325,9 @@
       }
     };
 
-    window.showChatWithBirthChart = function (astroId) {
+    window.showChatWithBirthChart = function (astroId, type = 'chat') {
       window.selectedAstroId = astroId;
+      window.pendingCallType = type;
 
       // Smart Check: If we already have intake details, skip the form!
       if (state.me && state.me.intakeDetails && state.me.intakeDetails.topic) {
@@ -9491,17 +9512,9 @@
           return;
         }
 
-        socket.emit('request-session', {
-          toUserId: window.selectedAstroId,
-          type: 'chat',
-          birthData: birthData
-        }, (res) => {
-          if (res.ok) {
-            initSession(res.sessionId, window.selectedAstroId, 'chat', true, null);
-          } else {
-            alert('Request failed: ' + res.error);
-          }
-        });
+        const type = window.pendingCallType || 'chat';
+        window.pendingCallType = null; // Clear
+        window.requestSession(window.selectedAstroId, type, birthData);
       }
     };
 
