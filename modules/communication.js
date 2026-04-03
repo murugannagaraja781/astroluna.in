@@ -211,10 +211,22 @@ module.exports = function(io, shared) {
 
         if (!toUser) return safeAck(cb, { ok: false, error: 'Target not found' });
 
+        // Re-check Busy status with overriding for disconnected users
         if (userActiveSession.has(toUserId)) {
           const sid = userActiveSession.get(toUserId);
-          if (activeSessions.has(sid)) return safeAck(cb, { ok: false, error: 'User busy' });
-          userActiveSession.delete(toUserId);
+          if (activeSessions.has(sid)) {
+            // IF THE TARGET IS DISCONNECTED, don't block the new call with "User busy"
+            // This handles cases where they moved to a different network or app crashed
+            if (!userSockets.has(toUserId)) {
+              console.log(`[Session] Target ${toUserId} is busy but disconnected. Ending stale session ${sid} for new request.`);
+              await endSessionRecord(sid, 'overridden');
+              // Proceed to create new session
+            } else {
+              return safeAck(cb, { ok: false, error: 'User busy' });
+            }
+          } else {
+            userActiveSession.delete(toUserId);
+          }
         }
 
         const sessionId = crypto.randomUUID();

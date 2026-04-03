@@ -2349,8 +2349,8 @@ app.post('/api/call/initiate', async (req, res) => {
     // Send FCM v1 Push Notification
     if (astro.fcmToken) {
       const fcmData = {
-        type: 'incoming_call',
-        callId: callId,
+        type: 'INCOMING_CALL',
+        sessionId: callId, // Using sessionId key for consistency with Socket.IO
         callerId: callerId,
         callerName: 'Client'
       };
