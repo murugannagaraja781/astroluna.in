@@ -517,18 +517,26 @@ fun SupportAndPoliciesSection() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            PolicyLink("Refund Policy", "$baseUrl/refund-cancellation-policy.html", context)
+            PolicyLink("Privacy Policy", "$baseUrl/privacy-policy.html", context)
             PolicyLink("Terms & Conditions", "$baseUrl/terms-condition.html", context)
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            PolicyLink("Refund Policy", "$baseUrl/refund-cancellation-policy.html", context)
+            PolicyLink("Delete Account", "$baseUrl/delete-account.html", context)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Need Help? info@astroluna.in",
+            text = "Need Help? kalpanajomr@gmail.com",
             style = MaterialTheme.typography.labelSmall,
             color = Color.Gray
         )
         Text(
-            text = "© 2025 Astroluna. All Rights Reserved.",
+            text = "© 2026 Astroluna. All Rights Reserved.",
             style = MaterialTheme.typography.labelSmall,
             color = Color.Gray.copy(alpha=0.6f)
         )
