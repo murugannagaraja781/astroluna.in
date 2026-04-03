@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-async function testChartApi() {
+async function testChartApi(url) {
     const payload = {
         "date": "2026-04-03",
         "time": "10:00",
@@ -10,8 +10,8 @@ async function testChartApi() {
     };
 
     try {
-        console.log('Testing /api/rasi-eng/charts/full with payload:', payload);
-        const response = await fetch('http://localhost:3000/api/rasi-eng/charts/full', {
+        console.log(`\nTesting ${url} with payload:`, payload);
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,7 +24,9 @@ async function testChartApi() {
         
         if (data && data.success) {
             console.log('API responded successfully!');
-            console.log('Planet sample:', data.data.planets[0]);
+            if (data.data && data.data.planets) {
+                console.log('Planet sample:', data.data.planets[0].name, 'at', data.data.planets[0].degreeFormatted);
+            }
         } else {
             console.log('API responded with failure:', data);
         }
@@ -33,4 +35,12 @@ async function testChartApi() {
     }
 }
 
-testChartApi();
+async function runTests() {
+    // 1. Test Local
+    // await testChartApi('http://localhost:3000/api/rasi-eng/charts/full');
+    
+    // 2. Test Remote (Live)
+    await testChartApi('https://astroluna.in/api/rasi-eng/charts/full');
+}
+
+runTests();

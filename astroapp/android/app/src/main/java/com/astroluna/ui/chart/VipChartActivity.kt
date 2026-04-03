@@ -48,6 +48,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.astroluna.ui.intake.IntakeActivity
 import org.json.JSONObject
+import androidx.annotation.Keep
 
 // --- Aesthetic Constants (Premium Blue) ---
 val DeepSpaceNavy = Color(0xFF000B18)
@@ -79,11 +80,13 @@ val planetAbbrTamil = mapOf(
 
 
 // --- Updated Data Models ---
+@Keep
 data class ChartResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("data") val data: ChartData?
 )
 
+@Keep
 data class ChartData(
     @SerializedName("planets") val planets: List<Planet>? = null,
     @SerializedName("houses") val houses: HouseData? = null,
@@ -94,6 +97,7 @@ data class ChartData(
     @SerializedName("navamsa") val navamsa: NavamsaData? = null
 )
 
+@Keep
 data class Planet(
     @SerializedName("name") val name: String,
     @SerializedName("signName") val signName: String,
@@ -109,12 +113,14 @@ data class Planet(
     @SerializedName("subLord") val subLord: String? = null
 )
 
+@Keep
 data class HouseData(
     @SerializedName("cusps") val cusps: List<Double>,
     @SerializedName("details") val details: List<HouseDetail>? = null,
     @SerializedName("ascendantDetails") val ascendantDetails: HouseDetail? = null
 )
 
+@Keep
 data class HouseDetail(
     @SerializedName("signName") val signName: String,
     @SerializedName("signAbbr") val signAbbr: String? = null,
@@ -125,6 +131,7 @@ data class HouseDetail(
     @SerializedName("degreeFormatted") val degreeFormatted: String? = null
 )
 
+@Keep
 data class Panchanga(
     @SerializedName("tithi") val tithi: PanchangaValue? = null,
     @SerializedName("nakshatra") val nakshatra: PanchangaValue? = null,
@@ -137,7 +144,10 @@ data class Panchanga(
     @SerializedName("sunSign") val sunSign: String? = null
 )
 
+@Keep
 data class PanchangaValue(@SerializedName("name") val name: String)
+
+@Keep
 data class DashaPeriod(
     @SerializedName("lord") val lord: String? = null,
     @SerializedName("start") val start: String? = null,
@@ -145,16 +155,19 @@ data class DashaPeriod(
     @SerializedName("level") val level: Int = 1,
     @SerializedName("subPeriods") val subPeriods: List<DashaPeriod>? = null
 )
+@Keep
 data class Transit(
     @SerializedName("name") val name: String,
     @SerializedName("signName") val signName: String,
     @SerializedName("isRetrograde") val isRetrograde: Boolean
 )
+@Keep
 data class TamilDate(
     @SerializedName("day") val day: Int,
     @SerializedName("month") val month: String,
     @SerializedName("year") val year: String
 )
+@Keep
 data class NavamsaData(
     @SerializedName("planets") val planets: List<Planet>? = null,
     @SerializedName("ascendantSign") val ascendantSign: String? = null
