@@ -313,7 +313,21 @@ module.exports = function(io, shared) {
           const dbSession = await Session.findOne({ sessionId });
           if (!dbSession) return safeAck(cb, { ok: false, error: 'Session not found' });
           const fromUserId = dbSession.fromUserId;
+          
           if (accept) {
+            // RE-POPULATE Memory state if missing (e.g. server restart or killed app scenario)
+            activeSessions.set(sessionId, {
+              type: callType || dbSession.type || 'audio',
+              users: [dbSession.fromUserId, dbSession.toUserId],
+              startedAt: dbSession.startTime || Date.now(),
+              actualBillingStart: Date.now(),
+              clientId: dbSession.clientId,
+              astrologerId: dbSession.astrologerId,
+              status: 'active'
+            });
+            userActiveSession.set(dbSession.clientId, sessionId);
+            userActiveSession.set(dbSession.astrologerId, sessionId);
+
             User.updateOne({ userId: astrologerId }, { isBusy: true }).then(() => broadcastAstroUpdate());
             io.to(fromUserId).emit('session-answered', { sessionId, fromUserId: astrologerId, type: callType || dbSession.type, accept: true, iceServers: ICE_SERVERS });
             safeAck(cb, { ok: true, fromUserId });
