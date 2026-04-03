@@ -359,8 +359,9 @@ module.exports = function(io, shared) {
 
     // --- Answer Session Native ---
     socket.on('answer-session-native', async (data, cb) => {
+      const { sessionId, accept, callType } = data || {};
+      logActivity('signaling', 'Native answer received', { sessionId, accept, userId: socketToUser.get(socket.id) });
       try {
-        const { sessionId, accept, callType } = data || {};
         const astrologerId = socketToUser.get(socket.id);
         if (!astrologerId || !sessionId) return safeAck(cb, { ok: false, error: 'Invalid data' });
         socket.join(sessionId); // Callee joins room upon answering (Native)

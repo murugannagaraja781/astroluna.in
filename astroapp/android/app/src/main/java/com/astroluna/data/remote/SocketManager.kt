@@ -103,7 +103,19 @@ object SocketManager {
                 put("callType", callType)
             }
         }
-        socket?.emit("answer-session-native", data)
+        
+        // Ensure connection before emitting to avoid lost signals on cold start or reconnection
+        ensureConnection()
+        if (socket?.connected() == true) {
+            socket?.emit("answer-session-native", data)
+            Log.d(TAG, "Emitted answer-session-native immediately: $sessionId")
+        } else {
+            // Wait for connect event once
+            socket?.once(Socket.EVENT_CONNECT) {
+                socket?.emit("answer-session-native", data)
+                Log.d(TAG, "Emitted answer-session-native after delayed connect: $sessionId")
+            }
+        }
     }
 
     fun onSessionAnswered(listener: (JSONObject) -> Unit) {
