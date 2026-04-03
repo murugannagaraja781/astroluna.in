@@ -52,13 +52,32 @@ module.exports = function(io, state, shared) {
   }
 
   async function endSessionRecord(sessionId, reason = 'ended') {
-    const session = activeSessions.get(sessionId);
-    if (!session) return;
+    let session = activeSessions.get(sessionId);
+    
+    // If not in memory, try to at least clear isBusy flags for this session's participants from DB
+    if (!session) {
+      try {
+        const dbSession = await Session.findOne({ sessionId });
+        if (dbSession) {
+          console.log(`[Session] Found stale session ${sessionId} in DB. Clearing busy flags.`);
+          await User.updateMany(
+            { userId: { $in: [dbSession.clientId, dbSession.astrologerId] } }, 
+            { isBusy: false }
+          );
+          broadcastAstroUpdate();
+          
+          // Also cleanup userActiveSession if they point here
+          if (userActiveSession.get(dbSession.clientId) === sessionId) userActiveSession.delete(dbSession.clientId);
+          if (userActiveSession.get(dbSession.astrologerId) === sessionId) userActiveSession.delete(dbSession.astrologerId);
+        }
+      } catch (e) { console.error('[Session] Stale cleanup error:', e); }
+      return;
+    }
 
     try {
       const { clientId, astrologerId } = session;
       const endTime = Date.now();
-      const duration = Math.floor((endTime - session.startedAt) / 1000);
+      const duration = Math.floor((endTime - (session.actualBillingStart || session.startedAt)) / 1000);
 
       await Session.updateOne({ sessionId }, {
         status: 'ended', sessionEndAt: endTime, duration: duration,

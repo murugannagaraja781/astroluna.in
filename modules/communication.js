@@ -451,18 +451,34 @@ module.exports = function(io, shared) {
         userSockets.delete(userId);
         socketToUser.delete(socket.id);
         logActivity('socket', `User disconnected: ${userId}`);
-        
+
+        // 1. Handle Astrologer General Offline timeout
         User.findOne({ userId }).then(user => {
-            if (user && user.role === 'astrologer') {
-              const timeoutId = setTimeout(async () => {
-                if (!userSockets.has(userId)) {
-                  await User.updateOne({ userId }, { isOnline: false, isAvailable: false });
-                  broadcastAstroUpdate();
-                }
-              }, 10000);
-              offlineTimeouts.set(userId, timeoutId);
-            }
+          if (user && user.role === 'astrologer') {
+            const timeoutId = setTimeout(async () => {
+              if (!userSockets.has(userId)) {
+                // If not reconnected in 10s, mark as offline AND NOT BUSY
+                await User.updateOne({ userId }, { isOnline: false, isAvailable: false, isBusy: false });
+                broadcastAstroUpdate();
+                console.log(`[Status] ${user.name} went offline after 10s disconnect timeout.`);
+              }
+            }, 10000);
+            offlineTimeouts.set(userId, timeoutId);
+          }
         });
+
+        // 2. Handle ACTIVE SESSION cleanup (15s grace period)
+        const sessionId = userActiveSession.get(userId);
+        if (sessionId) {
+          console.log(`[Session] User ${userId} disconnected while in session ${sessionId}. Starting grace period.`);
+          const sessionTimeoutId = setTimeout(async () => {
+            if (!userSockets.has(userId)) {
+              console.log(`[Session] Grace period expired for ${userId} in ${sessionId}. Ending session.`);
+              endSessionRecord(sessionId, 'disconnect');
+            }
+          }, 15000); // 15s grace period to reconnect
+          sessionDisconnectTimeouts.set(userId, sessionTimeoutId);
+        }
       }
     });
   });
