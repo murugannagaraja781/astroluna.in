@@ -1223,6 +1223,7 @@ fun AstrologerCard(
                     putExtra("is_video_online", astro.isVideoOnline)
                     putExtra("astro_image", astro.image)
                     putExtra("astro_price", astro.price)
+                    putExtra("astro_gender", astro.gender)
                 }
                 context.startActivity(intent)
             },
@@ -1238,10 +1239,13 @@ fun AstrologerCard(
             ) {
                 Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
                     // Profile Image
-                    Image(
-                        painter = painterResource(id = com.astroluna.R.drawable.ic_person_placeholder),
+                    val placeholderRes = if (astro.gender == "Female") com.astroluna.R.drawable.default_female else com.astroluna.R.drawable.default_male
+                    AsyncImage(
+                        model = astro.image,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = placeholderRes),
+                        error = painterResource(id = placeholderRes),
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)

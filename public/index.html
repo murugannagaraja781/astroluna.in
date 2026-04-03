@@ -5922,7 +5922,7 @@
   <script src="https://unpkg.com/simple-peer/simplepeer.min.js"></script>
   <script>
     // State (exposed to window for Android WebView access)
-    const state = { me: null, socket: null, session: null, peer: null, localStream: null, referralCodePrefill: null };
+    const state = { me: null, socket: null, session: null, peer: null, localStream: null, referralCodePrefill: null, iceServers: [] };
     window.state = state; // Expose for Android onResume wallet refresh
 
     // Persistent Session Helper
@@ -7124,7 +7124,7 @@
 
           <div class="card-top-row">
             <div class="astro-img-wrapper">
-              <img src="${a.image || 'https://ui-avatars.com/api/?name=' + a.name + '&background=random'}" class="astro-img">
+              <img src="${a.image || (a.gender === 'Female' ? '/images/default_female.png' : '/images/default_male.png')}" class="astro-img">
               ${isVerified ? '<div class="verified-badge"><i class="fas fa-check"></i></div>' : ''}
             </div>
 
@@ -7590,6 +7590,10 @@
       } else {
         window.receivedBirthData = null;
       }
+      
+      if (data.iceServers) {
+        state.iceServers = data.iceServers;
+      }
 
       sInc.classList.remove('hidden');
       const titles = { chat: 'Chat Request', audio: 'Incoming Call', video: 'Incoming Video Call' };
@@ -7652,6 +7656,7 @@
         // If we haven't initialized the session UI yet (which we haven't for the caller), do it now
         if (!state.session) {
           // We are the caller
+          if (data.iceServers) state.iceServers = data.iceServers;
           initSession(data.sessionId, state.tempTargetId || data.fromUserId, state.tempType || data.type, true, null);
         } else if (state.session.id === data.sessionId) {
           console.warn('[Session] Call already initialized for', data.sessionId);
@@ -7849,29 +7854,31 @@
           lv.play().catch(e => console.warn('Local Video Play Error:', e));
         }
 
+        const configIceServers = (state.iceServers && state.iceServers.length > 0) ? state.iceServers : [
+          { urls: 'stun:stun.l.google.com:19302' },
+          {
+            urls: 'turn:turn.astroluna.in:3478?transport=udp',
+            username: 'webrtcuser',
+            credential: 'strongpassword123'
+          },
+          {
+            urls: 'turn:turn.astroluna.in:3478?transport=tcp',
+            username: 'webrtcuser',
+            credential: 'strongpassword123'
+          },
+          {
+            urls: 'turns:turn.astroluna.in:5349',
+            username: 'webrtcuser',
+            credential: 'strongpassword123'
+          }
+        ];
+
         const p = new SimplePeer({
           initiator,
           stream,
           trickle: false,
           config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              {
-                urls: 'turn:turn.astroluna.in:3478?transport=udp',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              },
-              {
-                urls: 'turn:turn.astroluna.in:3478?transport=tcp',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              },
-              {
-                urls: 'turns:turn.astroluna.in:5349',
-                username: 'webrtcuser',
-                credential: 'strongpassword123'
-              }
-            ]
+            iceServers: configIceServers
           }
         });
 

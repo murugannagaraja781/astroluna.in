@@ -738,7 +738,19 @@ class CallActivity : ComponentActivity() {
                         val connectPayload = JSONObject().apply {
                             put("sessionId", sessionId)
                         }
-                        SocketManager.getSocket()?.emit("session-connect", connectPayload)
+                        SocketManager.getSocket()?.emit("session-connect", connectPayload, io.socket.client.Ack { args ->
+                            Log.d(TAG, "receiver session-connect ack received")
+                            if (args != null && args.isNotEmpty()) {
+                                try {
+                                    val response = args[0] as? JSONObject
+                                    val dynamicIce = response?.optJSONArray("iceServers")
+                                    if (dynamicIce != null) {
+                                        Log.d(TAG, "Updating ICE from receiver session-connect ack")
+                                        runOnUiThread { updateIceServers(dynamicIce) }
+                                    }
+                                } catch (e: Exception) { Log.e(TAG, "Failed to parse receiver session-connect ack", e) }
+                            }
+                        })
                     }
                 } else {
                     Log.e(TAG, "Receiver registration FAILED")

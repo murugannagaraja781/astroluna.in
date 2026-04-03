@@ -1111,7 +1111,7 @@ app.post('/api/withdraw-referral', async (req, res) => {
 app.get('/api/astrology/astrologers', async (req, res) => {
   try {
     const astrologers = await User.find({ role: 'astrologer' })
-      .select('userId name phone skills price isOnline isChatOnline isAudioOnline isVideoOnline experience isVerified image walletBalance totalEarnings')
+      .select('userId name phone skills price isOnline isChatOnline isAudioOnline isVideoOnline experience isVerified image walletBalance totalEarnings gender')
       .lean();
 
     // Ensure lists are sorted by Online first (though App also sorts)
@@ -2197,7 +2197,7 @@ async function broadcastAstroUpdate() {
   try {
     const astros = await User.find(
       { role: 'astrologer' },
-      'userId name isOnline isChatOnline isAudioOnline isVideoOnline isAvailable isBusy price image skills experience rating isVerified phone'
+      'userId name isOnline isChatOnline isAudioOnline isVideoOnline isAvailable isBusy price image skills experience rating isVerified phone gender'
     ).lean();
     if (io) io.emit('astrologer-update', astros);
   } catch (e) {

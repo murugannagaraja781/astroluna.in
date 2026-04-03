@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +47,7 @@ class AstrologerProfileActivity : ComponentActivity() {
         val isChatOnline = intent.getBooleanExtra("is_chat_online", false)
         val isAudioOnline = intent.getBooleanExtra("is_audio_online", false)
         val isVideoOnline = intent.getBooleanExtra("is_video_online", false)
+        val astroGender = intent.getStringExtra("astro_gender") ?: "Male"
 
         setContent {
             CosmicAppTheme {
@@ -59,6 +61,7 @@ class AstrologerProfileActivity : ComponentActivity() {
                     isChatOnline = isChatOnline,
                     isAudioOnline = isAudioOnline,
                     isVideoOnline = isVideoOnline,
+                    gender = astroGender,
                     onBack = { finish() },
                     onAction = { type ->
                         val intent = android.content.Intent(this, com.astroluna.ui.intake.IntakeActivity::class.java).apply {
@@ -87,6 +90,7 @@ fun AstrologerProfileScreen(
     isChatOnline: Boolean,
     isAudioOnline: Boolean,
     isVideoOnline: Boolean,
+    gender: String,
     onBack: () -> Unit,
     onAction: (String) -> Unit
 ) {
@@ -152,9 +156,12 @@ fun AstrologerProfileScreen(
                             .border(4.dp, Color(0xFF1B5E20), CircleShape)
                     )
                     // Simplified: Since Coil implementation is harder in AndroidView here, I'll use icon placeholder for now
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_person_placeholder),
+                    val placeholderRes = if (gender == "Female") R.drawable.default_female else R.drawable.default_male
+                    AsyncImage(
+                        model = image,
                         contentDescription = "Avatar",
+                        placeholder = painterResource(id = placeholderRes),
+                        error = painterResource(id = placeholderRes),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)

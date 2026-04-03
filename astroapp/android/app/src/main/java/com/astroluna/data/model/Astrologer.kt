@@ -20,5 +20,6 @@ data class Astrologer(
     val walletBalance: Double = 0.0,
     val rating: Double = 5.0,
     val orders: Int = 0,
-    val isBusy: Boolean = false
+    val isBusy: Boolean = false,
+    val gender: String = "Male"
 )

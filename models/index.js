@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
   isDocumentVerified: { type: Boolean, default: false },
   documentStatus: { type: String, enum: ['none', 'processing', 'verified'], default: 'none' },
   image: { type: String, default: '' },
+  gender: { type: String, enum: ['Male', 'Female', 'Other'], default: 'Male' },
   birthDetails: {
     dob: String, tob: String, pob: String, lat: Number, lon: Number
   },
