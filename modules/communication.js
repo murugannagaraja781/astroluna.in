@@ -16,6 +16,51 @@ module.exports = function(io, shared) {
     if (typeof cb === 'function') cb(data);
   }
 
+  // SDP Munging to prioritize Opus for better audio quality
+  function mungeSDPForOpus(signal) {
+    if (!signal || !signal.sdp) return signal;
+    try {
+      let lines = signal.sdp.split('\r\n');
+      let mAudioIndex = lines.findIndex(line => line.indexOf('m=audio') === 0);
+      if (mAudioIndex === -1) return signal;
+
+      // Find Opus payload type (usually 111) from a=rtpmap:111 opus/48000/2
+      let opusPayload = null;
+      for (let line of lines) {
+        if (line.indexOf('a=rtpmap:') === 0 && line.toLowerCase().indexOf('opus/48000/2') !== -1) {
+          opusPayload = line.split(':')[1].split(' ')[0];
+          break;
+        }
+      }
+
+      if (opusPayload) {
+        let parts = lines[mAudioIndex].split(' ');
+        // parts format: m=audio [port] [proto] [fmt list...]
+        let payloads = parts.slice(3);
+        let opusIndex = payloads.indexOf(opusPayload);
+        if (opusIndex !== -1) {
+          payloads.splice(opusIndex, 1);
+          payloads.unshift(opusPayload); // Move Opus to the front
+          lines[mAudioIndex] = parts.slice(0, 3).concat(payloads).join(' ');
+          
+          // Optionally add/modify fmtp to increase bitrate
+          let fmtpLineIndex = lines.findIndex(line => line.indexOf(`a=fmtp:${opusPayload}`) === 0);
+          if (fmtpLineIndex !== -1) {
+            if (lines[fmtpLineIndex].indexOf('maxaveragebitrate') === -1) {
+                lines[fmtpLineIndex] += ';maxaveragebitrate=128000;useinbandfec=1';
+            }
+          }
+          
+          signal.sdp = lines.join('\r\n');
+          console.log(`[SDP] Optimized audio for Opus (Payload: ${opusPayload})`);
+        }
+      }
+    } catch (e) {
+      console.error('SDP munging error:', e);
+    }
+    return signal;
+  }
+
   io.on('connection', (socket) => {
     logActivity('socket', `New connection: ${socket.id}`);
 
@@ -384,10 +429,16 @@ module.exports = function(io, shared) {
       const fromUserId = socketToUser.get(socket.id);
       if (!fromUserId || !sessionId || !toUserId || !signal) return;
 
+      // Munge SDP to force Opus if it's an offer or answer
+      let processedSignal = signal;
+      if (signal.type === 'offer' || signal.type === 'answer') {
+        processedSignal = mungeSDPForOpus(signal);
+      }
+
       const type = signal.type || (signal.candidate ? 'ice-candidate' : 'unknown');
       console.log(`[Signal] Relay ${type} from ${fromUserId} to ${toUserId} | Session: ${sessionId}`);
       
-      io.to(toUserId).emit('signal', { sessionId, fromUserId, signal });
+      io.to(toUserId).emit('signal', { sessionId, fromUserId, signal: processedSignal });
     });
 
     // --- ITEM 4: Message Status Relay (Double Tick) ---
