@@ -1339,11 +1339,17 @@ class CallActivity : ComponentActivity() {
     }
 
     private fun showMatchChart() {
-        Log.d(TAG, "showMatchChart() called")
-        val intent = android.content.Intent(this, com.astroluna.ui.chart.MatchDisplayActivity::class.java)
-        intent.putExtra("sessionId", sessionId)
-        intent.putExtra("toUserId", partnerId)
-        startActivity(intent)
+        Log.d(TAG, "showMatchChart() called. clientBirthData is null? ${clientBirthData == null}")
+        if (clientBirthData != null) {
+            val intent = android.content.Intent(this, com.astroluna.ui.chart.MatchDisplayActivity::class.java)
+            intent.putExtra("birthData", clientBirthData.toString())
+            intent.putExtra("sessionId", sessionId)
+            intent.putExtra("toUserId", partnerId)
+            startActivity(intent)
+        } else {
+            Log.w(TAG, "showMatchChart() - clientBirthData is NULL")
+            Toast.makeText(this, "பொருத்தம்: விவரங்கள் இன்னும் வரவில்லை (Waiting for Data...)", Toast.LENGTH_LONG).show()
+        }
     }
 }
 
