@@ -27,7 +27,7 @@ const photoStorage = multer.diskStorage({
   }
 });
 
-const photoUpload = multer({ 
+const photoUpload = multer({
   storage: photoStorage,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
@@ -79,21 +79,21 @@ const PHONEPE_CLIENT_ID = (process.env.PHONEPE_CLIENT_ID || "").trim();
 const PHONEPE_CLIENT_VERSION = (process.env.PHONEPE_CLIENT_VERSION || "1").trim();
 const PHONEPE_CLIENT_SECRET = (process.env.PHONEPE_CLIENT_SECRET || "").trim();
 // WebRTC TURN Server Config
-const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:turn.free.expressturn.com:3478?transport=udp";
-const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:turn.free.expressturn.com:3478?transport=tcp";
-const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:turn.free.expressturn.com:5349";
+const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:139.59.0.107:3478?transport=udp";
+const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:139.59.0.107:3478?transport=tcp";
+const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:139.59.0.107:5349";
 const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
 const ICE_SERVERS = [
-  { 
+  {
     urls: [
-      "stun:stun.l.google.com:19302", 
-      "stun:stun1.l.google.com:19302", 
+      "stun:stun.l.google.com:19302",
+      "stun:stun1.l.google.com:19302",
       "stun:stun2.l.google.com:19302",
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
-    ] 
+    ]
   },
   {
     urls: [
@@ -374,8 +374,8 @@ async function sendFcmLegacy(token, data, notification) {
 
     const text = await response.text();
     if (!response.ok) {
-       console.error(`[FCM Legacy] HTTP Error ${response.status}:`, text.substring(0, 200));
-       return { success: false, error: `HTTP ${response.status}` };
+      console.error(`[FCM Legacy] HTTP Error ${response.status}:`, text.substring(0, 200));
+      return { success: false, error: `HTTP ${response.status}` };
     }
 
     let result;
@@ -527,7 +527,7 @@ app.post('/api/user/upload-photo', photoUpload.single('photo'), async (req, res)
     }
 
     const imageUrl = `/uploads/profile/${req.file.filename}`;
-    
+
     // Update User in DB
     const user = await User.findOneAndUpdate(
       { userId },
@@ -540,7 +540,7 @@ app.post('/api/user/upload-photo', photoUpload.single('photo'), async (req, res)
     }
 
     console.log(`[Photo Upload] Updated photo for user ${userId}: ${imageUrl}`);
-    
+
     // Broadcast update if it's an astrologer
     if (user.role === 'astrologer') {
       await broadcastAstroUpdate();

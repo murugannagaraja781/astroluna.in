@@ -114,6 +114,12 @@ class IncomingCallActivity : ComponentActivity() {
                     Log.d(TAG, "User registration on IncomingCall: $success")
                 }
             }
+
+            // --- NEW: Listen for remote cancellation ---
+            SocketManager.onSessionEnded {
+                Log.d(TAG, "Remote session ended - stopping ringtone")
+                onSessionCancelledRemotely()
+            }
         } catch(e: Exception) { e.printStackTrace() }
 
         setContent {
@@ -286,7 +292,22 @@ class IncomingCallActivity : ComponentActivity() {
 
         // Stop foreground service
         stopService(Intent(this, CallForegroundService::class.java))
+        
+        // Ensure state is clean
+        CallState.isCallActive = false
 
+        finish()
+    }
+
+    private fun onSessionCancelledRemotely() {
+        Log.d(TAG, "onSessionCancelledRemotely")
+        stopRingtoneAndVibration()
+        handler.removeCallbacks(timeoutRunnable)
+        stopService(Intent(this, CallForegroundService::class.java))
+        
+        // Ensure state is clean
+        CallState.isCallActive = false
+        
         finish()
     }
 
@@ -294,11 +315,16 @@ class IncomingCallActivity : ComponentActivity() {
         super.onDestroy()
         stopRingtoneAndVibration()
         handler.removeCallbacks(timeoutRunnable)
+        
+        // Remove socket listener to avoid leaks
+        SocketManager.off("session-ended")
 
         if (shouldStopServiceOnDestroy) {
             Log.d(TAG, "onDestroy: Stopping service (Abrupt exit)")
             stopService(Intent(this, CallForegroundService::class.java))
             clearAllCallNotifications()
+            // Reset state if we are closing abruptly
+            CallState.isCallActive = false
         }
 
         Log.d(TAG, "IncomingCallActivity destroyed")

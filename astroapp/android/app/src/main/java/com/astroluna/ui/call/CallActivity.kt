@@ -1307,6 +1307,9 @@ class CallActivity : ComponentActivity() {
             Log.e(TAG, "Error destroying WebRTC resources", e)
         }
         stopBackgroundService()
+        // Ensure state is cleared on destruction to prevent "kill app" requirement if crash happens
+        CallState.isCallActive = false
+        CallState.currentSessionId = null
     }
 
     private fun createCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
