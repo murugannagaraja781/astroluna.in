@@ -54,8 +54,8 @@ val DeepSpaceNavy = Color(0xFF000B18)
 val PremiumBlue = Color(0xFF001F3F)
 val NeonCyan = Color(0xFF7FDBFF)
 val ElectricBlue = Color(0xFF0074D9)
-val TraditionalRed = Color(0xFFFF4B2B) // Neon Red/Orange
-val GridBg = Color.White.copy(alpha = 0.95f)
+val TraditionalRed = Color(0xFF8B0000) // Deep Traditional Red
+val GridBg = Color(0xFFF4E1C1) // Parchment Base
 val BorderColor = NeonCyan
 
 // --- Tamil Translation Constants ---
@@ -255,7 +255,12 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             if (result == null) {
                 errorMessage = "Server returned empty data. Please try again."
             }
-            setChartState(result)
+            try {
+                setChartState(result)
+            } catch (ce: ClassCastException) {
+                android.util.Log.e("VipChart", "StateUpdate ClassCastException", ce)
+                errorMessage = "Render Error (ClassCastException): ${ce.localizedMessage}"
+            }
         } catch (e: Exception) {
             android.util.Log.e("VipChart", "Initial load failed", e)
             errorMessage = "Connect Error (${e.javaClass.simpleName}): ${e.localizedMessage ?: "Unknown issue"}"
@@ -771,8 +776,8 @@ private suspend fun fetchFullChart(birthData: JSONObject): ChartData? = withCont
 
         if (response.isSuccessful && response.body() != null) {
             val chartResponse = response.body()!!
+            android.util.Log.d("VipChart", "API Response Success Field: ${chartResponse.success}")
             if (chartResponse.success) {
-                android.util.Log.d("VipChart", "Fetch OK")
                 return@withContext chartResponse.data
             } else {
                 android.util.Log.e("VipChart", "API Success but 'success'=false")
