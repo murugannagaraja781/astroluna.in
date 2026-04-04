@@ -332,17 +332,23 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const result = await callApp.messaging().send(message);
     console.log(`[FCM v1] Push sent to ${fcmToken.substring(0, 10)}... | Result:`, result);
     return { success: true, messageId: result };
-  } catch (err) {
-    console.error(`[FCM v1] Send error for token ${fcmToken.substring(0, 10)}...:`, err.message);
-    // If token is invalid or not registered, remove it from DB to avoid future failures
-    if (err.message.includes('not found') || err.message.includes('not registered') || err.message.includes('invalid')) {
+    } catch (err) {
+    const errorMsg = err.message || '';
+    console.error(`[FCM v1] Send error for token ${fcmToken.substring(0, 10)}...:`, errorMsg);
+    
+    const isDeadToken = errorMsg.includes('not found') || errorMsg.includes('not registered') || errorMsg.includes('invalid');
+    
+    if (isDeadToken) {
       try {
         await User.updateOne({ fcmToken: fcmToken }, { $unset: { fcmToken: 1 } });
         console.log(`[FCM] Invalid token removed from database: ${fcmToken.substring(0, 10)}...`);
       } catch (dbErr) {
         console.error('[FCM] Failed to unset invalid token:', dbErr.message);
       }
+      // Do NOT fallback if the token is known to be dead - it will just fail with 404 in Legacy
+      return { success: false, error: 'Token not found' };
     }
+
     return await sendFcmLegacy(fcmToken, data, notification);
   }
 }
