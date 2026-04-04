@@ -29,7 +29,7 @@ const photoStorage = multer.diskStorage({
 
 const photoUpload = multer({
   storage: photoStorage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 15 * 1024 * 1024 } // 15MB limit
 });
 
 // MODULAR EXPORTS - New separation architecture
@@ -424,8 +424,8 @@ const compression = require('compression');
 app.use(compression());
 app.use(cors({ origin: "*" }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static('public'));  // Serve static files
 
 // Policy Page Routes
@@ -493,12 +493,20 @@ app.use("/api/horoscope", freeHoroscopeRouter); // Free horoscope chart generati
 app.post('/api/astrologer/register', async (req, res) => {
   try {
     const data = req.body;
-    if (!data.realName || !data.cellNumber1) {
-      return res.status(400).json({ ok: false, error: 'Real name and primary mobile number are required' });
+    // Handle multiple possible field names (Mobile App vs Other)
+    const phone = data.cellNumber1 || data.phone;
+    const name = data.realName || data.name || data.displayName;
+    
+    if (!name || !phone) {
+      return res.status(400).json({ ok: false, error: 'Name and primary mobile number are required' });
     }
 
-    // Check for existing application
-    const existing = await AstrologerApplication.findOne({ cellNumber1: data.cellNumber1, status: 'pending' });
+    // Check for existing pending application (normalize search to avoid duplicates if possible)
+    const existing = await AstrologerApplication.findOne({ 
+      cellNumber1: phone, 
+      status: 'pending' 
+    });
+    
     if (existing) {
       return res.status(400).json({ ok: false, error: 'Application already pending for this number' });
     }
@@ -507,14 +515,40 @@ app.post('/api/astrologer/register', async (req, res) => {
     await AstrologerApplication.create({
       applicationId,
       ...data,
-      appliedAt: new Date()
+      cellNumber1: phone, // ensure consistent field naming
+      realName: name,
+      appliedAt: new Date(),
+      status: 'pending'
     });
 
-    console.log(`[Registration] New astrologer application from ${data.realName} (${data.cellNumber1})`);
-    res.json({ ok: true, message: 'Application submitted successfully' });
+    // Tag the user document if they already exist
+    const phoneClean = phone.replace(/\D/g, '').slice(-10);
+    const user = await User.findOne({ phone: new RegExp(phoneClean + "$") });
+    if (user) {
+      user.astrologerRequestStatus = 'pending';
+      user.astrologerRequestedAt = new Date();
+      user.astrologerExperience = data.astrologyExperience || data.experience || '';
+      user.astrologerAbout = data.about || data.profession || '';
+      user.name = name || user.name;
+      await user.save();
+    }
+
+    console.log(`[Registration] New astrologer application from ${name} (${phone})`);
+    logActivity('astrologer', 'New Astrologer Application', { name, phone });
+
+    // Notify Admins
+    if (io) {
+        io.to('superadmin').emit('admin-notification', {
+          type: 'astrologer_request',
+          text: `⭐ New Astrologer Request: ${name} (${phone})`,
+          data: { applicationId, name }
+        });
+    }
+
+    res.json({ ok: true, message: 'Application submitted successfully. Waiting for admin approval.' });
   } catch (err) {
     console.error('Registration error:', err);
-    res.status(500).json({ ok: false, error: 'Internal server error' });
+    res.status(500).json({ ok: false, error: 'Internal server error: ' + err.message });
   }
 });
 
@@ -601,21 +635,24 @@ app.get('/api/admin/astrologer-applications', async (req, res) => {
 app.post('/api/admin/astrologer/process-application', async (req, res) => {
   try {
     const { applicationId, status, notes } = req.body; // status: 'approved' or 'rejected'
-    const adminId = 'superadmin'; // Should come from session/auth
+    const adminId = 'superadmin';
 
     const application = await AstrologerApplication.findOne({ applicationId });
     if (!application) return res.status(404).json({ ok: false, error: 'Application not found' });
 
+    // Robust phone matching (last 10 digits) to handle prefix differences (+91 vs none)
+    const phoneRef = (application.cellNumber1 || "").replace(/\D/g, '').slice(-10);
+    let user = await User.findOne({ phone: new RegExp(phoneRef + "$") });
+
     if (status === 'approved') {
-      // 1. Create or Update user to Astrologer role
-      let user = await User.findOne({ phone: application.cellNumber1 });
       if (user) {
         user.role = 'astrologer';
-        user.name = application.realName;
+        user.name = application.realName || user.name;
         user.skills = [application.profession || 'Astrology'];
-        user.experience = parseInt(application.astrologyExperience) || 0;
+        user.experience = parseInt(application.astrologyExperience) || parseInt(application.experience) || 0;
         user.isDocumentVerified = true;
         user.documentStatus = 'verified';
+        user.astrologerRequestStatus = 'approved';
         await user.save();
         console.log(`[Admin] Approved application: User ${user.userId} promoted to Astrologer`);
       } else {
@@ -629,10 +666,16 @@ app.post('/api/admin/astrologer/process-application', async (req, res) => {
           documentStatus: 'verified',
           skills: [application.profession || 'Astrology'],
           experience: parseInt(application.astrologyExperience) || 0,
-          walletBalance: 0
+          walletBalance: 108, // Welcome join bonus
+          astrologerRequestStatus: 'approved'
         });
         console.log(`[Admin] Approved application: New Astrologer created: ${user.phone}`);
       }
+    } else if (status === 'rejected') {
+        if (user) {
+            user.astrologerRequestStatus = 'rejected';
+            await user.save();
+        }
     }
 
     application.status = status;
@@ -641,10 +684,15 @@ app.post('/api/admin/astrologer/process-application', async (req, res) => {
     application.processedBy = adminId;
     await application.save();
 
+    // Broadcast updates to all clients
+    if (status === 'approved') {
+        await broadcastAstroUpdate();
+    }
+
     res.json({ ok: true, message: `Application ${status} successfully` });
   } catch (err) {
     console.error('Process application error:', err);
-    res.status(500).json({ ok: false, error: err.message });
+    res.status(500).json({ ok: false, error: 'Approval failed: ' + err.message });
   }
 });
 
@@ -861,70 +909,7 @@ generateTamilHoroscope();
 // --- Endpoints ---
 
 // === Astrologer Registration (New & Upgrade) ===
-app.post('/api/astrologer/register', async (req, res) => {
-  try {
-    const { name, phone, experience, about, bankDetails, skills } = req.body;
-    if (!phone) return res.status(400).json({ ok: false, error: 'Phone number required' });
-
-    let user = await User.findOne({ phone });
-    let isUpgrade = false;
-
-    if (user) {
-      if (user.role === 'astrologer' || user.role === 'superadmin') {
-        return res.status(400).json({ ok: false, error: 'This number is already registered as an Astrologer or Admin' });
-      }
-      if (user.astrologerRequestStatus === 'pending') {
-        return res.status(400).json({ ok: false, error: 'Your registration request is already pending approval' });
-      }
-
-      // Existing Client - Start Upgrade Process
-      isUpgrade = true;
-      user.name = name || user.name;
-      user.astrologerExperience = experience || '';
-      user.astrologerAbout = about || '';
-      user.bankDetails = bankDetails || {};
-      user.astrologerSkills = skills || [];
-      user.astrologerRequestStatus = 'pending';
-      user.astrologerRequestedAt = new Date();
-      await user.save();
-    } else {
-      // New User - Create as Client with Pending Astrologer Status
-      user = await User.create({
-        userId: crypto.randomUUID(),
-        phone,
-        name: name || 'Astro Applicant',
-        role: 'client', // Starts as client till approved
-        walletBalance: 0,
-        astrologerRequestStatus: 'pending',
-        astrologerRequestedAt: new Date(),
-        astrologerExperience: experience || '',
-        astrologerAbout: about || '',
-        bankDetails: bankDetails || {},
-        astrologerSkills: skills || []
-      });
-    }
-
-    console.log(`[Astrologer ${isUpgrade ? 'Upgrade' : 'New'}] ${user.name} (${user.phone}) submitted request`);
-    logActivity('astrologer', isUpgrade ? 'Astrologer Upgrade Request' : 'New Astrologer Request', { userId: user.userId, name: user.name, phone: user.phone });
-
-    // Notify Super Admins
-    const notificationText = isUpgrade
-      ? `⭐ New Astrologer Request (Upgrade): ${user.name} (${user.phone})`
-      : `⭐ New Astrologer Request: ${user.name} (${user.phone})`;
-
-    io.to('superadmin').emit('admin-notification', {
-      type: 'astrologer_request',
-      text: notificationText,
-      data: { userId: user.userId, name: user.name }
-    });
-
-    res.json({ ok: true, message: 'Request submitted successfully. Waiting for admin approval.' });
-
-  } catch (err) {
-    console.error('[Astrologer Register] Error:', err.message);
-    res.status(500).json({ ok: false, error: 'Server Error: ' + err.message });
-  }
-});
+// Combined route moved up to line 493. No longer needed here.
 
 // Admin: Get Pending Astrologer Requests
 app.get('/api/admin/astrologer-requests', async (req, res) => {
