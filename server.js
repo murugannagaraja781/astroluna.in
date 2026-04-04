@@ -763,14 +763,30 @@ function sendMsg91(phoneNumber, otp) {
 
 // ===== File upload setup =====
 const uploadDir = path.join(__dirname, 'uploads');
-const upload = multer({ dest: uploadDir });
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir)
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 15 * 1024 * 1024 } // 15MB limit
+});
 
 app.use('/uploads', express.static(uploadDir));
 
-
 app.post('/upload', upload.single('file'), (req, res) => {
-  // ... (keeping upload logic if valid) ...
-  return res.json({ ok: true, url: req.file ? '/uploads/' + req.file.filename : '' });
+  if (!req.file) return res.status(400).json({ ok: false, error: 'No file uploaded' });
+  const url = '/uploads/' + req.file.filename;
+  res.json({ ok: true, url });
 });
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/astrofive';
 
