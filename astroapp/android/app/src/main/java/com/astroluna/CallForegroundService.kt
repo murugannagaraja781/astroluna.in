@@ -63,6 +63,26 @@ class CallForegroundService : Service() {
         super.onCreate()
         createNotificationChannel()
         Log.d(TAG, "CallForegroundService created")
+        
+        // Android 12+ (SDK 31+) requirement: startForeground() must be called immediately
+        // We start with a generic "Call Service" notification and update it in onStartCommand
+        val initialNotification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Astroluna")
+            .setContentText("Call service is active")
+            .setSmallIcon(android.R.drawable.ic_menu_call)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .build()
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, initialNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
+            } else {
+                startForeground(NOTIFICATION_ID, initialNotification)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start initial foreground service", e)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

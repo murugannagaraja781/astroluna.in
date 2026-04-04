@@ -16,7 +16,7 @@ const { fetchDailyHoroscope } = require("./utils/rasiEng/horoscopeData");
 // MULTER CONFIG FOR PROFILE PHOTOS
 const photoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const dir = './public/uploads/profile';
+    const dir = path.join(__dirname, 'uploads', 'profile');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },

@@ -116,7 +116,7 @@ fun BannerSection(banners: List<Banner>) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     // 1. Dynamic Background Image
                     AsyncImage(
-                        model = banner.imageUrl,
+                        model = if (banner.imageUrl.startsWith("/")) "${com.astroluna.utils.Constants.SERVER_URL}${banner.imageUrl}" else banner.imageUrl,
                         contentDescription = banner.title,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()

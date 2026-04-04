@@ -318,7 +318,9 @@ class HomeActivity : AppCompatActivity() {
             isChatOnline = json.optBoolean("isChatOnline", false),
             isAudioOnline = json.optBoolean("isAudioOnline", false),
             isVideoOnline = json.optBoolean("isVideoOnline", false),
-            image = json.optString("image", ""),
+            image = json.optString("image", "").let { 
+                if (it.startsWith("/")) "${com.astroluna.utils.Constants.SERVER_URL}$it" else it 
+            },
             experience = json.optInt("experience", 0),
             isVerified = json.optBoolean("isVerified", false),
             walletBalance = json.optDouble("walletBalance", 0.0),

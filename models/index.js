@@ -97,6 +97,7 @@ const BillingLedgerSchema = new mongoose.Schema({
 });
 
 const WithdrawalSchema = new mongoose.Schema({
+  withdrawalId: { type: String, unique: true },
   astroId: String,
   amount: Number,
   type: { type: String, enum: ['payout', 'referral'], default: 'payout' },

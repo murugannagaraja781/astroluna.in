@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage } = require('../models');
+const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage, Withdrawal } = require('../models');
 
 module.exports = function(io, shared) {
   const { 
@@ -87,6 +87,10 @@ module.exports = function(io, shared) {
           userSockets.set(resolvedUserId, socket.id);
           socketToUser.set(socket.id, resolvedUserId);
           socket.join(resolvedUserId); 
+          if (user.role === 'superadmin') {
+            socket.join('superadmin');
+            console.log(`[Socket] Admin ${user.name} joined superadmin room`);
+          }
 
           safeAck(cb, {
             ok: true,
@@ -521,6 +525,128 @@ module.exports = function(io, shared) {
           sendFcmV1Push(toUser.fcmToken, payload, null);
         }
       } catch (err) { console.error('chat-message error', err); }
+    });
+
+    // --- Withdrawal Management ---
+    socket.on('request-withdrawal', async (data, cb) => {
+      try {
+        const { amount } = data || {};
+        const userId = socketToUser.get(socket.id);
+        if (!userId || !amount || amount < 500) return safeAck(cb, { ok: false, error: 'Minimum ₹500 required' });
+
+        const user = await User.findOne({ userId });
+        if (!user || user.walletBalance < amount) return safeAck(cb, { ok: false, error: 'Insufficient balance' });
+
+        // Deduct balance immediately
+        user.walletBalance -= amount;
+        await user.save();
+
+        const withdrawalId = crypto.randomUUID();
+        await Withdrawal.create({
+          withdrawalId,
+          astroId: userId,
+          amount,
+          status: 'pending',
+          requestedAt: new Date()
+        });
+
+        // Notify Admin
+        io.to('superadmin').emit('admin-notification', {
+          type: 'withdrawal_request',
+          text: `💰 Withdrawal Request: ${user.name} requested ₹${amount}`,
+          data: { withdrawalId, userId, amount }
+        });
+
+        safeAck(cb, { ok: true });
+        socket.emit('wallet-update', { balance: user.walletBalance });
+        logActivity('withdrawal', `User ${userId} requested ₹${amount}`);
+      } catch (e) {
+        console.error('request-withdrawal error', e);
+        safeAck(cb, { ok: false, error: 'Server error' });
+      }
+    });
+
+    socket.on('get-my-withdrawals', async (cb) => {
+      try {
+        const userId = socketToUser.get(socket.id);
+        if (!userId) return safeAck(cb, { ok: false, error: 'Not authenticated' });
+        const list = await Withdrawal.find({ astroId: userId }).sort({ requestedAt: -1 }).lean();
+        safeAck(cb, { ok: true, list });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    socket.on('get-withdrawals', async (data, cb) => {
+      try {
+        const userId = socketToUser.get(socket.id);
+        const user = await User.findOne({ userId });
+        if (!user || user.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const list = await Withdrawal.find().sort({ requestedAt: -1 }).lean();
+        
+        // Enrich with astroName
+        const enriched = await Promise.all(list.map(async (w) => {
+          const astro = await User.findOne({ userId: w.astroId }, { name: 1 });
+          return { ...w, astroName: astro ? astro.name : 'Unknown' };
+        }));
+
+        safeAck(cb, { ok: true, list: enriched });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    socket.on('approve-withdrawal', async (data, cb) => {
+      try {
+        const { withdrawalId } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        let withdrawal = await Withdrawal.findOne({ withdrawalId });
+        if (!withdrawal) withdrawal = await Withdrawal.findById(withdrawalId); // Fallback to Mongo _id
+        
+        if (!withdrawal) return safeAck(cb, { ok: false, error: 'Request not found' });
+        if (withdrawal.status !== 'pending') return safeAck(cb, { ok: false, error: 'Already processed' });
+
+        withdrawal.status = 'approved';
+        withdrawal.processedAt = new Date();
+        await withdrawal.save();
+
+        safeAck(cb, { ok: true });
+        logActivity('withdrawal', `Admin ${adminId} approved withdrawal ${withdrawalId}`);
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    socket.on('reject-withdrawal', async (data, cb) => {
+      try {
+        const { withdrawalId } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        let withdrawal = await Withdrawal.findOne({ withdrawalId });
+        if (!withdrawal) withdrawal = await Withdrawal.findById(withdrawalId);
+        
+        if (!withdrawal) return safeAck(cb, { ok: false, error: 'Request not found' });
+        if (withdrawal.status !== 'pending') return safeAck(cb, { ok: false, error: 'Already processed' });
+
+        // Refund the user
+        const user = await User.findOne({ userId: withdrawal.astroId });
+        if (user) {
+          user.walletBalance += withdrawal.amount;
+          await user.save();
+          const sId = userSockets.get(user.userId);
+          if (sId) {
+             io.to(sId).emit('wallet-update', { balance: user.walletBalance });
+             io.to(sId).emit('notification', { title: 'Withdrawal Rejected', text: `₹${withdrawal.amount} has been refunded to your wallet.` });
+          }
+        }
+
+        withdrawal.status = 'rejected';
+        withdrawal.processedAt = new Date();
+        await withdrawal.save();
+
+        safeAck(cb, { ok: true });
+        logActivity('withdrawal', `Admin ${adminId} rejected withdrawal ${withdrawalId} - Refunded`);
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
     });
 
     socket.on('disconnect', () => {

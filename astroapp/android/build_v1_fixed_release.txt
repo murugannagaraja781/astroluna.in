@@ -1,0 +1,1188 @@
+Initialized native services in: /Users/wohozo/.gradle/native
+Initialized jansi services in: /Users/wohozo/.gradle/native
+Found daemon DaemonInfo{pid=99974, address=[54bbfd9d-cb5e-4109-bf70-865e34e4f7ea port:54187, addresses:[/127.0.0.1]], state=Idle, lastBusy=1775280836246, context=DefaultDaemonContext[uid=a6df99e6-f7e7-4ec5-a2f8-c12cfc595d0b,javaHome=/Users/wohozo/.antigravity/extensions/redhat.java-1.53.0-darwin-arm64/jre/21.0.10-macosx-aarch64,javaVersion=21,javaVendor=Eclipse Adoptium,daemonRegistryDir=/Users/wohozo/.gradle/daemon,pid=99974,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx4096m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=/Library/Java/JavaVirtualMachines/zulu-23.jdk/Contents/Home (no JDK specified, using current Java home), daemonOpts=[-Xmx4096m, -Dfile.encoding=UTF-8, -Duser.country=IN, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=a6df99e6-f7e7-4ec5-a2f8-c12cfc595d0b,javaHome=/Users/wohozo/.antigravity/extensions/redhat.java-1.53.0-darwin-arm64/jre/21.0.10-macosx-aarch64,javaVersion=21,javaVendor=Eclipse Adoptium,daemonRegistryDir=/Users/wohozo/.gradle/daemon,pid=99974,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx4096m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 98171). The daemon log file: /Users/wohozo/.gradle/daemon/8.12/daemon-98171.out.log
+Starting 3rd build in daemon [uptime: 1 hrs 16 mins 22.335 secs, performance: 96%, GC rate: 0.00/s, heap usage: 2% of 4 GiB]
+Using 8 worker leases.
+Now considering [/Users/wohozo/Documents/astroluna.in/astroapp/android] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/Users/wohozo/Documents/astroluna.in/astroapp/android/settings.gradle.kts'.
+Using local directory build cache for the root build (location = /Users/wohozo/.gradle/caches/build-cache-1, remove unused entries = after 7 days).
+Projects loaded. Root project using build file '/Users/wohozo/Documents/astroluna.in/astroapp/android/build.gradle.kts'.
+Included projects: [root project 'AstroApp', project ':app']
+
+> Configure project :
+Evaluating root project 'AstroApp' using build file '/Users/wohozo/Documents/astroluna.in/astroapp/android/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.5.2', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '1.9.24', apply: false]
+Resolved plugin [id: 'com.google.gms.google-services', version: '4.4.2', apply: false]
+
+> Configure project :app
+Evaluating project ':app' using build file '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application']
+Resolved plugin [id: 'org.jetbrains.kotlin.android']
+Resolved plugin [id: 'com.google.gms.google-services']
+Resolved plugin [id: 'kotlin-kapt']
+Using default execution profile
+Using Kotlin Gradle Plugin gradle82 variant
+Parsed shrinker version: 8.5.35
+All projects evaluated.
+Task name matched 'assembleRelease'
+Task name matched 'bundleRelease'
+Selected primary task 'assembleRelease' from project :
+Selected primary task 'bundleRelease' from project :
+Tasks to be executed: [task ':app:buildKotlinToolingMetadata', task ':app:checkKotlinGradlePluginConfigurationErrors', task ':app:preBuild', task ':app:preReleaseBuild', task ':app:dataBindingMergeDependencyArtifactsRelease', task ':app:generateReleaseResValues', task ':app:generateReleaseResources', task ':app:processReleaseGoogleServices', task ':app:mergeReleaseResources', task ':app:packageReleaseResources', task ':app:parseReleaseLocalResources', task ':app:dataBindingGenBaseClassesRelease', task ':app:checkReleaseAarMetadata', task ':app:mapReleaseSourceSetPaths', task ':app:createReleaseCompatibleScreenManifests', task ':app:extractDeepLinksRelease', task ':app:processReleaseMainManifest', task ':app:processReleaseManifest', task ':app:processReleaseManifestForPackage', task ':app:processReleaseResources', task ':app:kaptGenerateStubsReleaseKotlin', task ':app:kaptReleaseKotlin', task ':app:compileReleaseKotlin', task ':app:javaPreCompileRelease', task ':app:compileReleaseJavaWithJavac', task ':app:extractProguardFiles', task ':app:generateReleaseLintVitalReportModel', task ':app:lintVitalAnalyzeRelease', task ':app:lintVitalReportRelease', task ':app:lintVitalRelease', task ':app:mergeReleaseJniLibFolders', task ':app:mergeReleaseNativeLibs', task ':app:stripReleaseDebugSymbols', task ':app:extractReleaseNativeSymbolTables', task ':app:mergeReleaseNativeDebugMetadata', task ':app:checkReleaseDuplicateClasses', task ':app:mergeReleaseArtProfile', task ':app:expandReleaseArtProfileWildcards', task ':app:mergeReleaseGeneratedProguardFiles', task ':app:processReleaseJavaRes', task ':app:mergeReleaseJavaResource', task ':app:mergeReleaseStartupProfile', task ':app:minifyReleaseWithR8', task ':app:compileReleaseArtProfile', task ':app:mergeReleaseShaders', task ':app:compileReleaseShaders', task ':app:generateReleaseAssets', task ':app:mergeReleaseAssets', task ':app:compressReleaseAssets', task ':app:extractReleaseVersionControlInfo', task ':app:processApplicationManifestReleaseForBundle', task ':app:bundleReleaseResources', task ':app:shrinkReleaseRes', task ':app:optimizeReleaseResources', task ':app:collectReleaseDependencies', task ':app:sdkReleaseDependencyData', task ':app:validateSigningRelease', task ':app:writeReleaseAppMetadata', task ':app:writeReleaseSigningConfigVersions', task ':app:packageRelease', task ':app:createReleaseApkListingFileRedirect', task ':app:assembleRelease', task ':app:generateReleaseFeatureMetadata', task ':app:buildReleasePreBundle', task ':app:configureReleaseDependencies', task ':app:parseReleaseIntegrityConfig', task ':app:packageReleaseBundle', task ':app:shrinkBundleReleaseResources', task ':app:signReleaseBundle', task ':app:produceReleaseBundleIdeListingFile', task ':app:createReleaseBundleListingFileRedirect', task ':app:bundleRelease']
+Tasks that were excluded: []
+Resolve mutations for :app:buildKotlinToolingMetadata (Thread[#431,Execution worker,5,main]) started.
+destroyer locations for task group 0 (Thread[#430,included builds,5,main]) started.
+:app:buildKotlinToolingMetadata (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:buildKotlinToolingMetadata
+Caching disabled for task ':app:buildKotlinToolingMetadata' because:
+  Caching has been disabled for the task
+Task ':app:buildKotlinToolingMetadata' is not up-to-date because:
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlinToolingMetadata has been removed.
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlinToolingMetadata/kotlin-tooling-metadata.json has been removed.
+Resolve mutations for :app:checkKotlinGradlePluginConfigurationErrors (Thread[#431,Execution worker,5,main]) started.
+:app:checkKotlinGradlePluginConfigurationErrors (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+Caching disabled for task ':app:checkKotlinGradlePluginConfigurationErrors' because:
+  This task renders reported diagnostics; caching this task will hide diagnostics and obscure issues in the build
+Task ':app:checkKotlinGradlePluginConfigurationErrors' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Resolve mutations for :app:preBuild (Thread[#431,Execution worker,5,main]) started.
+:app:preBuild (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:preBuild UP-TO-DATE
+Skipping task ':app:preBuild' as it has no actions.
+Resolve mutations for :app:preReleaseBuild (Thread[#431,Execution worker,5,main]) started.
+:app:preReleaseBuild (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:preReleaseBuild UP-TO-DATE
+Skipping task ':app:preReleaseBuild' as it has no actions.
+Resolve mutations for :app:dataBindingMergeDependencyArtifactsRelease (Thread[#431,Execution worker,5,main]) started.
+:app:dataBindingMergeDependencyArtifactsRelease (Thread[#431,Execution worker,5,main]) started.
+Resolve mutations for :app:generateReleaseResValues (Thread[#435,Execution worker Thread 5,5,main]) started.
+
+> Task :app:dataBindingMergeDependencyArtifactsRelease
+Registered task dependencies: app:releaseCompileClasspath
+Skipping misunderstood TO dep string: com.google.firebase:firebase-messaging
+Skipping misunderstood TO dep string: com.google.firebase:firebase-analytics
+Skipping misunderstood TO dep string: androidx.compose.ui:ui
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-graphics
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-tooling-preview
+Skipping misunderstood TO dep string: androidx.compose.material3:material3
+Skipping misunderstood TO dep string: androidx.compose.runtime:runtime-livedata
+Starting dependency analysis
+Caching disabled for task ':app:dataBindingMergeDependencyArtifactsRelease' because:
+  Caching has been disabled for the task
+Task ':app:dataBindingMergeDependencyArtifactsRelease' is not up-to-date because:
+  Output property 'outFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/data_binding_dependency_artifacts/release/dataBindingMergeDependencyArtifactsRelease has been removed.
+:app:generateReleaseResValues (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:generateReleaseResValues FROM-CACHE
+Build cache key for task ':app:generateReleaseResValues' is c99fa4b445e5a7f47a203e699c7d6070
+Task ':app:generateReleaseResValues' is not up-to-date because:
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/res/resValues/release has been removed.
+Loaded cache entry for task ':app:generateReleaseResValues' with cache key c99fa4b445e5a7f47a203e699c7d6070
+Resolve mutations for :app:generateReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:generateReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:generateReleaseResources FROM-CACHE
+Build cache key for task ':app:generateReleaseResources' is 1e1d16d3d1ed42c57f34ffd664ea91d2
+Task ':app:generateReleaseResources' is not up-to-date because:
+  Output property 'validationReportFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt has been removed.
+Loaded cache entry for task ':app:generateReleaseResources' with cache key 1e1d16d3d1ed42c57f34ffd664ea91d2
+Resolve mutations for :app:processReleaseGoogleServices (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:processReleaseGoogleServices (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:processReleaseGoogleServices FROM-CACHE
+Build cache key for task ':app:processReleaseGoogleServices' is 4106e1b39d98d37e3cedbd8a9966db82
+Task ':app:processReleaseGoogleServices' is not up-to-date because:
+  Output property 'gmpAppId' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/gmpAppId/release.txt has been removed.
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/res/processReleaseGoogleServices has been removed.
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/res/processReleaseGoogleServices/values has been removed.
+  and more...
+Loaded cache entry for task ':app:processReleaseGoogleServices' with cache key 4106e1b39d98d37e3cedbd8a9966db82
+Resolve mutations for :app:mergeReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:mergeReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeReleaseResources
+Build cache key for task ':app:mergeReleaseResources' is 9137d1baf9996184ad4c46ea8c80a41c
+Task ':app:mergeReleaseResources' is not up-to-date because:
+  Output property 'blameLogOutputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out has been removed.
+  Output property 'blameLogOutputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2 has been removed.
+  Output property 'blameLogOutputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_res_blame_folder/release/mergeReleaseResources/out/multi-v2/mergeReleaseResources.json has been removed.
+  and more...
+Loaded cache entry for task ':app:mergeReleaseResources' with cache key 9137d1baf9996184ad4c46ea8c80a41c
+
+> Task :app:mergeReleaseResources FROM-CACHE
+Resolve mutations for :app:packageReleaseResources (Thread[#431,Execution worker,5,main]) started.
+:app:packageReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:packageReleaseResources FROM-CACHE
+Build cache key for task ':app:packageReleaseResources' is 91a1495afd5495e678bab4c8aa408d66
+Task ':app:packageReleaseResources' is not up-to-date because:
+  Output property 'dataBindingLayoutInfoOutFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/data_binding_layout_info_type_package/release/packageReleaseResources/out has been removed.
+  Output property 'incrementalFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/release/packageReleaseResources has been removed.
+  Output property 'incrementalFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/release/packageReleaseResources/compile-file-map.properties has been removed.
+  and more...
+Loaded cache entry for task ':app:packageReleaseResources' with cache key 91a1495afd5495e678bab4c8aa408d66
+Resolve mutations for :app:parseReleaseLocalResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:parseReleaseLocalResources (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:parseReleaseLocalResources FROM-CACHE
+Build cache key for task ':app:parseReleaseLocalResources' is cbef6342119be89ad76f2baa0f4627bb
+Task ':app:parseReleaseLocalResources' is not up-to-date because:
+  Output property 'librarySymbolsFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/local_only_symbol_list/release/parseReleaseLocalResources/R-def.txt has been removed.
+Loaded cache entry for task ':app:parseReleaseLocalResources' with cache key cbef6342119be89ad76f2baa0f4627bb
+Resolve mutations for :app:dataBindingGenBaseClassesRelease (Thread[#431,Execution worker,5,main]) started.
+:app:dataBindingGenBaseClassesRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:dataBindingGenBaseClassesRelease FROM-CACHE
+Build cache key for task ':app:dataBindingGenBaseClassesRelease' is 60747ed8653389720f4bd8d9731502e1
+Task ':app:dataBindingGenBaseClassesRelease' is not up-to-date because:
+  Output property 'classInfoBundleDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/data_binding_base_class_log_artifact/release/dataBindingGenBaseClassesRelease/out has been removed.
+  Output property 'classInfoBundleDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/data_binding_base_class_log_artifact/release/dataBindingGenBaseClassesRelease/out/com.astroluna-binding_classes.json has been removed.
+  Output property 'logOutFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/dataBindingGenBaseClassesRelease has been removed.
+  and more...
+Loaded cache entry for task ':app:dataBindingGenBaseClassesRelease' with cache key 60747ed8653389720f4bd8d9731502e1
+Resolve mutations for :app:checkReleaseAarMetadata (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:checkReleaseAarMetadata (Thread[#431,Execution worker,5,main]) started.
+Resolve mutations for :app:mapReleaseSourceSetPaths (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:mapReleaseSourceSetPaths (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mapReleaseSourceSetPaths
+Caching disabled for task ':app:mapReleaseSourceSetPaths' because:
+  Caching has been disabled for the task
+Task ':app:mapReleaseSourceSetPaths' is not up-to-date because:
+  Output property 'filepathMappingFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/source_set_path_map/release/mapReleaseSourceSetPaths/file-map.txt has been removed.
+Resolve mutations for :app:createReleaseCompatibleScreenManifests (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:createReleaseCompatibleScreenManifests (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:createReleaseCompatibleScreenManifests
+Caching disabled for task ':app:createReleaseCompatibleScreenManifests' because:
+  Caching has been disabled for the task
+Task ':app:createReleaseCompatibleScreenManifests' is not up-to-date because:
+  Output property 'outputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compatible_screen_manifest/release/createReleaseCompatibleScreenManifests has been removed.
+  Output property 'outputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compatible_screen_manifest/release/createReleaseCompatibleScreenManifests/output-metadata.json has been removed.
+Resolve mutations for :app:extractDeepLinksRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:extractDeepLinksRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:extractDeepLinksRelease FROM-CACHE
+Build cache key for task ':app:extractDeepLinksRelease' is 42508733ecf9bfd7906b016587066b9c
+Task ':app:extractDeepLinksRelease' is not up-to-date because:
+  Output property 'navigationJson' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json has been removed.
+Loaded cache entry for task ':app:extractDeepLinksRelease' with cache key 42508733ecf9bfd7906b016587066b9c
+Resolve mutations for :app:processReleaseMainManifest (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:checkReleaseAarMetadata
+Caching disabled for task ':app:checkReleaseAarMetadata' because:
+  Caching has been disabled for the task
+Task ':app:checkReleaseAarMetadata' is not up-to-date because:
+  Output property 'dummyOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/aar_metadata_check/release/checkReleaseAarMetadata has been removed.
+:app:processReleaseMainManifest (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:processReleaseMainManifest FROM-CACHE
+Build cache key for task ':app:processReleaseMainManifest' is 0a9e0b2e19307aaaecec5238515fe2f5
+Task ':app:processReleaseMainManifest' is not up-to-date because:
+  Output property 'mergeBlameFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/manifest_merge_blame_file/release/processReleaseMainManifest/manifest-merger-blame-release-report.txt has been removed.
+  Output property 'mergedManifest' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml has been removed.
+  Output property 'reportFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/outputs/logs/manifest-merger-release-report.txt has been removed.
+Loaded cache entry for task ':app:processReleaseMainManifest' with cache key 0a9e0b2e19307aaaecec5238515fe2f5
+Resolve mutations for :app:processReleaseManifest (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:processReleaseManifest (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:processReleaseManifest FROM-CACHE
+Build cache key for task ':app:processReleaseManifest' is e69aa9b08b067e3972043ce6e5536f45
+Task ':app:processReleaseManifest' is not up-to-date because:
+  Output property 'multiApkManifestOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_manifests/release/processReleaseManifest has been removed.
+  Output property 'multiApkManifestOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml has been removed.
+  Output property 'multiApkManifestOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_manifests/release/processReleaseManifest/output-metadata.json has been removed.
+Loaded cache entry for task ':app:processReleaseManifest' with cache key e69aa9b08b067e3972043ce6e5536f45
+Resolve mutations for :app:processReleaseManifestForPackage (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:processReleaseManifestForPackage (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:processReleaseManifestForPackage FROM-CACHE
+Custom actions are attached to task ':app:processReleaseManifestForPackage'.
+Build cache key for task ':app:processReleaseManifestForPackage' is f3ff7378d21863e4e801f9336ccdb414
+Task ':app:processReleaseManifestForPackage' is not up-to-date because:
+  Output property 'packageManifests' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/packaged_manifests/release/processReleaseManifestForPackage has been removed.
+  Output property 'packageManifests' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/packaged_manifests/release/processReleaseManifestForPackage/AndroidManifest.xml has been removed.
+  Output property 'packageManifests' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/packaged_manifests/release/processReleaseManifestForPackage/output-metadata.json has been removed.
+Loaded cache entry for task ':app:processReleaseManifestForPackage' with cache key f3ff7378d21863e4e801f9336ccdb414
+Resolve mutations for :app:processReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:processReleaseResources (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:processReleaseResources FROM-CACHE
+Build cache key for task ':app:processReleaseResources' is 1f72f2da897785f4ad5a6a6aaa0c8229
+Task ':app:processReleaseResources' is not up-to-date because:
+  Output property 'RClassOutputJar' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/processReleaseResources/R.jar has been removed.
+  Output property 'proguardOutputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/aapt_proguard_file/release/processReleaseResources/aapt_rules.txt has been removed.
+  Output property 'resPackageOutputFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/processed_res/release/processReleaseResources/out has been removed.
+  and more...
+Loaded cache entry for task ':app:processReleaseResources' with cache key 1f72f2da897785f4ad5a6a6aaa0c8229
+Resolve mutations for :app:kaptGenerateStubsReleaseKotlin (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:kaptGenerateStubsReleaseKotlin (Thread[#434,Execution worker Thread 4,5,main]) started.
+Resolve mutations for :app:javaPreCompileRelease (Thread[#430,included builds,5,main]) started.
+:app:javaPreCompileRelease (Thread[#436,Execution worker Thread 6,5,main]) started.
+
+> Task :app:javaPreCompileRelease FROM-CACHE
+Registered task dependencies: app:_agp_internal_javaPreCompileRelease_kaptClasspath
+Starting dependency analysis
+Build cache key for task ':app:javaPreCompileRelease' is 7ae47b82bd61616ffd3b9c930f916ce8
+Task ':app:javaPreCompileRelease' is not up-to-date because:
+  Output property 'annotationProcessorListFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/annotation_processor_list/release/javaPreCompileRelease/annotationProcessors.json has been removed.
+Loaded cache entry for task ':app:javaPreCompileRelease' with cache key 7ae47b82bd61616ffd3b9c930f916ce8
+Resolve mutations for :app:extractProguardFiles (Thread[#430,included builds,5,main]) started.
+:app:extractProguardFiles (Thread[#436,Execution worker Thread 6,5,main]) started.
+
+> Task :app:extractProguardFiles
+Caching disabled for task ':app:extractProguardFiles' because:
+  Fast task
+Task ':app:extractProguardFiles' is not up-to-date because:
+  Output property 'proguardFilesDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global has been removed.
+  Output property 'proguardFilesDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2 has been removed.
+  Output property 'proguardFilesDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android.txt-8.5.2 has been removed.
+  and more...
+Resolve mutations for :app:mergeReleaseJniLibFolders (Thread[#436,Execution worker Thread 6,5,main]) started.
+:app:mergeReleaseJniLibFolders (Thread[#436,Execution worker Thread 6,5,main]) started.
+
+> Task :app:mergeReleaseJniLibFolders
+Caching disabled for task ':app:mergeReleaseJniLibFolders' because:
+  Simple merging task
+Task ':app:mergeReleaseJniLibFolders' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_jni_libs/release/mergeReleaseJniLibFolders/out has been removed.
+The input changes require a full rebuild for incremental task ':app:mergeReleaseJniLibFolders'.
+Resolve mutations for :app:mergeReleaseNativeLibs (Thread[#436,Execution worker Thread 6,5,main]) started.
+:app:mergeReleaseNativeLibs (Thread[#436,Execution worker Thread 6,5,main]) started.
+Resolve mutations for :app:checkReleaseDuplicateClasses (Thread[#431,Execution worker,5,main]) started.
+:app:checkReleaseDuplicateClasses (Thread[#431,Execution worker,5,main]) started.
+Resolve mutations for :app:mergeReleaseArtProfile (Thread[#430,included builds,5,main]) started.
+:app:mergeReleaseArtProfile (Thread[#430,included builds,5,main]) started.
+Resolve mutations for :app:mergeReleaseStartupProfile (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:mergeReleaseStartupProfile (Thread[#435,Execution worker Thread 5,5,main]) started.
+
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+Caching disabled for task ':app:mergeReleaseStartupProfile' because:
+  Simple merging task
+Skipping task ':app:mergeReleaseStartupProfile' as it is up-to-date.
+Resolve mutations for :app:mergeReleaseShaders (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:mergeReleaseShaders (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:mergeReleaseArtProfile
+Caching disabled for task ':app:mergeReleaseArtProfile' because:
+  Simple merging task
+Task ':app:mergeReleaseArtProfile' is not up-to-date because:
+  Output property 'outputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_art_profile/release/mergeReleaseArtProfile/baseline-prof.txt has been removed.
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/baselineProfiles', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/baselineProfiles', not found
+
+> Task :app:mergeReleaseShaders
+Caching disabled for task ':app:mergeReleaseShaders' because:
+  Simple merging task
+Task ':app:mergeReleaseShaders' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_shaders/release/mergeReleaseShaders/out has been removed.
+The input changes require a full rebuild for incremental task ':app:mergeReleaseShaders'.
+Resolve mutations for :app:compileReleaseShaders (Thread[#437,Execution worker Thread 7,5,main]) started.
+:app:compileReleaseShaders (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:compileReleaseShaders NO-SOURCE
+Skipping task ':app:compileReleaseShaders' as it has no source files and no previous output files.
+Resolve mutations for :app:generateReleaseAssets (Thread[#437,Execution worker Thread 7,5,main]) started.
+:app:generateReleaseAssets (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:generateReleaseAssets UP-TO-DATE
+Skipping task ':app:generateReleaseAssets' as it has no actions.
+Resolve mutations for :app:mergeReleaseAssets (Thread[#437,Execution worker Thread 7,5,main]) started.
+:app:mergeReleaseAssets (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:checkReleaseDuplicateClasses
+Caching disabled for task ':app:checkReleaseDuplicateClasses' because:
+  Caching has been disabled for the task
+Task ':app:checkReleaseDuplicateClasses' is not up-to-date because:
+  Output property 'dummyOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/duplicate_classes_check/release/checkReleaseDuplicateClasses has been removed.
+
+> Task :app:mergeReleaseAssets
+Caching disabled for task ':app:mergeReleaseAssets' because:
+  Simple merging task
+Task ':app:mergeReleaseAssets' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/assets/release/mergeReleaseAssets has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/assets/release/mergeReleaseAssets/csc.db has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/assets/release/mergeReleaseAssets/csc.db.bak has been removed.
+The input changes require a full rebuild for incremental task ':app:mergeReleaseAssets'.
+Resolve mutations for :app:compressReleaseAssets (Thread[#431,Execution worker,5,main]) started.
+:app:compressReleaseAssets (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:mergeReleaseNativeLibs
+Caching disabled for task ':app:mergeReleaseNativeLibs' because:
+  Caching has been disabled for the task
+Task ':app:mergeReleaseNativeLibs' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/arm64-v8a has been removed.
+  and more...
+
+> Task :app:kaptGenerateStubsReleaseKotlin
+Registered task dependencies: app:kotlinCompilerClasspath
+Starting dependency analysis
+Registered task dependencies: app:kotlinCompilerPluginClasspathRelease
+Starting dependency analysis
+Build cache key for task ':app:kaptGenerateStubsReleaseKotlin' is eb09c497edcca9ea896c456e437cb4ef
+Task ':app:kaptGenerateStubsReleaseKotlin' is not up-to-date because:
+  Output property 'classpathSnapshotProperties.classpathSnapshotDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/classpath-snapshot has been removed.
+  Output property 'classpathSnapshotProperties.classpathSnapshotDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin has been removed.
+  Output property 'destinationDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kapt3/incrementalData/release has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':app:kaptGenerateStubsReleaseKotlin'.
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+i: found daemon on port 17404 (277464 ms old), trying to connect
+i: connected to the daemon
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=false, modifiedFiles=null, deletedFiles=null, classpathChanges=NotAvailableForNonIncrementalRun, workingDir=/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/local-state/build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, outputFiles=[/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kapt3/incrementalData/release, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kapt3/stubs/release, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/cacheable, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/kaptGenerateStubsReleaseKotlin/local-state])
+
+> Task :app:compressReleaseAssets FROM-CACHE
+Build cache key for task ':app:compressReleaseAssets' is f10738ea24775fb55e94e1307e50d663
+Task ':app:compressReleaseAssets' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/compressed_assets/release/compressReleaseAssets/out/assets/csc.db.bak.jar has been removed.
+  and more...
+Loaded cache entry for task ':app:compressReleaseAssets' with cache key f10738ea24775fb55e94e1307e50d663
+Resolve mutations for :app:stripReleaseDebugSymbols (Thread[#436,Execution worker Thread 6,5,main]) started.
+:app:stripReleaseDebugSymbols (Thread[#436,Execution worker Thread 6,5,main]) started.
+Resolve mutations for :app:extractReleaseVersionControlInfo (Thread[#431,Execution worker,5,main]) started.
+:app:extractReleaseVersionControlInfo (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:extractReleaseVersionControlInfo
+Caching disabled for task ':app:extractReleaseVersionControlInfo' because:
+  Caching has been disabled for the task
+Task ':app:extractReleaseVersionControlInfo' is not up-to-date because:
+  Output property 'vcInfoFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/version_control_info_file/release/extractReleaseVersionControlInfo/version-control-info.textproto has been removed.
+Resolve mutations for :app:processApplicationManifestReleaseForBundle (Thread[#431,Execution worker,5,main]) started.
+:app:processApplicationManifestReleaseForBundle (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:processApplicationManifestReleaseForBundle
+Caching disabled for task ':app:processApplicationManifestReleaseForBundle' because:
+  Caching has been disabled for the task
+Task ':app:processApplicationManifestReleaseForBundle' is not up-to-date because:
+  Output property 'bundleManifest' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/bundle_manifest/release/processApplicationManifestReleaseForBundle/AndroidManifest.xml has been removed.
+Resolve mutations for :app:bundleReleaseResources (Thread[#431,Execution worker,5,main]) started.
+:app:bundleReleaseResources (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:bundleReleaseResources FROM-CACHE
+Build cache key for task ':app:bundleReleaseResources' is 3c912902f24fdeb38c93234714c12173
+Task ':app:bundleReleaseResources' is not up-to-date because:
+  Output property 'bundledResFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/linked_res_for_bundle/release/bundleReleaseResources/bundled-res.ap_ has been removed.
+  Output property 'incrementalFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/bundleReleaseResources has been removed.
+Loaded cache entry for task ':app:bundleReleaseResources' with cache key 3c912902f24fdeb38c93234714c12173
+Resolve mutations for :app:collectReleaseDependencies (Thread[#431,Execution worker,5,main]) started.
+:app:collectReleaseDependencies (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:stripReleaseDebugSymbols
+Caching disabled for task ':app:stripReleaseDebugSymbols' because:
+  Caching has been disabled for the task
+Task ':app:stripReleaseDebugSymbols' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/arm64-v8a has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':app:stripReleaseDebugSymbols'.
+C/C++: android.ndkVersion from module build.gradle is [26.1.10909125]
+C/C++: android.ndkPath from module build.gradle is not set
+C/C++: ndk.dir in local.properties is not set
+C/C++: Not considering ANDROID_NDK_HOME because support was removed after deprecation period.
+C/C++: sdkFolder is /Users/wohozo/Library/Android/sdk
+C/C++: android.ndkVersion from module build.gradle is [26.1.10909125]
+C/C++: android.ndkPath from module build.gradle is not set
+C/C++: ndk.dir in local.properties is not set
+C/C++: Not considering ANDROID_NDK_HOME because support was removed after deprecation period.
+C/C++: sdkFolder is /Users/wohozo/Library/Android/sdk
+C/C++: android.ndkVersion from module build.gradle is [26.1.10909125]
+C/C++: android.ndkPath from module build.gradle is not set
+C/C++: ndk.dir in local.properties is not set
+C/C++: Not considering ANDROID_NDK_HOME because support was removed after deprecation period.
+C/C++: sdkFolder is /Users/wohozo/Library/Android/sdk
+C/C++: android.ndkVersion from module build.gradle is [26.1.10909125]
+C/C++: android.ndkPath from module build.gradle is not set
+C/C++: ndk.dir in local.properties is not set
+C/C++: Not considering ANDROID_NDK_HOME because support was removed after deprecation period.
+C/C++: sdkFolder is /Users/wohozo/Library/Android/sdk
+Starting process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''. Working directory: /Users/wohozo/Documents/astroluna.in/astroapp/android Command: /Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip --strip-unneeded -o /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/arm64-v8a/libjingle_peerconnection_so.so /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/arm64-v8a/libjingle_peerconnection_so.so
+Starting process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''. Working directory: /Users/wohozo/Documents/astroluna.in/astroapp/android Command: /Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip --strip-unneeded -o /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/x86_64/libjingle_peerconnection_so.so /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/x86_64/libjingle_peerconnection_so.so
+Starting process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''. Working directory: /Users/wohozo/Documents/astroluna.in/astroapp/android Command: /Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip --strip-unneeded -o /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/x86/libjingle_peerconnection_so.so /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/x86/libjingle_peerconnection_so.so
+Starting process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''. Working directory: /Users/wohozo/Documents/astroluna.in/astroapp/android Command: /Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip --strip-unneeded -o /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib/armeabi-v7a/libjingle_peerconnection_so.so /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/armeabi-v7a/libjingle_peerconnection_so.so
+Successfully started process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''
+Successfully started process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''
+Successfully started process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''
+Successfully started process 'command '/Users/wohozo/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip''
+
+> Task :app:collectReleaseDependencies
+Caching disabled for task ':app:collectReleaseDependencies' because:
+  Caching has been disabled for the task
+Task ':app:collectReleaseDependencies' is not up-to-date because:
+  Output property 'dependencyReport' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/metadata_library_dependencies_report/release/collectReleaseDependencies/dependencies.pb has been removed.
+Resolve mutations for :app:extractReleaseNativeSymbolTables (Thread[#431,Execution worker,5,main]) started.
+:app:extractReleaseNativeSymbolTables (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
+Build cache key for task ':app:extractReleaseNativeSymbolTables' is 5a97c85d5e6b44b7fc27f8eed2b58a26
+Task ':app:extractReleaseNativeSymbolTables' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/native_symbol_tables/release/extractReleaseNativeSymbolTables/out has been removed.
+Loaded cache entry for task ':app:extractReleaseNativeSymbolTables' with cache key 5a97c85d5e6b44b7fc27f8eed2b58a26
+Resolve mutations for :app:mergeReleaseNativeDebugMetadata (Thread[#431,Execution worker,5,main]) started.
+:app:mergeReleaseNativeDebugMetadata (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+Skipping task ':app:mergeReleaseNativeDebugMetadata' as it has no source files and no previous output files.
+Resolve mutations for :app:sdkReleaseDependencyData (Thread[#431,Execution worker,5,main]) started.
+:app:sdkReleaseDependencyData (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:sdkReleaseDependencyData
+Caching disabled for task ':app:sdkReleaseDependencyData' because:
+  Caching has been disabled for the task
+Task ':app:sdkReleaseDependencyData' is not up-to-date because:
+  Output property 'sdkDependencyData' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/sdk_dependency_data/release/sdkReleaseDependencyData/sdkDependencyData.pb has been removed.
+  Output property 'sdkDependencyDataPublic' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/outputs/sdk-dependencies/release/sdkDependencies.txt has been removed.
+Resolve mutations for :app:validateSigningRelease (Thread[#431,Execution worker,5,main]) started.
+:app:validateSigningRelease (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:validateSigningRelease
+Caching disabled for task ':app:validateSigningRelease' because:
+  Caching has been disabled for the task
+Task ':app:validateSigningRelease' is not up-to-date because:
+  Output property 'dummyOutputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/validate_signing_config/release/validateSigningRelease has been removed.
+Resolve mutations for :app:writeReleaseAppMetadata (Thread[#431,Execution worker,5,main]) started.
+:app:writeReleaseAppMetadata (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:writeReleaseAppMetadata
+Caching disabled for task ':app:writeReleaseAppMetadata' because:
+  Caching has been disabled for the task
+Task ':app:writeReleaseAppMetadata' is not up-to-date because:
+  Output property 'outputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/app_metadata/release/writeReleaseAppMetadata/app-metadata.properties has been removed.
+Resolve mutations for :app:writeReleaseSigningConfigVersions (Thread[#431,Execution worker,5,main]) started.
+:app:writeReleaseSigningConfigVersions (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:writeReleaseSigningConfigVersions
+Caching disabled for task ':app:writeReleaseSigningConfigVersions' because:
+  Caching has been disabled for the task
+Task ':app:writeReleaseSigningConfigVersions' is not up-to-date because:
+  Output property 'outputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/signing_config_versions/release/writeReleaseSigningConfigVersions/signing-config-versions.json has been removed.
+Resolve mutations for :app:generateReleaseFeatureMetadata (Thread[#431,Execution worker,5,main]) started.
+:app:generateReleaseFeatureMetadata (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:generateReleaseFeatureMetadata FROM-CACHE
+Build cache key for task ':app:generateReleaseFeatureMetadata' is fcf56e0fbdfddee07f302986e9f12e61
+Task ':app:generateReleaseFeatureMetadata' is not up-to-date because:
+  Output property 'outputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/feature_set_metadata/release/generateReleaseFeatureMetadata/feature-metadata.json has been removed.
+Loaded cache entry for task ':app:generateReleaseFeatureMetadata' with cache key fcf56e0fbdfddee07f302986e9f12e61
+Resolve mutations for :app:configureReleaseDependencies (Thread[#431,Execution worker,5,main]) started.
+:app:configureReleaseDependencies (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:configureReleaseDependencies
+Caching disabled for task ':app:configureReleaseDependencies' because:
+  Caching has been disabled for the task
+Task ':app:configureReleaseDependencies' is not up-to-date because:
+  Output property 'dependenciesList' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/bundle_dependency_report/release/configureReleaseDependencies/dependencies.pb has been removed.
+Resolve mutations for :app:parseReleaseIntegrityConfig (Thread[#431,Execution worker,5,main]) started.
+:app:parseReleaseIntegrityConfig (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:parseReleaseIntegrityConfig UP-TO-DATE
+Build cache key for task ':app:parseReleaseIntegrityConfig' is f8d6b7d1f23ea3854623da554ccf3294
+Skipping task ':app:parseReleaseIntegrityConfig' as it is up-to-date.
+
+> Task :app:kaptGenerateStubsReleaseKotlin
+Stored cache entry for task ':app:kaptGenerateStubsReleaseKotlin' with cache key eb09c497edcca9ea896c456e437cb4ef
+Resolve mutations for :app:kaptReleaseKotlin (Thread[#431,Execution worker,5,main]) started.
+:app:kaptReleaseKotlin (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:kaptReleaseKotlin FROM-CACHE
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+Build cache key for task ':app:kaptReleaseKotlin' is ebf710f017e7cba15aa34971fce86ae3
+Task ':app:kaptReleaseKotlin' is not up-to-date because:
+  Output property 'classesDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kapt3/classes/release has been removed.
+  Output property 'destinationDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/source/kapt/release has been removed.
+  Output property 'destinationDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/source/kapt/release/com has been removed.
+  and more...
+Loaded cache entry for task ':app:kaptReleaseKotlin' with cache key ebf710f017e7cba15aa34971fce86ae3
+Resolve mutations for :app:compileReleaseKotlin (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:compileReleaseKotlin (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:compileReleaseKotlin
+Build cache key for task ':app:compileReleaseKotlin' is e418f29cb9e885ff4a2fbc7b95f2b9c7
+Task ':app:compileReleaseKotlin' is not up-to-date because:
+  Output property 'classpathSnapshotProperties.classpathSnapshotDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/classpath-snapshot has been removed.
+  Output property 'classpathSnapshotProperties.classpathSnapshotDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin has been removed.
+  Output property 'destinationDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kotlin-classes/release has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':app:compileReleaseKotlin'.
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/kotlin', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/java', not found
+Kotlin source files: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/SettingsActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/ThemeSettingsActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/city/CitySearchActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/city/CityViewModel.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatViewModel.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/auth/OtpVerificationActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/auth/LoginActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/MatchDisplayActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/academy/AcademyActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/dashboard/RasiDetailDialog.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/rasipalan/RasipalanActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/ThemeModels.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Colors.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Type.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/guest/GuestDashboardActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/PaymentStatusActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerHistoryActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/MainActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/IncomingCallActivity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/AstrologerApp.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/Localization.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/ViewUtils.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/CallState.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/PageThemeManager.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/Constants.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/SoundManager.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/FCMService.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/ChatRepository.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/CSCRepository.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/AuthRepository.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/CSCDatabaseHelper.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/ThemeManager.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/entity/ChatMessageEntity.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/dao/ChatDao.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/AppDatabase.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/local/TokenManager.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/AuthModels.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/AstroRegistration.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/Astrologer.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/Banner.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/PaymentModels.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/model/RasipalanModel.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/api/ApiInterface.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/api/ApiService.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/api/ApiClient.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/nominatim/CityRepository.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/nominatim/NominatimApi.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/nominatim/NominatimModels.kt, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/SocketManager.kt
+Java source files: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/source/kapt/release/com/astroluna/data/local/AppDatabase_Impl.java, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/generated/source/kapt/release/com/astroluna/data/local/dao/ChatDao_Impl.java
+Script source files: 
+Script file extensions: 
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+i: found daemon on port 17404 (309187 ms old), trying to connect
+i: connected to the daemon
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=false, modifiedFiles=null, deletedFiles=null, classpathChanges=NotAvailableForNonIncrementalRun, workingDir=/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/local-state/build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, outputFiles=[/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/tmp/kotlin-classes/release, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/cacheable, /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/kotlin/compileReleaseKotlin/local-state])
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:93:13 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:99:37 Unnecessary safe call on a non-null receiver of type Intent?
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/CallForegroundService.kt:256:13 'stopForeground(Boolean): Unit' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/FCMService.kt:343:30 'FULL_WAKE_LOCK: Int' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/FCMService.kt:344:38 'ACQUIRE_CAUSES_WAKEUP: Int' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/IncomingCallActivity.kt:140:15 Unnecessary safe call on a non-null receiver of type Intent
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/remote/SocketManager.kt:27:44 Elvis operator (?:) always returns the left operand of non-nullable type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:59 Parameter 'limit' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/data/repository/ChatRepository.kt:108:76 Parameter 'before' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/academy/AcademyActivity.kt:136:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:143:9 Variable 'userId' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/admin/SuperPowerAdminDashboardActivity.kt:299:74 'CallMissed: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.CallMissed
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:293:40 'create(MediaType?, String): RequestBody' is deprecated. Moved to extension function. Put the 'content' argument first to fix Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:324:5 Parameter 'onWithdraw' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:613:40 'ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:712:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:790:26 'CircularProgressIndicator(Float, Modifier = ..., Color = ..., Dp = ..., Color = ..., StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:897:41 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerDashboardActivity.kt:1014:38 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerHistoryActivity.kt:104:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:80:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:245:36 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/astro/AstrologerRegistrationActivity.kt:279:36 'outlinedTextFieldColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., TextSelectionColors = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TextFieldColors' is deprecated. Renamed to `OutlinedTextFieldDefaults.colors` with additional parameters tocontrol container color based on state.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/auth/OtpVerificationActivity.kt:129:5 Parameter 'phone' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:472:22 'setter for isSpeakerphoneOn: Boolean' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:504:17 'constructor MediaRecorder()' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:654:18 This declaration overrides deprecated member but not marked as deprecated itself. Please add @Deprecated annotation or suppress. See https://youtrack.jetbrains.com/issue/KT-47902 for details
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:655:15 'onRequestPermissionsResult(Int, Array<String>, IntArray): Unit' is deprecated. This method has been deprecated in favor of using the Activity Result API
+      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt
+      contracts for common intents available in
+      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for
+      testing, and allow receiving results in separate, testable classes independent from your
+      activity. Use
+      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)} passing
+      in a {@link RequestMultiplePermissions} object for the {@link ActivityResultContract} and
+      handling the result in the {@link ActivityResultCallback#onActivityResult(Object) callback}.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1013:40 Elvis operator (?:) always returns the left operand of non-nullable type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1111:42 The corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1139:42 The corresponding parameter in the supertype 'SimpleSdpObserver' is named 'p0'. This may cause problems when calling this function with named arguments.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1215:13 Variable 'inMediaSection' is assigned but never accessed
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1219:17 The value 'true' assigned to 'var inMediaSection: Boolean defined in com.astroluna.ui.call.CallActivity.preferCodec' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1245:17 The value 'false' assigned to 'var inMediaSection: Boolean defined in com.astroluna.ui.call.CallActivity.preferCodec' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/call/CallActivity.kt:1374:5 Parameter 'isBillingActive' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:35:38 Variable 'birthData' initializer is redundant
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/ChartDisplayActivity.kt:54:42 Unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:304:71 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:368:40 'Indicator(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Use SecondaryIndicator instead.
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:393:50 Unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:394:54 Unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:395:44 Unnecessary safe call on a non-null receiver of type ChartData?
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:395:84 Unnecessary non-null assertion (!!) on a non-null receiver of type ChartData
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:425:9 Variable 'ascIdx' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:505:67 Condition 'pName != null' is always 'true'
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:562:37 Elvis operator (?:) always returns the left operand of non-nullable type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:620:42 Condition 'p.name != null' is always 'true'
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:620:92 Unnecessary non-null assertion (!!) on a non-null receiver of type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:712:97 Unnecessary non-null assertion (!!) on a non-null receiver of type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:719:97 Unnecessary non-null assertion (!!) on a non-null receiver of type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:732:36 Unnecessary non-null assertion (!!) on a non-null receiver of type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:732:81 Unnecessary non-null assertion (!!) on a non-null receiver of type String
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:739:49 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:739:78 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:750:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chart/VipChartActivity.kt:753:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:365:86 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:477:21 Variable 'color' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:486:45 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/chat/ChatActivity.kt:667:40 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/city/CitySearchActivity.kt:118:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:64:17 Variable 'customBg' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:65:17 Variable 'customCard' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:66:17 Variable 'customFont' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:67:17 Variable 'customBtn' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:78:21 Variable 'selectedRasiItem' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeActivity.kt:272:13 Variable 'socket' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1058:5 Parameter 'isTamil' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1059:5 Parameter 'onToggleLanguage' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1210:9 Variable 'showChat' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1211:9 Variable 'showVideo' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1212:9 Variable 'showCall' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1352:46 'Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1397:74 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1696:9 Variable 'context' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/home/HomeScreen.kt:1847:78 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:209:47 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/horoscope/FreeHoroscopeActivity.kt:357:65 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:148:5 Parameter 'partnerName' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:149:5 Parameter 'partnerImage' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:296:33 Unnecessary non-null assertion (!!) on a non-null receiver of type JSONObject
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:622:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:790:69 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:988:73 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/intake/IntakeActivity.kt:1132:37 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:21:35 'PhonePe' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:290:57 Elvis operator (?:) always returns the left operand of non-nullable type String?
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/payment/PaymentActivity.kt:450:53 Elvis operator (?:) always returns the left operand of non-nullable type String?
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:84:5 Parameter 'id' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:99:9 Variable 'yellowAccent' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:107:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:223:51 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/AstrologerProfileActivity.kt:247:46 'Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:103:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/profile/UserProfileActivity.kt:202:57 'create(MediaType?, File): RequestBody' is deprecated. Moved to extension function. Put the 'file' argument first to fix Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/SettingsActivity.kt:80:40 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/settings/ThemeSettingsActivity.kt:157:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:63:13 Variable 'pageFooter' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:87:20 'setter for statusBarColor: Int' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/Theme.kt:88:20 'setter for navigationBarColor: Int' is deprecated. Deprecated in Java
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/theme/ThemeModels.kt:60:19 Parameter 'theme' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/PaymentStatusActivity.kt:89:9 Variable 'bgColor' is never used
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:415:37 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/ui/wallet/WalletActivity.kt:425:41 Name shadowed: amt
+w: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/java/com/astroluna/utils/CallState.kt:17:24 Parameter 'newSessionId' is never used
+Stored cache entry for task ':app:compileReleaseKotlin' with cache key e418f29cb9e885ff4a2fbc7b95f2b9c7
+Resolve mutations for :app:compileReleaseJavaWithJavac (Thread[#431,Execution worker,5,main]) started.
+:app:compileReleaseJavaWithJavac (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:compileReleaseJavaWithJavac FROM-CACHE
+Custom actions are attached to task ':app:compileReleaseJavaWithJavac'.
+Build cache key for task ':app:compileReleaseJavaWithJavac' is eab89b20d2f6cc7a6f61f494181a793d
+Task ':app:compileReleaseJavaWithJavac' is not up-to-date because:
+  Output property 'destinationDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes has been removed.
+  Output property 'destinationDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com has been removed.
+  Output property 'destinationDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/astroluna has been removed.
+  and more...
+Loaded cache entry for task ':app:compileReleaseJavaWithJavac' with cache key eab89b20d2f6cc7a6f61f494181a793d
+No compile result for :app:compileReleaseJavaWithJavac
+No compile result for :app:compileReleaseJavaWithJavac
+Resolve mutations for :app:generateReleaseLintVitalReportModel (Thread[#431,Execution worker,5,main]) started.
+:app:generateReleaseLintVitalReportModel (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:generateReleaseLintVitalReportModel
+Caching disabled for task ':app:generateReleaseLintVitalReportModel' because:
+  Caching has been disabled for the task
+Task ':app:generateReleaseLintVitalReportModel' is not up-to-date because:
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel has been removed.
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel/module.xml has been removed.
+  Output property 'outputDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_report_lint_model/release/generateReleaseLintVitalReportModel/release-artifact-dependencies.xml has been removed.
+  and more...
+Resolve mutations for :app:lintVitalAnalyzeRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+:app:lintVitalAnalyzeRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+Resolve mutations for :app:expandReleaseArtProfileWildcards (Thread[#432,Execution worker Thread 2,5,main]) started.
+:app:expandReleaseArtProfileWildcards (Thread[#432,Execution worker Thread 2,5,main]) started.
+Resolve mutations for :app:mergeReleaseGeneratedProguardFiles (Thread[#431,Execution worker,5,main]) started.
+:app:mergeReleaseGeneratedProguardFiles (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:mergeReleaseGeneratedProguardFiles UP-TO-DATE
+Caching disabled for task ':app:mergeReleaseGeneratedProguardFiles' because:
+  Simple merging task
+Skipping task ':app:mergeReleaseGeneratedProguardFiles' as it is up-to-date.
+Resolve mutations for :app:processReleaseJavaRes (Thread[#431,Execution worker,5,main]) started.
+:app:processReleaseJavaRes (Thread[#431,Execution worker,5,main]) started.
+
+> Task :app:processReleaseJavaRes
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/resources', not found
+Caching disabled for task ':app:processReleaseJavaRes' because:
+  Caching has been disabled for the task
+Task ':app:processReleaseJavaRes' is not up-to-date because:
+  Output property 'outDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/java_res/release/processReleaseJavaRes/out has been removed.
+  Output property 'outDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/java_res/release/processReleaseJavaRes/out/com has been removed.
+  Output property 'outDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/java_res/release/processReleaseJavaRes/out/com/astroluna has been removed.
+  and more...
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/main/resources', not found
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/src/release/resources', not found
+Resolve mutations for :app:mergeReleaseJavaResource (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:mergeReleaseJavaResource (Thread[#435,Execution worker Thread 5,5,main]) started.
+
+> Task :app:lintVitalAnalyzeRelease
+Build cache key for task ':app:lintVitalAnalyzeRelease' is fbaa1341ac80a91d70eb43a9b361d36a
+Task ':app:lintVitalAnalyzeRelease' is not up-to-date because:
+  Output property 'partialResultsDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out has been removed.
+  Output property 'partialResultsDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out/lint-issues.xml has been removed.
+  Output property 'partialResultsDirectory' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out/lint-resources.xml has been removed.
+Android Lint: Reusing lint classloader 31.5.2_false
+
+> Task :app:mergeReleaseJavaResource
+Caching disabled for task ':app:mergeReleaseJavaResource' because:
+  Caching has been disabled for the task
+Task ':app:mergeReleaseJavaResource' is not up-to-date because:
+  Output property 'cacheDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache has been removed.
+  Output property 'cacheDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/+0mHaYefj3vCO1FTYIxluNHyfZ8= has been removed.
+  Output property 'cacheDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/release-mergeJavaRes/zip-cache/+_B7f3Pcg1m45LO9rfs_hHWD4rw= has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':app:mergeReleaseJavaResource'.
+
+> Task :app:expandReleaseArtProfileWildcards
+Build cache key for task ':app:expandReleaseArtProfileWildcards' is 034f36afb839259959fb58218d920c50
+Task ':app:expandReleaseArtProfileWildcards' is not up-to-date because:
+  Output property 'expandedArtProfile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/r8_art_profile/release/expandReleaseArtProfileWildcards/baseline-prof.txt has been removed.
+Stored cache entry for task ':app:expandReleaseArtProfileWildcards' with cache key 034f36afb839259959fb58218d920c50
+Resolve mutations for :app:minifyReleaseWithR8 (Thread[#432,Execution worker Thread 2,5,main]) started.
+:app:minifyReleaseWithR8 (Thread[#432,Execution worker Thread 2,5,main]) started.
+
+> Task :app:minifyReleaseWithR8
+Build cache key for task ':app:minifyReleaseWithR8' is 4a028b17a713405113f4edcd70fd776b
+Task ':app:minifyReleaseWithR8' is not up-to-date because:
+  Output property 'mappingFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/outputs/mapping/release/mapping.txt has been removed.
+  Output property 'outputArtProfile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/r8_art_profile/release/minifyReleaseWithR8/baseline-prof.txt has been removed.
+  Output property 'outputDex' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/dex/release/minifyReleaseWithR8 has been removed.
+  and more...
+R8 is a new Android code shrinker. If you experience any issues, please file a bug at
+https://issuetracker.google.com, using 'Shrinker (R8)' as component name.
+Current version is: 8.5.35 (build 2c176ec131a9edb97721fb8578b7fbb462376632 from go/r8bot (luci-r8-custom-ci-archive-0-gths)).
+
+file or directory '/Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/generated_proguard_file/release/mergeReleaseGeneratedProguardFiles/proguard.txt', not found
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:21:1-22:1: R8: Proguard configuration rule does not match anything: `-keep public class com.google.vending.licensing.ILicensingService {
+  <init>();
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:22:1-23:1: R8: Proguard configuration rule does not match anything: `-keep public class com.android.vending.licensing.ILicensingService {
+  <init>();
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:23:1-24:1: R8: Proguard configuration rule does not match anything: `-keep public class com.google.android.vending.licensing.ILicensingService {
+  <init>();
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:68:1-70:1: R8: Proguard configuration rule does not match anything: `-keep class android.support.annotation.Keep {
+  <init>();
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:70:1-52: R8: Proguard configuration rule does not match anything: `-keep @android.support.annotation.Keep class * {
+  *;
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:72:1-74:2: R8: Proguard configuration rule does not match anything: `-keepclasseswithmembers class * {
+  @android.support.annotation.Keep <methods>;
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:76:1-78:2: R8: Proguard configuration rule does not match anything: `-keepclasseswithmembers class * {
+  @android.support.annotation.Keep <fields>;
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.5.2:80:1-82:2: R8: Proguard configuration rule does not match anything: `-keepclasseswithmembers class * {
+  @android.support.annotation.Keep <init>(...);
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/proguard-rules.pro:33:1-42: R8: Proguard configuration rule does not match anything: `-keep class io.getstream.webrtc.** {
+  *;
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/c59dfcbc2d8301c469fc301178880ead/transformed/jetified-play-services-base-18.0.1/proguard.txt:2:1-4:2: R8: Proguard configuration rule does not match anything: `-keepclassmembers class com.google.android.gms.common.api.internal.BasePendingResult {
+  com.google.android.gms.common.api.internal.BasePendingResult$ReleasableResultGuardian mResultGuardian;
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/11c5e09f08bf01ecb7c8d913bdae39da/transformed/jetified-lifecycle-runtime-release/proguard.txt:10:1-12:2: R8: Proguard configuration rule does not match anything: `-keep class * implements androidx.lifecycle.GeneratedAdapter {
+  <init>(...);
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/11c5e09f08bf01ecb7c8d913bdae39da/transformed/jetified-lifecycle-runtime-release/proguard.txt:14:1-16:2: R8: Proguard configuration rule does not match anything: `-keepclassmembers class ** {
+  @androidx.lifecycle.OnLifecycleEvent *;
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a23713d9ae87160fa10631a32a070ad8/transformed/jetified-lifecycle-viewmodel-savedstate-2.8.0/proguard.txt:1:1-3:2: R8: Proguard configuration rule does not match anything: `-keepclassmembers,allowrepackaging,allowobfuscation class * extends androidx.lifecycle.ViewModel {
+  <init>(androidx.lifecycle.SavedStateHandle);
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a23713d9ae87160fa10631a32a070ad8/transformed/jetified-lifecycle-viewmodel-savedstate-2.8.0/proguard.txt:5:1-7:2: R8: Proguard configuration rule does not match anything: `-keepclassmembers,allowrepackaging,allowobfuscation class * extends androidx.lifecycle.AndroidViewModel {
+  <init>(android.app.Application,androidx.lifecycle.SavedStateHandle);
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a55c508554432fe61abf55f29b36b0d9/transformed/jetified-play-services-basement-18.3.0/proguard.txt:43:1-44:1: R8: Proguard configuration rule does not match anything: `-keep @interface android.support.annotation.Keep {
+  <init>();
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a1eb88b5bc5fffc27ad2bb45e86bf18d/transformed/rules/lib/META-INF/proguard/androidx-annotations.pro:12:1-14:2: R8: Proguard configuration rule does not match anything: `-keepclasseswithmembers class * {
+  @androidx.annotation.Keep <init>(...);
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/aapt_proguard_file/release/processReleaseResources/aapt_rules.txt:24:1-67: R8: Proguard configuration rule does not match anything: `-keep class com.astroluna.ui.dashboard.GuestActivity {
+  <init>();
+}`
+INFO: /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/aapt_proguard_file/release/processReleaseResources/aapt_rules.txt:49:1-97: R8: Proguard configuration rule does not match anything: `-keep class android.widget.Space {
+  <init>(android.content.Context,android.util.AttributeSet);
+}`
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Lcom/google/android/gms/internal/measurement/zzln<TFieldDescriptorType;Ljava/lang/Object;>;' for class com.google.android.gms.internal.measurement.zzlm.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '()Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for method java.util.Iterator com.google.android.gms.internal.measurement.zzlr.iterator().
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for class com.google.android.gms.internal.measurement.zzlp.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '()Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for method java.util.Iterator com.google.android.gms.internal.measurement.zzlp.zza().
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for field java.util.Iterator com.google.android.gms.internal.measurement.zzlp.zzb.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/util/AbstractSet<Ljava/util/Map$Entry<TK;TV;>;>;' for class com.google.android.gms.internal.measurement.zzlu.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '()Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for method java.util.Iterator com.google.android.gms.internal.measurement.zzlu.iterator().
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Ljava/lang/Comparable<Lcom/google/android/gms/internal/measurement/zzlt;>;Ljava/util/Map$Entry<TK;TV;>;' for class com.google.android.gms.internal.measurement.zzlt.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '(Ljava/util/Map$Entry<TK;TV;>;)V' for method void com.google.android.gms.internal.measurement.zzlt.<init>(com.google.android.gms.internal.measurement.zzln, java.util.Map$Entry).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '(TK;TV;)V' for method void com.google.android.gms.internal.measurement.zzlt.<init>(com.google.android.gms.internal.measurement.zzln, java.lang.Comparable, java.lang.Object).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '()TV;' for method java.lang.Object com.google.android.gms.internal.measurement.zzlt.getValue().
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '(TV;)TV;' for method java.lang.Object com.google.android.gms.internal.measurement.zzlt.setValue(java.lang.Object).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'TK;' for field java.lang.Comparable com.google.android.gms.internal.measurement.zzlt.zza.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'TV;' for field java.lang.Object com.google.android.gms.internal.measurement.zzlt.zzb.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for class com.google.android.gms.internal.measurement.zzls.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature '()Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for method java.util.Iterator com.google.android.gms.internal.measurement.zzls.zza().
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/157de28c09e6b98f93e9c069065a2f3f/transformed/jetified-play-services-measurement-base-22.0.1-runtime.jar: R8: Invalid signature 'Ljava/util/Iterator<Ljava/util/Map$Entry<TK;TV;>;>;' for field java.util.Iterator com.google.android.gms.internal.measurement.zzls.zzc.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Lorg/webrtc/Predicate<TT;>;' for class org.webrtc.Predicate$3.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature '(TT;)Z' for method boolean org.webrtc.Predicate$3.test(java.lang.Object).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Lorg/webrtc/Predicate<TT;>;' for class org.webrtc.Predicate$2.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature '(TT;)Z' for method boolean org.webrtc.Predicate$2.test(java.lang.Object).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature 'Ljava/lang/Object;Lorg/webrtc/Predicate<TT;>;' for class org.webrtc.Predicate$1.
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/f87770cb1f7904fe471fe8d051e13028/transformed/jetified-stream-webrtc-android-1.2.2-runtime.jar: R8: Invalid signature '(TT;)Z' for method boolean org.webrtc.Predicate$1.test(java.lang.Object).
+Validation error: A type variable is not in scope.
+Signature is ignored and will not be present in the output.
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar: R8: Type org.json.JSONArray is defined by both the program: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar:org/json/JSONArray.class and the library: /Users/wohozo/Library/Android/sdk/platforms/android-35/android.jar:org/json/JSONArray.class
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar: R8: Type org.json.JSONException is defined by both the program: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar:org/json/JSONException.class and the library: /Users/wohozo/Library/Android/sdk/platforms/android-35/android.jar:org/json/JSONException.class
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar: R8: Type org.json.JSONObject is defined by both the program: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar:org/json/JSONObject.class and the library: /Users/wohozo/Library/Android/sdk/platforms/android-35/android.jar:org/json/JSONObject.class
+INFO: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar: R8: Type org.json.JSONTokener is defined by both the program: /Users/wohozo/.gradle/caches/8.12/transforms/a46d4c8e142b6602f4a1c5bc7030c65c/transformed/jetified-json-20090211.jar:org/json/JSONTokener.class and the library: /Users/wohozo/Library/Android/sdk/platforms/android-35/android.jar:org/json/JSONTokener.class
+
+> Task :app:lintVitalAnalyzeRelease
+Stored cache entry for task ':app:lintVitalAnalyzeRelease' with cache key fbaa1341ac80a91d70eb43a9b361d36a
+Resolve mutations for :app:lintVitalReportRelease (Thread[#433,Execution worker Thread 3,5,main]) started.
+:app:lintVitalReportRelease (Thread[#434,Execution worker Thread 4,5,main]) started.
+
+> Task :app:lintVitalReportRelease
+Caching disabled for task ':app:lintVitalReportRelease' because:
+  Caching has been disabled for the task
+Task ':app:lintVitalReportRelease' is not up-to-date because:
+  Output property 'intermediateTextReport' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_intermediate_text_report/release/lintVitalReportRelease/lint-results-release.txt has been removed.
+  Output property 'returnValueOutputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/lint_vital_return_value/release/lintVitalReportRelease/return-value-release.txt has been removed.
+Android Lint: Reusing lint classloader 31.5.2_false
+Resolve mutations for :app:lintVitalRelease (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:lintVitalRelease (Thread[#435,Execution worker Thread 5,5,main]) started.
+
+> Task :app:lintVitalRelease
+Caching disabled for task ':app:lintVitalRelease' because:
+  Caching has been disabled for the task
+Task ':app:lintVitalRelease' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+
+> Task :app:minifyReleaseWithR8
+Stored cache entry for task ':app:minifyReleaseWithR8' with cache key 4a028b17a713405113f4edcd70fd776b
+Resolve mutations for :app:compileReleaseArtProfile (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:compileReleaseArtProfile (Thread[#432,Execution worker Thread 2,5,main]) started.
+Resolve mutations for :app:shrinkReleaseRes (Thread[#433,Execution worker Thread 3,5,main]) started.
+:app:shrinkReleaseRes (Thread[#437,Execution worker Thread 7,5,main]) started.
+Resolve mutations for :app:buildReleasePreBundle (Thread[#433,Execution worker Thread 3,5,main]) started.
+:app:buildReleasePreBundle (Thread[#433,Execution worker Thread 3,5,main]) started.
+
+> Task :app:compileReleaseArtProfile
+Build cache key for task ':app:compileReleaseArtProfile' is e12f90961c7a32b0dae4307092d01781
+Task ':app:compileReleaseArtProfile' is not up-to-date because:
+  Output property 'binaryArtProfile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/binary_art_profile/release/compileReleaseArtProfile/baseline.prof has been removed.
+  Output property 'binaryArtProfileMetadata' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/binary_art_profile_metadata/release/compileReleaseArtProfile/baseline.profm has been removed.
+  Output property 'combinedArtProfile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/combined_art_profile/release/compileReleaseArtProfile/baseline-prof.txt has been removed.
+  and more...
+Stored cache entry for task ':app:compileReleaseArtProfile' with cache key e12f90961c7a32b0dae4307092d01781
+
+> Task :app:shrinkReleaseRes
+Custom actions are attached to task ':app:shrinkReleaseRes'.
+Build cache key for task ':app:shrinkReleaseRes' is a4d10f86d43eedf117c43ad127915024
+Task ':app:shrinkReleaseRes' is not up-to-date because:
+  Output property 'shrunkResources' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/shrunk_processed_res/release/shrinkReleaseRes has been removed.
+  Output property 'shrunkResources' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/shrunk_processed_res/release/shrinkReleaseRes/output-metadata.json has been removed.
+  Output property 'shrunkResources' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/shrunk_processed_res/release/shrinkReleaseRes/resources-release-proto-stripped.ap_ has been removed.
+  and more...
+
+> Task :app:buildReleasePreBundle
+Caching disabled for task ':app:buildReleasePreBundle' because:
+  Caching has been disabled for the task
+Task ':app:buildReleasePreBundle' is not up-to-date because:
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/module_bundle/release/buildReleasePreBundle has been removed.
+  Output property 'outputDir' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/module_bundle/release/buildReleasePreBundle/base.zip has been removed.
+Resolve mutations for :app:packageReleaseBundle (Thread[#433,Execution worker Thread 3,5,main]) started.
+:app:packageReleaseBundle (Thread[#433,Execution worker Thread 3,5,main]) started.
+
+> Task :app:packageReleaseBundle
+Caching disabled for task ':app:packageReleaseBundle' because:
+  Caching has been disabled for the task
+Task ':app:packageReleaseBundle' is not up-to-date because:
+  Output property 'bundleFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/intermediary_bundle/release/packageReleaseBundle/intermediary-bundle.aab has been removed.
+Resolve mutations for :app:shrinkBundleReleaseResources (Thread[#435,Execution worker Thread 5,5,main]) started.
+:app:shrinkBundleReleaseResources (Thread[#433,Execution worker Thread 3,5,main]) started.
+
+> Task :app:shrinkBundleReleaseResources
+Build cache key for task ':app:shrinkBundleReleaseResources' is 0321d11918b095ec7fde8355bfa131f9
+Task ':app:shrinkBundleReleaseResources' is not up-to-date because:
+  Output property 'shrunkBundle' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/intermediary_bundle/release/shrinkBundleReleaseResources/intermediary-bundle.aab has been removed.
+
+> Task :app:shrinkReleaseRes
+AAPT2 aapt2-8.5.2-11315950-osx Daemon #0: starting
+Removed unused resources: Binary resource data reduced from 14033KB to 4582KB. Removed 67%
+Stored cache entry for task ':app:shrinkReleaseRes' with cache key a4d10f86d43eedf117c43ad127915024
+Resolve mutations for :app:optimizeReleaseResources (Thread[#432,Execution worker Thread 2,5,main]) started.
+:app:optimizeReleaseResources (Thread[#432,Execution worker Thread 2,5,main]) started.
+
+> Task :app:optimizeReleaseResources FROM-CACHE
+Custom actions are attached to task ':app:optimizeReleaseResources'.
+Build cache key for task ':app:optimizeReleaseResources' is 99ed933cce50daf28df359d5fcc4da81
+Task ':app:optimizeReleaseResources' is not up-to-date because:
+  Output property 'optimizedProcessedRes' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/optimized_processed_res/release/optimizeReleaseResources has been removed.
+  Output property 'optimizedProcessedRes' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/optimized_processed_res/release/optimizeReleaseResources/output-metadata.json has been removed.
+  Output property 'optimizedProcessedRes' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/optimized_processed_res/release/optimizeReleaseResources/resources-release-optimize.ap_ has been removed.
+Loaded cache entry for task ':app:optimizeReleaseResources' with cache key 99ed933cce50daf28df359d5fcc4da81
+Resolve mutations for :app:packageRelease (Thread[#432,Execution worker Thread 2,5,main]) started.
+:app:packageRelease (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:packageRelease
+Custom actions are attached to task ':app:packageRelease'.
+Caching disabled for task ':app:packageRelease' because:
+  Caching has been disabled for the task
+Task ':app:packageRelease' is not up-to-date because:
+  Output property 'ideModelOutputFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/outputs/apk/release/output-metadata.json has been removed.
+  Output property 'incrementalFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/packageRelease/tmp has been removed.
+  Output property 'incrementalFolder' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/incremental/packageRelease/tmp/release has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':app:packageRelease'.
+
+> Task :app:shrinkBundleReleaseResources
+Removed unused resources: Binary bundle size reduced from 203464KB to 193503KB. Removed 4%
+
+Resolve mutations for :app:createReleaseApkListingFileRedirect (Thread[#432,Execution worker Thread 2,5,main]) started.
+:app:createReleaseApkListingFileRedirect (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:createReleaseApkListingFileRedirect
+Caching disabled for task ':app:createReleaseApkListingFileRedirect' because:
+  Caching has been disabled for the task
+Task ':app:createReleaseApkListingFileRedirect' is not up-to-date because:
+  Output property 'redirectFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/apk_ide_redirect_file/release/createReleaseApkListingFileRedirect/redirect.txt has been removed.
+Resolve mutations for :app:assembleRelease (Thread[#437,Execution worker Thread 7,5,main]) started.
+:app:assembleRelease (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:assembleRelease
+Skipping task ':app:assembleRelease' as it has no actions.
+
+> Task :app:shrinkBundleReleaseResources
+Stored cache entry for task ':app:shrinkBundleReleaseResources' with cache key 0321d11918b095ec7fde8355bfa131f9
+Resolve mutations for :app:signReleaseBundle (Thread[#437,Execution worker Thread 7,5,main]) started.
+:app:signReleaseBundle (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:signReleaseBundle
+Caching disabled for task ':app:signReleaseBundle' because:
+  Caching has been disabled for the task
+Task ':app:signReleaseBundle' is not up-to-date because:
+  Output property 'finalBundleFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/outputs/bundle/release/app-release.aab has been removed.
+Resolve mutations for :app:produceReleaseBundleIdeListingFile (Thread[#430,included builds,5,main]) started.
+:app:produceReleaseBundleIdeListingFile (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:produceReleaseBundleIdeListingFile
+Caching disabled for task ':app:produceReleaseBundleIdeListingFile' because:
+  Fast task
+Task ':app:produceReleaseBundleIdeListingFile' is not up-to-date because:
+  Output property 'bundleIdeModel' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/bundle_ide_model/release/produceReleaseBundleIdeListingFile/output-metadata.json has been removed.
+Resolve mutations for :app:createReleaseBundleListingFileRedirect (Thread[#430,included builds,5,main]) started.
+:app:createReleaseBundleListingFileRedirect (Thread[#437,Execution worker Thread 7,5,main]) started.
+
+> Task :app:createReleaseBundleListingFileRedirect
+Caching disabled for task ':app:createReleaseBundleListingFileRedirect' because:
+  Caching has been disabled for the task
+Task ':app:createReleaseBundleListingFileRedirect' is not up-to-date because:
+  Output property 'redirectFile' file /Users/wohozo/Documents/astroluna.in/astroapp/android/app/build/intermediates/bundle_ide_redirect_file/release/createReleaseBundleListingFileRedirect/redirect.txt has been removed.
+Resolve mutations for :app:bundleRelease (Thread[#430,included builds,5,main]) started.
+:app:bundleRelease (Thread[#430,included builds,5,main]) started.
+
+> Task :app:bundleRelease
+Skipping task ':app:bundleRelease' as it has no actions.
+AAPT2 aapt2-8.5.2-11315950-osx Daemon #0: shutdown
+Android Lint: Disposing Uast application environment in lint classloader [31.5.2_false]
+
+[Incubating] Problems report is available at: file:///Users/wohozo/Documents/astroluna.in/astroapp/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 8m 4s
+65 actionable tasks: 42 executed, 20 from cache, 3 up-to-date
+Watched directory hierarchies: [/Users/wohozo/Documents/astroluna.in/astroapp/android]

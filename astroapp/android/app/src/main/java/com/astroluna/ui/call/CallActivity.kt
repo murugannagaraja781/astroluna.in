@@ -204,6 +204,9 @@ class CallActivity : ComponentActivity() {
         if (newServersJson == null || newServersJson.length() == 0) return
         try {
             iceServers.clear()
+            // Always keep Google's reliable STUN as fallback
+            iceServers.add(PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer())
+            
             for (i in 0 until newServersJson.length()) {
                 val obj = newServersJson.getJSONObject(i)
                 val urls = obj.optJSONArray("urls")
