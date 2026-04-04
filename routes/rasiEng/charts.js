@@ -188,7 +188,8 @@ async function handleFullChart(req, res, input = {}) {
             navamsa: {
                 planets: navamsaPlanets,
                 ascendantSign: navamsaAscSign
-            }
+            },
+            kpSignificators: getKPSignificators(planets, houses)
         };
 
         console.log('[Chart] Sending success response...');

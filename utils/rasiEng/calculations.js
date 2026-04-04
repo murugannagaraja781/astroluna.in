@@ -136,19 +136,34 @@ function getKPDetails(longitude) {
                         accumulatedSSS += sssSpan;
 
                         if (positionInSS < accumulatedSSS) {
-                            return {
-                                signLord,
-                                starLord,
-                                subLord,
-                                subSubLord,
-                                subSubSubLord: starLordSequence[sssidx]
-                            };
+                            const subSubSubLord = starLordSequence[sssidx];
+                            const positionInSSS = positionInSS - (accumulatedSSS - sssSpan);
+
+                            // Sub-Sub-Sub-Sub Lord (Level 6)
+                            let accumulatedSSSS = 0;
+                            for (let l = 0; l < 9; l++) {
+                                const ssssidx = (sssidx + l) % 9;
+                                const ssssSpan = (dashaYears[ssssidx] / totalYears) * sssSpan;
+                                accumulatedSSSS += ssssSpan;
+
+                                if (positionInSSS < accumulatedSSSS) {
+                                    return {
+                                        signLord,
+                                        starLord,
+                                        subLord,
+                                        subSubLord,
+                                        subSubSubLord,
+                                        subSubSubSubLord: starLordSequence[ssssidx]
+                                    };
+                                }
+                            }
+                            return { signLord, starLord, subLord, subSubLord, subSubSubLord, subSubSubSubLord: subSubSubLord };
                         }
                     }
-                    return { signLord, starLord, subLord, subSubLord, subSubSubLord: subSubLord };
+                    return { signLord, starLord, subLord, subSubLord, subSubSubLord: subSubLord, subSubSubSubLord: subSubLord };
                 }
             }
-            return { signLord, starLord, subLord, subSubLord: subLord, subSubSubLord: subLord };
+            return { signLord, starLord, subLord, subSubLord: subLord, subSubSubLord: subLord, subSubSubSubLord: subLord };
         }
     }
 
@@ -157,7 +172,8 @@ function getKPDetails(longitude) {
         starLord,
         subLord: starLord,
         subSubLord: starLord,
-        subSubSubLord: starLord
+        subSubSubLord: starLord,
+        subSubSubSubLord: starLord
     };
 }
 

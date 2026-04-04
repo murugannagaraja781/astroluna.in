@@ -91,11 +91,17 @@ class ChartDisplayActivity : ComponentActivity() {
     }
 
     private fun generateHtml(data: JSONObject, inputData: JSONObject): String {
-        val planets = data.getJSONObject("rawPlanets")
+        val planetList = data.getJSONArray("planets")
+        val planetsMap = JSONObject()
+        for (i in 0 until planetList.length()) {
+            val p = planetList.getJSONObject(i)
+            planetsMap.put(p.getString("name"), p)
+        }
+
         val panchangam = data.getJSONObject("panchangam")
         val dasha = data.optJSONObject("dasha")
-        val lagna = data.getJSONObject("lagna")
-        val navamsa = data.getJSONObject("navamsa").getJSONObject("planets")
+        val lagna = data.getJSONObject("houses").getJSONObject("ascendantDetails")
+        val navamsa = data.getJSONObject("navamsa").getJSONArray("planets")
 
         val signMap = mapOf(
             "Pisces" to 0, "Aries" to 1, "Taurus" to 2, "Gemini" to 3,
@@ -105,29 +111,28 @@ class ChartDisplayActivity : ComponentActivity() {
         )
 
         val rasiBoxes = Array(12) { StringBuilder() }
-        val lagnaSign = lagna.getString("name")
+        val lagnaSign = lagna.getString("signName")
         signMap[lagnaSign]?.let { idx -> rasiBoxes[idx].append("<div class='planet lagna'>Lagna</div>") }
 
-        val planetKeys = planets.keys()
-        while(planetKeys.hasNext()) {
-            val pName = planetKeys.next() as String
-            val pData = planets.getJSONObject(pName)
-            val pSign = pData.getString("sign")
-            val pNameTamil = pData.optString("nameTamil", pName).take(2)
+        val pKeys = planetsMap.keys()
+        while(pKeys.hasNext()) {
+            val pName = pKeys.next() as String
+            val pData = planetsMap.getJSONObject(pName)
+            val pSign = pData.getString("signName")
+            val pNameTamil = pName.take(2)
             signMap[pSign]?.let { idx ->
                 rasiBoxes[idx].append("<div class='planet'>$pNameTamil</div>")
             }
         }
 
         val navamsaBoxes = Array(12) { StringBuilder() }
-        val nKeys = navamsa.keys()
-        while(nKeys.hasNext()) {
-             val pName = nKeys.next() as String
-             val pData = navamsa.getJSONObject(pName)
-             val pSign = pData.getString("navamsaSign")
-             val pNameTamil = planets.optJSONObject(pName)?.optString("nameTamil", pName)?.take(2) ?: pName.take(2)
+        for (i in 0 until navamsa.length()) {
+             val pData = navamsa.getJSONObject(i)
+             val pName = pData.getString("name")
+             val pSign = pData.getString("signName")
+             val pDisp = pName.take(2)
              signMap[pSign]?.let { idx ->
-                 navamsaBoxes[idx].append("<div class='planet'>$pNameTamil</div>")
+                 navamsaBoxes[idx].append("<div class='planet'>$pDisp</div>")
              }
         }
 
@@ -165,16 +170,19 @@ class ChartDisplayActivity : ComponentActivity() {
                     .b11 { grid-column: 4; grid-row: 4; }
                     .planet { background: #e0f7fa; padding: 1px 3px; margin: 1px; border-radius: 3px; color: #006064; font-weight: bold; }
                     .planet.lagna { background: #fce4ec; color: #880e4f; }
-                    .info-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                    .info-table td, .info-table th { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
-                    .info-table th { background-color: #f2f2f2; }
+                    .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .info-table td, .info-table th { border: 1px solid #eee; padding: 10px; text-align: left; font-size: 13px; }
+                    .info-table th { background-color: #6200EE; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .info-table tr:nth-child(even) { background-color: #f8f9fa; }
+                    .info-table tr:hover { background-color: #f1ecff; }
+                    .kp-header { background: #6200EE; color: white; padding: 8px 15px; border-radius: 5px; margin-top: 30px; display: inline-block; font-size: 14px; }
                 </style>
             </head>
             <body>
                 <h3>${inputData.optString("name")}'s Chart</h3>
-                <p style="text-align:center; font-size:12px;">${inputData.optString("city")} | ${inputData.optInt("day")}-${inputData.optInt("month")}-${inputData.optInt("year")}</p>
+                <p style="text-align:center; font-size:12px; color: #666;">${inputData.optString("city")} | ${inputData.optInt("day")}-${inputData.optInt("month")}-${inputData.optInt("year")}</p>
 
-                <h3>Rasi Chart</h3>
+                <div class="kp-header">Rasi & Navamsa</div>
                 <div class="chart-container">
                     <div class="box b0">${rasiBoxes[0]}</div>
                     <div class="box b1">${rasiBoxes[1]}</div>
@@ -208,7 +216,7 @@ class ChartDisplayActivity : ComponentActivity() {
                     <div class="box b11">${navamsaBoxes[11]}</div>
                 </div>
 
-                <h3>Panchangam</h3>
+                <div class="kp-header">Panchangam</div>
                 <table class="info-table">
                     <tr><th>Tithi</th><td>${panchangam.optString("tithi")}</td></tr>
                     <tr><th>Nakshatra</th><td>${panchangam.optString("nakshatra")}</td></tr>
@@ -217,7 +225,7 @@ class ChartDisplayActivity : ComponentActivity() {
                 </table>
 
                 ${if(dasha != null) """
-                <h3>Current Dasha</h3>
+                <div class="kp-header">Current Dasha</div>
                 <table class="info-table">
                     <tr><th>Lord</th><td>${dasha.optString("currentLord")}</td></tr>
                     <tr><th>Bhukti</th><td>${dasha.optString("bhuktiName")}</td></tr>
@@ -226,6 +234,63 @@ class ChartDisplayActivity : ComponentActivity() {
                 </table>
                 """ else ""}
 
+                <div class="kp-header">KP Planet Details (1-6)</div>
+                <table class="info-table">
+                    <tr><th>Planet</th><th>Sign</th><th>Star</th><th>Sub</th><th>SSL</th><th>SSSL</th><th>SSSSL</th></tr>
+                    ${run {
+                        val sb = StringBuilder()
+                        val pNames = listOf("Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu")
+                        pNames.forEach { pName ->
+                            val p = planetsMap.optJSONObject(pName)
+                            if (p != null) {
+                                val sL = p.optString("signLord").take(2)
+                                val stL = p.optString("starLord").take(2)
+                                val subL = p.optString("subLord").take(2)
+                                val ssL = p.optString("subSubLord").take(2)
+                                val sssL = p.optString("subSubSubLord").take(2)
+                                val ssssL = p.optString("subSubSubSubLord").take(2)
+                                sb.append("<tr><td>$pName</td><td>$sL</td><td>$stL</td><td>$subL</td><td>$ssL</td><td>$sssL</td><td>$ssssL</td></tr>")
+                            }
+                        }
+                        sb.toString()
+                    }}
+                </table>
+
+                <div class="kp-header">KP Cusp Details</div>
+                <table class="info-table">
+                    <tr><th>Cusp</th><th>Degree</th><th>Star Lord</th><th>Sub Lord</th></tr>
+                    ${run {
+                        val sb = StringBuilder()
+                        val cusps = data.optJSONObject("houses")?.optJSONArray("details")
+                        if (cusps != null) {
+                            for (i in 0 until cusps.length()) {
+                                val c = cusps.getJSONObject(i)
+                                sb.append("<tr><td>${i+1}</td><td>${c.optString("degreeFormatted")}</td><td>${c.optString("starLord")}</td><td>${c.optString("subLord")}</td></tr>")
+                            }
+                        }
+                        sb.toString()
+                    }}
+                </table>
+
+                <div class="kp-header">KP Significators</div>
+                <table class="info-table">
+                    <tr><th>House</th><th>Level 1</th><th>Level 2</th><th>Level 3</th><th>Level 4</th></tr>
+                    ${run {
+                        val sb = StringBuilder()
+                        val kp = data.optJSONObject("kpSignificators")?.optJSONArray("houseView")
+                        if (kp != null) {
+                            for (i in 0 until kp.length()) {
+                                val h = kp.get(i) as JSONObject
+                                val l1 = h.optJSONArray("level1")?.let { arr -> List(arr.length()) { arr.getString(it) }.joinToString(", ") } ?: ""
+                                val l2 = h.optJSONArray("level2")?.let { arr -> List(arr.length()) { arr.getString(it) }.joinToString(", ") } ?: ""
+                                val l3 = h.optJSONArray("level3")?.let { arr -> List(arr.length()) { arr.getString(it) }.joinToString(", ") } ?: ""
+                                val l4 = h.optJSONArray("level4")?.let { arr -> List(arr.length()) { arr.getString(it) }.joinToString(", ") } ?: ""
+                                sb.append("<tr><td>${h.optInt("house")}</td><td>$l1</td><td>$l2</td><td>$l3</td><td>$l4</td></tr>")
+                            }
+                        }
+                        sb.toString()
+                    }}
+                </table>
             </body>
             </html>
         """
