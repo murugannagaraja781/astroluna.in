@@ -649,6 +649,110 @@ module.exports = function(io, shared) {
       } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
     });
 
+    // --- Admin: Get All Users ---
+    socket.on('get-all-users', async (cb) => {
+      try {
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const users = await User.find({}, {
+          userId: 1, name: 1, phone: 1, role: 1, walletBalance: 1,
+          totalEarnings: 1, isOnline: 1, isAvailable: 1, isBanned: 1,
+          isVerified: 1, isDocVerified: 1, joinedAt: 1, lastSeen: 1, image: 1
+        }).sort({ _id: -1 }).lean();
+
+        safeAck(cb, { ok: true, users });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Update Role ---
+    socket.on('admin-update-role', async (data, cb) => {
+      try {
+        const { userId, role } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        await User.updateOne({ userId }, { role });
+        logActivity('admin', `Admin ${adminId} updated role of ${userId} to ${role}`);
+        safeAck(cb, { ok: true });
+        
+        // Notify user if online
+        const targetSocket = userSockets.get(userId);
+        if (targetSocket) {
+          io.to(targetSocket).emit('role-updated', { role });
+        }
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Toggle Ban ---
+    socket.on('admin-toggle-ban', async (data, cb) => {
+      try {
+        const { userId, isBanned } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        await User.updateOne({ userId }, { isBanned });
+        logActivity('admin', `Admin ${adminId} ${isBanned ? 'banned' : 'unbanned'} user ${userId}`);
+        safeAck(cb, { ok: true });
+
+        // Kick user if banned and online
+        if (isBanned) {
+          const targetSocket = userSockets.get(userId);
+          if (targetSocket) {
+            io.to(targetSocket).emit('account-banned');
+            // We'll let the client handle redirection or just block future requests
+          }
+        }
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Toggle Verification ---
+    socket.on('admin-toggle-verification', async (data, cb) => {
+      try {
+        const { targetUserId, field, value } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const update = {};
+        update[field] = !!value;
+        await User.updateOne({ userId: targetUserId }, update);
+        
+        logActivity('admin', `Admin ${adminId} toggled ${field} to ${value} for ${targetUserId}`);
+        safeAck(cb, { ok: true });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Edit User Name ---
+    socket.on('admin-edit-user-name', async (data, cb) => {
+      try {
+        const { targetUserId, newName } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        await User.updateOne({ userId: targetUserId }, { name: newName });
+        safeAck(cb, { ok: true });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Update Astro Profile ---
+    socket.on('admin-update-astro-profile', async (data, cb) => {
+      try {
+        const { targetUserId, profileData } = data || {};
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        await User.updateOne({ userId: targetUserId }, profileData);
+        broadcastAstroUpdate();
+        safeAck(cb, { ok: true });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
     socket.on('disconnect', () => {
       const userId = socketToUser.get(socket.id);
       if (userId) {

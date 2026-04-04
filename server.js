@@ -918,7 +918,15 @@ app.get('/api/admin/astrologer-requests', async (req, res) => {
       .sort({ appliedAt: -1 })
       .lean();
 
-    res.json({ ok: true, requests });
+    // Ensure backwards compatibility with index.html legacy fields
+    const mappedRequests = requests.map(r => ({
+      ...r,
+      name: r.realName,
+      phone: r.cellNumber1,
+      id: r.applicationId
+    }));
+
+    res.json({ ok: true, requests: mappedRequests });
   } catch (err) {
     console.error('[Admin] Astrologer requests error:', err.message);
     res.status(500).json({ ok: false, error: 'Server Error' });
