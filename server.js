@@ -440,6 +440,8 @@ app.get('/terms-condition', (req, res) => res.sendFile(path.join(__dirname, 'pub
 app.get('/refund-cancellation-policy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'refund-cancellation-policy.html')));
 app.get('/return-policy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'return-policy.html')));
 app.get('/shipping-policy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'shipping-policy.html')));
+app.get('/delete-account', (req, res) => res.sendFile(path.join(__dirname, 'public', 'delete-account.html')));
+app.get('/delete-account.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'delete-account.html')));
 
 // Fallback Wallet Route for App Users who get redirected to /wallet
 app.get('/wallet', (req, res) => {
