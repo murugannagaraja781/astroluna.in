@@ -198,7 +198,7 @@
         max-width: 100%;
         margin: 0 auto;
         position: relative;
-        min-height: 100vh;
+
         background: var(--primary-bg);
         z-index: 10;
       }
@@ -447,6 +447,7 @@
     .nav-dropdown:hover .dropdown-content {
       display: block;
     }
+
     .web-nav-menu {
       display: flex;
       align-items: center;
@@ -464,6 +465,7 @@
       .web-navbar {
         padding: 15px 30px;
       }
+
       .web-nav-menu {
         display: none;
         position: absolute;
@@ -477,18 +479,22 @@
         gap: 20px;
         align-items: flex-start;
       }
+
       .web-navbar.active .web-nav-menu {
         display: flex;
       }
+
       .web-nav-links {
         flex-direction: column;
         gap: 15px;
         width: 100%;
       }
+
       .web-nav-btns {
         width: 100%;
         justify-content: flex-start;
       }
+
       .web-hamburger {
         display: block;
       }
@@ -7568,17 +7574,17 @@
       const payload = { toUserId: targetId, type };
       if (birthData) payload.birthData = birthData;
       else if (state.me && state.me.birthDetails && state.me.intakeDetails) {
-         // Auto-inject if already saved
-         const bd = state.me.birthDetails;
-         const id = state.me.intakeDetails;
-         const [y, m, d] = bd.dob.split('-').map(Number);
-         const [h, min] = bd.tob.split(':').map(Number);
-         payload.birthData = {
-           name: state.me.name,
-           gender: id.gender, marital: id.marital, occupation: id.occupation, topic: id.topic, partner: id.partner,
-           year: y, month: m, day: d, hour: h, minute: min,
-           latitude: bd.lat, longitude: bd.lon, city: bd.pob, timezone: 5.5
-         };
+        // Auto-inject if already saved
+        const bd = state.me.birthDetails;
+        const id = state.me.intakeDetails;
+        const [y, m, d] = bd.dob.split('-').map(Number);
+        const [h, min] = bd.tob.split(':').map(Number);
+        payload.birthData = {
+          name: state.me.name,
+          gender: id.gender, marital: id.marital, occupation: id.occupation, topic: id.topic, partner: id.partner,
+          year: y, month: m, day: d, hour: h, minute: min,
+          latitude: bd.lat, longitude: bd.lon, city: bd.pob, timezone: 5.5
+        };
       }
 
       socket.emit('request-session', payload, (res) => {
@@ -7641,7 +7647,7 @@
       } else {
         window.receivedBirthData = null;
       }
-      
+
       if (data.iceServers) {
         state.iceServers = data.iceServers;
       }
@@ -10246,7 +10252,7 @@
               rawPlanets.forEach(p => {
                 if (p.signName === sign) {
                   const items = p.degreeFormatted?.split(" ") || [];
-                  const deg = items.length >= 3 ? `${items[items.length-3].replace('°','')}:${items[items.length-2].replace('\'','')}` : "";
+                  const deg = items.length >= 3 ? `${items[items.length - 3].replace('°', '')}:${items[items.length - 2].replace('\'', '')}` : "";
                   occupants.push(`${p.name.substring(0, 2)} ${deg}`);
                 }
               });
@@ -10257,11 +10263,11 @@
               const navPlanets = Array.isArray(d.navamsa.planets) ? d.navamsa.planets : [];
               navPlanets.forEach(p => {
                 if (p.signName === sign) {
-                    occupants.push(p.name.substring(0, 2));
+                  occupants.push(p.name.substring(0, 2));
                 }
               });
               if (d.navamsa.ascendantSign === sign) {
-                  occupants.unshift('Lagna');
+                occupants.unshift('Lagna');
               }
             }
 
