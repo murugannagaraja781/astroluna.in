@@ -5487,22 +5487,22 @@
           </div>
         </div>
 
-        <!-- Tab 5: Slider Management -->
-        <div id="admin-sect-slider" class="admin-tab-section hidden">
+        <!-- Tab: Slider Management -->
+        <div id="admin-sect-slider" class="admin-tab-section">
           <div class="dashboard-header">
             <h2 class="dashboard-title">
               <i class="fas fa-images"></i> App Slider
             </h2>
           </div>
 
-          <div class="admin-card">
-            <div class="admin-user-header">
-              <span style="font-weight:bold; color:#1f2937;">Manage Banners</span>
-              <button onclick="fetchAdminBanners()"
-                style="background:none; border:none; color:#3b82f6; cursor:pointer;">
-                <i class="fas fa-sync-alt"></i> Refresh
-              </button>
-            </div>
+          <div style="max-width:800px; margin: 0 auto;">
+            <div style="background:white; border-radius:15px; padding:20px; border:1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-top:15px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+                <span style="font-weight:700; color:#1e293b;">Manage Banner Slides</span>
+                <button onclick="fetchAdminBanners()" style="background:none; border:none; color:#3b82f6; cursor:pointer; font-size:0.85rem;">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
 
             <!-- Add New Banner Form -->
             <div
@@ -5527,9 +5527,10 @@
               </div>
             </div>
 
-            <!-- Banner List -->
-            <div id="adminBannerList" style="display:flex; flex-direction:column; gap:10px;">
-              <div style="text-align:center; padding:20px; color:#6b7280;">Loading banners...</div>
+              <!-- Banner List -->
+              <div id="adminBannerList" style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+                <div style="text-align:center; padding:20px; color:#6b7280;">Loading banners...</div>
+              </div>
             </div>
           </div>
         </div>
@@ -5541,12 +5542,23 @@
               <i class="fas fa-hand-holding-usd"></i> Referral Withdrawals
             </h2>
           </div>
-          <div id="adminReferralWithdrawalsList"
-            style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
+          <div id="adminReferralWithdrawalsList" style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
             <!-- Items auto-injected -->
           </div>
         </div>
 
+        <!-- Tab: Astrologer Requests (Approve/Reject) -->
+        <div id="admin-sect-requests" class="admin-tab-section">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title" style="display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-user-plus" style="color:#7C3AED;"></i> Astrologer Requests
+            </h2>
+          </div>
+          <div id="adminAstroRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+            <div style="text-align:center; padding:30px; color:#9ca3af;">
+              <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
+              Loading requests...
+            </div>
           </div>
         </div>
 
@@ -5557,78 +5569,96 @@
               <i class="fas fa-cog" style="color:#475569;"></i> Global Settings
             </h2>
           </div>
-          
-          <div style="background:white; border-radius:15px; padding:25px; border:1px solid #e5e7eb; margin-top:15px;">
-            <div style="margin-bottom:20px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
-              <h3 style="font-size:1.1rem; color:#1e293b; margin-bottom:5px;">User Onboarding</h3>
-              <p style="font-size:0.85rem; color:#64748b;">Configure welcome bonuses and initial balances.</p>
-            </div>
 
-            <div style="display:flex; flex-direction:column; gap:20px;">
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label style="font-size:0.9rem; font-weight:600; color:#374151;">New User Join Bonus (₹)</label>
-                <div style="display:flex; gap:10px;">
-                   <input type="number" id="setting-initial-wallet" class="app-input" placeholder="e.g. 108" style="padding:12px; flex:1; max-width:200px;">
-                   <button class="cosmic-btn" style="padding:0 25px;" onclick="updateGlobalConfig('initial_wallet_amount', document.getElementById('setting-initial-wallet').value)">
-                     Update
-                   </button>
+          <div style="max-width: 800px; margin: 0 auto;">
+            <div
+              style="background:white; border-radius:15px; padding:25px; border:1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-top:15px;">
+              <div style="margin-bottom:20px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
+                <h3 style="font-size:1.1rem; color:#1e293b; margin-bottom:5px; font-weight:700;">User Onboarding</h3>
+                <p style="font-size:0.85rem; color:#64748b;">Configure welcome bonuses and initial platform settings.</p>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:25px;">
+                <!-- Wallet Config Row -->
+                <div
+                  style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; padding:15px; background:#f8fafc; border-radius:12px;">
+                  <div style="flex:1; min-width:200px;">
+                    <div style="font-size:0.95rem; font-weight:700; color:#334155; margin-bottom:4px;">New User Join Bonus
+                    </div>
+                    <div style="font-size:0.8rem; color:#64748b;">Amount credited to new user wallets upon registration.
+                    </div>
+                  </div>
+                  <div style="display:flex; gap:10px; align-items:center;">
+                    <div style="position:relative;">
+                      <span
+                        style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; font-weight:600;">₹</span>
+                      <input type="number" id="setting-initial-wallet" class="app-input" placeholder="108"
+                        style="padding:10px 10px 10px 25px; width:120px; font-weight:700; font-size:1.1rem; text-align:right;">
+                    </div>
+                    <button class="cosmic-btn" style="padding:10px 20px; height:auto; font-size:0.9rem;"
+                      onclick="updateGlobalConfig('initial_wallet_amount', document.getElementById('setting-initial-wallet').value)">
+                      Save
+                    </button>
+                  </div>
                 </div>
-                <small style="color:#94a3b8;">The amount credited to a new user's wallet upon registration.</small>
+
+                <!-- More settings can be added here -->
               </div>
             </div>
           </div>
         </div>
-          <!-- Tab: Deletion Requests (Approve/Reject) -->
-          <div id="admin-sect-deletions" class="admin-tab-section">
-            <div class="dashboard-header">
-              <h2 class="dashboard-title">
-                <i class="fas fa-user-slash" style="color:#ef4444;"></i> Account Deletions
-              </h2>
-            </div>
-            <div id="adminDeletionRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-              <div style="text-align:center; padding:30px; color:#9ca3af;">
-                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
-                Loading deletion requests...
-              </div>
+
+        <!-- Tab: Deletion Requests (Approve/Reject) -->
+        <div id="admin-sect-deletions" class="admin-tab-section">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">
+              <i class="fas fa-user-slash" style="color:#ef4444;"></i> Account Deletions
+            </h2>
+          </div>
+          <div id="adminDeletionRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+            <div style="text-align:center; padding:30px; color:#9ca3af;">
+              <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
+              Loading deletion requests...
             </div>
           </div>
-
-          <!-- Admin Footer (Static) -->
-          <div class="admin-footer">
-            <div class="admin-footer-content">
-              <div class="admin-footer-section">
-                <div class="admin-footer-item">
-                  <i class="fas fa-chart-bar"></i>
-                  <span>Total Users: <strong id="footerTotalUsers">...</strong></span>
-                </div>
-                <div class="admin-footer-item">
-                  <i class="fas fa-wallet"></i>
-                  <span>Platform Revenue: <strong id="footerRevenue">₹0</strong></span>
-                </div>
-                <div class="admin-footer-item">
-                  <i class="fas fa-hourglass-half"></i>
-                  <span>Active Sessions: <strong id="footerSessions">0</strong></span>
-                </div>
-              </div>
-              <div class="admin-footer-divider"></div>
-              <div class="admin-footer-section">
-                <div class="admin-footer-item">
-                  <i class="fas fa-server"></i>
-                  <span>System Status: <strong style="color: #86efac;">Operational</strong></span>
-                </div>
-                <div class="admin-footer-item">
-                  <i class="fas fa-clock"></i>
-                  <span id="footerTime">--:--</span>
-                </div>
-              </div>
-              <div class="admin-footer-bottom">
-                <div>AstroFiveStar Admin Panel v1.0</div>
-                <div style="margin-top: 4px;">© 2025 All Rights Reserved</div>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        <!-- Admin Footer (Static) -->
+        <div class="admin-footer">
+          <div class="admin-footer-content">
+            <div class="admin-footer-section">
+              <div class="admin-footer-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Total Users: <strong id="footerTotalUsers">...</strong></span>
+              </div>
+              <div class="admin-footer-item">
+                <i class="fas fa-wallet"></i>
+                <span>Platform Revenue: <strong id="footerRevenue">₹0</strong></span>
+              </div>
+              <div class="admin-footer-item">
+                <i class="fas fa-hourglass-half"></i>
+                <span>Active Sessions: <strong id="footerSessions">0</strong></span>
+              </div>
+            </div>
+            <div class="admin-footer-divider"></div>
+            <div class="admin-footer-section">
+              <div class="admin-footer-item">
+                <i class="fas fa-server"></i>
+                <span>System Status: <strong style="color: #86efac;">Operational</strong></span>
+              </div>
+              <div class="admin-footer-item">
+                <i class="fas fa-clock"></i>
+                <span id="footerTime">--:--</span>
+              </div>
+            </div>
+            <div class="admin-footer-bottom">
+              <div>AstroFiveStar Admin Panel v1.0</div>
+              <div style="margin-top: 4px;">© 2025 All Rights Reserved</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
 
         <!-- Bottom Nav -->
         <div class="admin-nav">
@@ -8894,7 +8924,7 @@
           const res = await fetch('/api/admin/banners');
           const data = await res.json();
           if (data.ok) {
-            renderAdminBanners(data.banners);
+            renderAdminBanners(data.data); // Corrected to data.data to match Android/Server standard
           } else {
             list.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444;">Failed to load banners.</div>';
           }

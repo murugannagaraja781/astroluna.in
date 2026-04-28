@@ -1370,7 +1370,7 @@ app.get('/api/home/banners', async (req, res) => {
 app.get('/api/admin/banners', async (req, res) => {
   try {
     const banners = await Banner.find().sort({ order: 1 });
-    res.json({ ok: true, banners });
+    res.json({ ok: true, data: banners });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }
