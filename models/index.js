@@ -205,8 +205,15 @@ const ReviewSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const GlobalConfigSchema = new mongoose.Schema({
+  key: { type: String, unique: true },
+  value: mongoose.Schema.Types.Mixed,
+  updatedAt: { type: Date, default: Date.now }
+});
+
 module.exports = {
   User: mongoose.model('User', UserSchema),
+  GlobalConfig: mongoose.model('GlobalConfig', GlobalConfigSchema),
   CallRequest: mongoose.model('CallRequest', CallRequestSchema),
   Session: mongoose.model('Session', SessionSchema),
   PairMonth: mongoose.model('PairMonth', PairMonthSchema),

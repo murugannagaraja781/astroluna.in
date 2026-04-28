@@ -34,7 +34,7 @@ const photoUpload = multer({
 
 // MODULAR EXPORTS - New separation architecture
 const {
-  User, Session, CallRequest, PairMonth,
+  User, GlobalConfig, Session, CallRequest, PairMonth,
   BillingLedger, Withdrawal, Payment,
   AstrologerApplication, Notification, ChatMessage,
   AcademyVideo, Banner, AccountDeletionRequest
@@ -432,6 +432,24 @@ app.use(cors({ origin: "*" }));
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// --- GLOBAL CONFIG CACHE ---
+let appConfig = {
+  initial_wallet_amount: 108
+};
+
+async function loadAppConfig() {
+  try {
+    const configs = await GlobalConfig.find();
+    configs.forEach(c => {
+      appConfig[c.key] = c.value;
+    });
+    console.log('✓ App Config Loaded:', appConfig);
+  } catch (err) {
+    console.error('✗ Failed to load app config:', err);
+  }
+}
+
 app.use(express.static('public'));  // Serve static files
 
 // Policy Page Routes
@@ -674,7 +692,7 @@ app.post('/api/admin/astrologer/process-application', async (req, res) => {
           documentStatus: 'verified',
           skills: [application.profession || 'Astrology'],
           experience: parseInt(application.astrologyExperience) || 0,
-          walletBalance: 108, // Welcome join bonus
+          walletBalance: appConfig.initial_wallet_amount || 108, // Dynamic bonus
           astrologerRequestStatus: 'approved'
         });
         console.log(`[Admin] Approved application: New Astrologer created: ${user.phone}`);
@@ -1847,6 +1865,7 @@ app.post('/api/verify-otp', async (req, res) => {
         }
       }
 
+      const baseAmount = appConfig.initial_wallet_amount || 108;
       user = await User.create({
         userId,
         phone,
@@ -1854,7 +1873,7 @@ app.post('/api/verify-otp', async (req, res) => {
         role: 'client',
         referralCode,
         referredBy: referredByUserId,
-        walletBalance: referredByUserId ? 108 + 21 : 108 // Extra 21 for being referred
+        walletBalance: referredByUserId ? (baseAmount + 21) : baseAmount
       });
     } else {
       // Existing user: ensure they have a referral code
@@ -3386,11 +3405,41 @@ app.post('/call', async (req, res) => {
   }
 });
 
+// --- ADMIN: GLOBAL SETTINGS ---
+app.get('/api/admin/config', async (req, res) => {
+  try {
+    res.json({ ok: true, config: appConfig });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.post('/api/admin/config/update', async (req, res) => {
+  try {
+    const { key, value } = req.body;
+    if (!key) return res.status(400).json({ ok: false, error: 'Key required' });
+
+    await GlobalConfig.findOneAndUpdate(
+      { key },
+      { value, updatedAt: new Date() },
+      { upsert: true }
+    );
+
+    // Refresh cache
+    await loadAppConfig();
+
+    res.json({ ok: true, message: 'Settings updated successfully' });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
-  server.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, "0.0.0.0", async () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
+    await loadAppConfig(); // Load config on startup
   });
 }
 

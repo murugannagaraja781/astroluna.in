@@ -4772,6 +4772,10 @@
           <i class="fas fa-images"></i>
           <span>App Slider</span>
         </div>
+        <div class="admin-sidebar-item" id="side-settings" onclick="navAdmin('settings')">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
       </div>
       <div class="admin-sidebar-footer">
         <button onclick="clearSession()" class="app-btn-gradient" style="width:100%; border-radius:10px;">
@@ -5543,19 +5547,37 @@
           </div>
         </div>
 
-        <!-- Tab: Astrologer Requests (Approve/Reject) -->
-        <div id="admin-sect-requests" class="admin-tab-section">
+          </div>
+        </div>
+
+        <!-- Tab: Settings (Global Config) -->
+        <div id="admin-sect-settings" class="admin-tab-section">
           <div class="dashboard-header">
-            <h2 class="dashboard-title" style="display:flex; align-items:center; gap:8px;">
-              <i class="fas fa-user-plus" style="color:#7C3AED;"></i> Astrologer Requests
+            <h2 class="dashboard-title">
+              <i class="fas fa-cog" style="color:#475569;"></i> Global Settings
             </h2>
           </div>
-          <div id="adminAstroRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-            <div style="text-align:center; padding:30px; color:#9ca3af;">
-              <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
-              Loading requests...
+          
+          <div style="background:white; border-radius:15px; padding:25px; border:1px solid #e5e7eb; margin-top:15px;">
+            <div style="margin-bottom:20px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
+              <h3 style="font-size:1.1rem; color:#1e293b; margin-bottom:5px;">User Onboarding</h3>
+              <p style="font-size:0.85rem; color:#64748b;">Configure welcome bonuses and initial balances.</p>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:20px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.9rem; font-weight:600; color:#374151;">New User Join Bonus (₹)</label>
+                <div style="display:flex; gap:10px;">
+                   <input type="number" id="setting-initial-wallet" class="app-input" placeholder="e.g. 108" style="padding:12px; flex:1; max-width:200px;">
+                   <button class="cosmic-btn" style="padding:0 25px;" onclick="updateGlobalConfig('initial_wallet_amount', document.getElementById('setting-initial-wallet').value)">
+                     Update
+                   </button>
+                </div>
+                <small style="color:#94a3b8;">The amount credited to a new user's wallet upon registration.</small>
+              </div>
             </div>
           </div>
+        </div>
           <!-- Tab: Deletion Requests (Approve/Reject) -->
           <div id="admin-sect-deletions" class="admin-tab-section">
             <div class="dashboard-header">
@@ -5651,6 +5673,10 @@
           <div class="admin-nav-item" id="anav-deletions" onclick="navAdmin('deletions')">
             <i class="fas fa-user-slash"></i>
             <span>Delete</span>
+          </div>
+          <div class="admin-nav-item" id="anav-settings" onclick="navAdmin('settings')">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
           </div>
         </div>
       </div>
@@ -8570,6 +8596,8 @@
           loadAstrologerRequests();
         } else if (tab === 'deletions') {
           loadAdminDeletionRequests();
+        } else if (tab === 'settings') {
+          fetchAdminConfig();
         }
       };
 
@@ -8726,6 +8754,37 @@
           list.innerHTML = '<div style="color:red; text-align:center;">Failed to load requests.</div>';
         }
       }
+
+      // --- Global Config Settings ---
+      async function fetchAdminConfig() {
+        try {
+          const res = await fetch('/api/admin/config');
+          const data = await res.json();
+          if (data.ok) {
+            const input = document.getElementById('setting-initial-wallet');
+            if (input) input.value = data.config.initial_wallet_amount || 108;
+          }
+        } catch (err) { console.error(err); }
+      }
+
+      window.updateGlobalConfig = async function (key, value) {
+        if (!value || isNaN(value)) return alert('Please enter a valid number');
+        if (!confirm(`Are you sure you want to update ${key} to ${value}?`)) return;
+        try {
+          const res = await fetch('/api/admin/config/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key, value: Number(value) })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            alert('Settings updated successfully!');
+            fetchAdminConfig();
+          } else {
+            alert('Update failed: ' + data.error);
+          }
+        } catch (err) { alert('Request failed'); }
+      };
 
       function renderAdminDeletionRequests(requests) {
         const list = document.getElementById('adminDeletionRequestsList');
