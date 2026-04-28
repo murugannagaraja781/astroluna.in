@@ -530,11 +530,11 @@ fun SupportAndPoliciesSection() {
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Need Help? kalpanajomr@gmail.com",
-            style = MaterialTheme.typography.labelSmall,
-            color = Color.Gray
-        )
+         Text(
+             text = "Need Help? info@astroluna.in",
+             style = MaterialTheme.typography.labelSmall,
+             color = Color.Gray
+         )
         Text(
             text = "© 2026 Astroluna. All Rights Reserved.",
             style = MaterialTheme.typography.labelSmall,

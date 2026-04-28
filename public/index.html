@@ -2167,6 +2167,174 @@
       font-size: 1.5rem;
     }
 
+    /* ===== ADMIN SIDEBAR (Desktop) ===== */
+    .admin-sidebar {
+      width: 260px;
+      background: #1e3a8a;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      z-index: 1000;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .admin-sidebar-header {
+      padding: 25px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-sidebar-header i {
+      font-size: 1.5rem;
+      color: #fbbf24;
+    }
+
+    .admin-sidebar-header span {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+    }
+
+    .admin-sidebar-menu {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .admin-sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    .admin-sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .admin-sidebar-item.active {
+      background: #fbbf24;
+      color: #1e3a8a;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .admin-sidebar-item i {
+      width: 20px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .admin-sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .admin-main-view {
+      margin-left: 260px;
+      width: calc(100% - 260px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Quick Access Grid */
+    .menu-list-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .menu-list-item {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .menu-list-item:hover {
+      transform: translateY(-5px);
+      border-color: #1e3a8a;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .menu-list-item i {
+      font-size: 1.8rem;
+      color: #1e3a8a;
+    }
+
+    .menu-list-item span {
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    /* Video Player Modal */
+    .video-modal-content {
+      background: #000;
+      width: 90%;
+      max-width: 800px;
+      aspect-ratio: 16/9;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        display: none;
+      }
+      .admin-main-view {
+        margin-left: 0;
+        width: 100%;
+      }
+      .admin-nav {
+        display: flex; /* Show bottom nav on mobile */
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .admin-nav {
+        display: none !important; /* Hide bottom nav on desktop */
+      }
+    }
+
     /* ===== ADMIN FOOTER ===== */
     .admin-footer {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
@@ -4558,20 +4726,71 @@
       </div>
     </div>
 
-    <div class="app-header"
-      style="background: var(--secondary-bg); border-bottom: 1px solid var(--glass-border); color:white; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-      <div
-        style="font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; font-family: var(--font-heading); color: var(--accent-gold);">
-        <i class="fas fa-shield-alt"></i> MASTER ADMIN
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <i class="fas fa-shield-alt"></i>
+        <span>MASTER ADMIN</span>
       </div>
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <i class="fas fa-bell" style="cursor: pointer; opacity: 0.8; font-size: 1.2rem;"></i>
-        <button onclick="clearSession()"
-          style="background: var(--glass-heavy); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: var(--transition);">
+      <div class="admin-sidebar-menu">
+        <div class="admin-sidebar-item active" id="side-home" onclick="navAdmin('home')">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-earnings" onclick="navAdmin('earnings')">
+          <i class="fas fa-chart-pie"></i>
+          <span>Financials</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-payouts" onclick="navAdmin('payouts')">
+          <i class="fas fa-user-astronaut"></i>
+          <span>Astrologers</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-users" onclick="navAdmin('users')">
+          <i class="fas fa-users"></i>
+          <span>User List</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-requests" onclick="navAdmin('requests')">
+          <i class="fas fa-user-plus"></i>
+          <span>Astro Requests</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-deletions" onclick="navAdmin('deletions')">
+          <i class="fas fa-user-slash"></i>
+          <span>Deletion Requests</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-referrals" onclick="navAdmin('referrals')">
+          <i class="fas fa-hand-holding-usd"></i>
+          <span>Referrals</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-academy" onclick="navAdmin('academy')">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Astro Academy</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-slider" onclick="navAdmin('slider')">
+          <i class="fas fa-images"></i>
+          <span>App Slider</span>
+        </div>
+      </div>
+      <div class="admin-sidebar-footer">
+        <button onclick="clearSession()" class="app-btn-gradient" style="width:100%; border-radius:10px;">
           <i class="fas fa-power-off"></i> Logout
         </button>
       </div>
     </div>
+
+    <div class="admin-main-view">
+      <div class="app-header"
+        style="background: var(--secondary-bg); border-bottom: 1px solid var(--glass-border); color:white; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+        <div
+          style="font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; font-family: var(--font-heading); color: var(--accent-gold);">
+          <i class="fas fa-shield-alt"></i> MASTER ADMIN
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <i class="fas fa-bell" style="cursor: pointer; opacity: 0.8; font-size: 1.2rem;"></i>
+          <button onclick="clearSession()"
+            style="background: var(--glass-heavy); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: var(--transition);">
+            <i class="fas fa-power-off"></i> Logout
+          </button>
+        </div>
+      </div>
     <!-- Content Area (Scrollable) -->
     <div class="admin-content-area">
 
@@ -4680,8 +4899,49 @@
           </div>
         </div>
 
+        <!-- Quick Access Menu List (Added as requested) -->
+        <div style="margin-top: 35px; border-top: 1px solid #eee; padding-top: 25px;">
+          <h3 style="margin-bottom:20px; color:#1e3a8a; font-weight:700;">
+            <i class="fas fa-th-large"></i> Quick Navigation
+          </h3>
+          <div class="menu-list-grid">
+            <div class="menu-list-item" onclick="navAdmin('earnings')">
+              <i class="fas fa-chart-pie"></i>
+              <span>Financial Ledger</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('payouts')">
+              <i class="fas fa-user-astronaut"></i>
+              <span>Astrologer Payouts</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('users')">
+              <i class="fas fa-users"></i>
+              <span>Manage Users</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('requests')">
+              <i class="fas fa-user-plus"></i>
+              <span>Astro Requests</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('deletions')">
+              <i class="fas fa-user-slash"></i>
+              <span>Deletion Requests</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('referrals')">
+              <i class="fas fa-hand-holding-usd"></i>
+              <span>Referral Payouts</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('academy')">
+              <i class="fas fa-graduation-cap"></i>
+              <span>Astro Academy</span>
+            </div>
+            <div class="menu-list-item" onclick="navAdmin('slider')">
+              <i class="fas fa-images"></i>
+              <span>Banner Slider</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Chart Section -->
-        <div class="chart-container">
+        <div class="chart-container" style="margin-top:40px;">
           <div class="chart-header">
             <h3>Revenue Overview</h3>
             <div class="chart-legend">
@@ -5288,6 +5548,19 @@
             Loading requests...
           </div>
         </div>
+      <!-- Tab: Deletion Requests (Approve/Reject) -->
+      <div id="admin-sect-deletions" class="admin-tab-section">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">
+            <i class="fas fa-user-slash" style="color:#ef4444;"></i> Account Deletions
+          </h2>
+        </div>
+        <div id="adminDeletionRequestsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+          <div style="text-align:center; padding:30px; color:#9ca3af;">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; margin-bottom:10px; display:block;"></i>
+            Loading deletion requests...
+          </div>
+        </div>
       </div>
 
       <!-- Admin Footer (Static) -->
@@ -5367,6 +5640,18 @@
           style="position:absolute; top:2px; right:8px; background:#ef4444; color:white; border-radius:50%; min-width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; padding:2px; font-weight:bold;">
           0</div>
       </div>
+      <div class="admin-nav-item" id="anav-deletions" onclick="navAdmin('deletions')">
+        <i class="fas fa-user-slash"></i>
+        <span>Delete</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Player Modal (Fixed YouTube Playback) -->
+  <div id="videoModal" class="modal-overlay hidden" style="align-items: center; justify-content: center; z-index: 30000; background:rgba(0,0,0,0.9);">
+    <div class="video-modal-content">
+      <div class="video-close" onclick="closeVideoModal()"><i class="fas fa-times"></i> Close</div>
+      <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%;"></iframe>
     </div>
   </div>
 
@@ -8228,10 +8513,15 @@
     let adminUsersCache = [];
 
     window.navAdmin = function (tab) {
-      // 1. Update Buttons
+      // 1. Update Buttons (Bottom Nav)
       document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
       const btn = document.getElementById('anav-' + tab);
       if (btn) btn.classList.add('active');
+
+      // 1b. Update Sidebar (Desktop)
+      document.querySelectorAll('.admin-sidebar-item').forEach(el => el.classList.remove('active'));
+      const sideBtn = document.getElementById('side-' + tab);
+      if (sideBtn) sideBtn.classList.add('active');
 
       // 2. Switch Section
       document.querySelectorAll('.admin-tab-section').forEach(el => el.classList.remove('active'));
@@ -8244,14 +8534,12 @@
       } else if (tab === 'payouts') {
         const searchInput = document.getElementById('adminAstroSearch');
         if (searchInput) searchInput.value = '';
-        // Filter Astrologers from Cache
         const astros = adminUsersCache.filter(u => u.role === 'astrologer');
         renderAdminAstros(astros);
-        loadAdminWithdrawals(); // Phase 15
+        loadAdminWithdrawals();
       } else if (tab === 'users') {
         const searchInput = document.getElementById('adminUserSearch');
         if (searchInput) searchInput.value = '';
-        // Show all users (Clients & Astrologers) in User Management list
         const allUsers = adminUsersCache.filter(u => u.role !== 'superadmin');
         renderAdminClients(allUsers);
       } else if (tab === 'academy') {
@@ -8262,6 +8550,8 @@
         loadAdminReferralWithdrawals();
       } else if (tab === 'requests') {
         loadAstrologerRequests();
+      } else if (tab === 'deletions') {
+        loadAdminDeletionRequests();
       }
     };
 
@@ -8275,7 +8565,7 @@
         const data = await res.json();
         if (data.ok && data.videos.length > 0) {
           list.innerHTML = data.videos.map(v => `
-            <a href="${v.youtubeUrl}" target="_blank" style="text-decoration:none; color:inherit;">
+            <div onclick="playAcademyVideo('${v.youtubeUrl}')" style="cursor:pointer; text-decoration:none; color:inherit; margin-bottom:12px;">
               <div style="background:white; border-radius:15px; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border:1px solid #eee;">
                 <div style="padding:15px; display:flex; align-items:center; gap:15px;">
                   <div style="width:50px; height:50px; background:#fff7ed; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -8285,11 +8575,12 @@
                     <div style="font-weight:700; color:#1f2937; font-size:1rem; margin-bottom:4px;">${v.title}</div>
                     <div style="font-size:0.8rem; color:#6b7280; display:flex; align-items:center; gap:5px;">
                       <span style="background:#f3f4f6; padding:2px 8px; border-radius:10px;">${v.category}</span>
+                      <span style="color:#ef4444; font-weight:600;"><i class="fas fa-play-circle"></i> Play Now</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </a>
+            </div>
           `).join('');
         } else {
           list.innerHTML = '<div style="text-align:center; padding:20px; color:#6b7280;">No educational videos available yet.</div>';
@@ -8350,9 +8641,114 @@
         const res = await fetch('/api/academy/videos');
         const data = await res.json();
         if (data.ok) {
-          renderAcademyVideos(data.videos);
+          renderAcademyVideosAdmin(data.videos);
         }
       } catch (err) { console.error(err); }
+    }
+
+    function renderAcademyVideosAdmin(videos) {
+      const list = document.getElementById('adminAcademyList');
+      if (!list) return;
+      if (videos.length === 0) {
+        list.innerHTML = '<div style="text-align:center; padding:20px; color:#6b7280;">No videos added yet.</div>';
+        return;
+      }
+
+      list.innerHTML = videos.map(v => `
+        <div style="background:white; padding:12px; border-radius:10px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+          <div style="flex:1;">
+            <div style="font-weight:bold; color:#1F2937;">${v.title}</div>
+            <div style="font-size:0.75rem; color:#6b7280;">${v.category}</div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+             <button class="btn-admin" style="background:#e0f2fe; color:#0369a1; padding:5px 10px; width:auto;" onclick="playAcademyVideo('${v.youtubeUrl}')">
+               <i class="fas fa-play"></i> Test
+             </button>
+             <button class="btn-admin btn-delete" style="flex:none; width:auto; padding:5px 10px;" onclick="deleteAcademyVideo('${v._id}')">
+               <i class="fas fa-trash"></i>
+             </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Fixed YouTube Player Logic
+    window.playAcademyVideo = function(url) {
+      const vid = getYouTubeID(url);
+      if(!vid) return alert('Invalid YouTube URL');
+      const frame = document.getElementById('videoFrame');
+      frame.src = `https://www.youtube.com/embed/${vid}?autoplay=1`;
+      document.getElementById('videoModal').classList.remove('hidden');
+    };
+
+    window.closeVideoModal = function() {
+      document.getElementById('videoModal').classList.add('hidden');
+      document.getElementById('videoFrame').src = '';
+    };
+
+    function getYouTubeID(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length == 11) ? match[2] : null;
+    }
+
+    // --- Deletion Requests Logic ---
+    async function loadAdminDeletionRequests() {
+      const list = document.getElementById('adminDeletionRequestsList');
+      list.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div>';
+      try {
+        const res = await fetch('/api/admin/deletion-requests');
+        const data = await res.json();
+        if (data.ok && data.requests.length > 0) {
+          renderAdminDeletionRequests(data.requests);
+        } else {
+          list.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;">No pending deletion requests.</div>';
+        }
+      } catch (err) {
+        list.innerHTML = '<div style="color:red; text-align:center;">Failed to load requests.</div>';
+      }
+    }
+
+    function renderAdminDeletionRequests(requests) {
+       const list = document.getElementById('adminDeletionRequestsList');
+       list.innerHTML = requests.map(r => `
+         <div style="background:white; padding:15px; border-radius:12px; border:1px solid #eee; display:flex; flex-direction:column; gap:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+             <div>
+               <div style="font-weight:700; color:#1F2937;">User: ${r.phone || r.userId}</div>
+               <div style="font-size:0.8rem; color:#6b7280;">Reason: ${r.reason}</div>
+               <div style="font-size:0.75rem; color:#9ca3af;">Requested: ${new Date(r.requestedAt).toLocaleString()}</div>
+             </div>
+             <div style="background:${r.status === 'pending' ? '#fef3c7' : '#ecfdf5'}; color:${r.status === 'pending' ? '#92400e' : '#065f46'}; padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:700; text-transform:uppercase;">
+               ${r.status}
+             </div>
+           </div>
+           ${r.status === 'pending' ? `
+           <div style="display:flex; gap:10px; margin-top:5px;">
+             <button class="btn-admin" style="background:#ef4444; color:white; padding:8px;" onclick="processDeletion('${r._id}', 'approve')">Approve Deletion</button>
+             <button class="btn-admin" style="background:#e5e7eb; color:#374151; padding:8px;" onclick="processDeletion('${r._id}', 'reject')">Reject</button>
+           </div>
+           ` : ''}
+         </div>
+       `).join('');
+    }
+
+    async function processDeletion(requestId, action) {
+      if(!confirm(`Are you sure you want to ${action} this deletion request?`)) return;
+      try {
+        const res = await fetch('/api/admin/process-deletion', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ requestId, action })
+        });
+        const data = await res.json();
+        if(data.ok) {
+          alert('Request processed successfully');
+          loadAdminDeletionRequests();
+        } else {
+          alert(data.error || 'Failed to process request');
+        }
+      } catch (err) { alert('Error processing request'); }
     }
 
     function renderAcademyVideos(videos) {

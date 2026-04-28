@@ -164,6 +164,7 @@ fun VideoPlayerScreen(video: VideoItem, allVideos: List<VideoItem>, onVideoSelec
                             settings.loadWithOverviewMode = true
                             settings.useWideViewPort = true
                             settings.domStorageEnabled = true
+                            settings.mediaPlaybackRequiresUserGesture = false // Allow autoplay
                             webChromeClient = WebChromeClient()
                             val html = """
                                 <!DOCTYPE html>
@@ -172,11 +173,16 @@ fun VideoPlayerScreen(video: VideoItem, allVideos: List<VideoItem>, onVideoSelec
                                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                                     <style>
                                         body { margin: 0; padding: 0; background-color: black; }
-                                        iframe { width: 100%; height: 100vh; border: none; }
+                                        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+                                        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
                                     </style>
                                 </head>
                                 <body>
-                                    <iframe src="https://www.youtube.com/embed/$videoId?autoplay=1&modestbranding=1&rel=0" allowfullscreen></iframe>
+                                    <div class="video-container">
+                                        <iframe src="https://www.youtube.com/embed/$videoId?autoplay=1&modestbranding=1&rel=0" 
+                                                allow="autoplay; encrypted-media; picture-in-picture" 
+                                                allowfullscreen></iframe>
+                                    </div>
                                 </body>
                                 </html>
                             """.trimIndent()
@@ -300,12 +306,10 @@ fun PremiumVideoCard(video: VideoItem, onClick: () -> Unit) {
 }
 
 fun extractYoutubeId(url: String): String {
-    return when {
-        url.contains("v=") -> url.substringAfter("v=").substringBefore("&")
-        url.contains("youtu.be/") -> url.substringAfter("youtu.be/").substringBefore("?")
-        url.contains("embed/") -> url.substringAfter("embed/").substringBefore("?")
-        else -> ""
-    }
+    val pattern = ".*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*"
+    val regex = Regex(pattern)
+    val matchResult = regex.find(url)
+    return matchResult?.groups?.get(1)?.value ?: ""
 }
 
 fun getFallbackVideos(): List<VideoItem> {

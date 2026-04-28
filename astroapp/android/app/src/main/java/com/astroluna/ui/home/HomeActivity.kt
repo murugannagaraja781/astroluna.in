@@ -447,7 +447,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun handleServiceClick(serviceName: String) {
-        when (serviceName.replace("\n", " ")) {
+        val sanitizedName = serviceName.replace("\n", " ").trim()
+        when (sanitizedName) {
             "Free Horoscope" -> {
                 val intent = Intent(this, com.astroluna.ui.horoscope.FreeHoroscopeActivity::class.java)
                 startActivity(intent)
@@ -467,14 +468,21 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             "Astro Service" -> {
-                android.app.AlertDialog.Builder(this)
-                    .setTitle("Contact Us")
-                    .setMessage("For astro services, contact us at: info@astroluna.in")
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("Our Services")
+                    .setMessage("For specialized astro services and consultations, please email us directly.")
+                    .setNeutralButton("info@astroluna.in") { _, _ ->
+                         val intent = Intent(Intent.ACTION_SENDTO).apply {
+                             data = Uri.parse("mailto:info@astroluna.in")
+                             putExtra(Intent.EXTRA_SUBJECT, "Astro Service Inquiry")
+                         }
+                         startActivity(intent)
+                    }
                     .setPositiveButton("OK", null)
                     .show()
             }
             else -> {
-                Toast.makeText(this, "$serviceName clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "$sanitizedName clicked", Toast.LENGTH_SHORT).show()
             }
         }
     }

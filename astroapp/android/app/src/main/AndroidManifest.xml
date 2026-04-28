@@ -100,7 +100,7 @@
         </activity>
 
         <activity android:name=".ui.guest.GuestDashboardActivity" />
-        <activity android:name=".ui.academy.AcademyActivity" />
+        <activity android:name=".ui.academy.AcademyActivity" android:hardwareAccelerated="true" />
         <activity android:name=".ui.horoscope.FreeHoroscopeActivity" />
         <activity android:name=".ui.astro.AstrologerDashboardActivity" />
         <activity android:name=".ui.astro.AstrologerHistoryActivity" />
