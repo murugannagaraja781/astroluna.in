@@ -1458,6 +1458,29 @@ app.post('/api/user/intake', async (req, res) => {
   }
 });
 
+app.post('/api/reviews', async (req, res) => {
+  try {
+    const { sessionId, clientId, astrologerId, rating, comment } = req.body;
+    if (!sessionId || !clientId || !astrologerId || !rating) {
+      return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+    const reviewId = crypto.randomUUID();
+    const review = await Review.create({
+      reviewId,
+      sessionId,
+      clientId,
+      astrologerId,
+      rating: parseInt(rating),
+      comment: comment || ''
+    });
+    res.json({ success: true, data: review });
+  } catch (err) {
+    console.error('Save review error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 // ==========================================
 // CHAT HISTORY API (Required by Android App)
 // ==========================================

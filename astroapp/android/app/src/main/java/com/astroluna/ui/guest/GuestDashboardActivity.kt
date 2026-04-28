@@ -269,10 +269,10 @@ class GuestDashboardActivity : AppCompatActivity() {
                 val intent = Intent(this, com.astroluna.ui.academy.AcademyActivity::class.java)
                 startActivity(intent)
             }
-            "Free Services" -> {
+            "Astro Service" -> {
                 android.app.AlertDialog.Builder(this)
                     .setTitle("Contact Us")
-                    .setMessage("For free services, contact us at: info@astroluna.in")
+                    .setMessage("For astro services, contact us at: info@astroluna.in")
                     .setPositiveButton("OK", null)
                     .show()
             }

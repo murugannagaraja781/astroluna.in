@@ -447,6 +447,52 @@
     .nav-dropdown:hover .dropdown-content {
       display: block;
     }
+    .web-nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .web-hamburger {
+      display: none;
+      font-size: 1.8rem;
+      color: var(--accent-gold);
+      cursor: pointer;
+    }
+
+    @media (max-width: 1250px) {
+      .web-navbar {
+        padding: 15px 30px;
+      }
+      .web-nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .web-navbar.active .web-nav-menu {
+        display: flex;
+      }
+      .web-nav-links {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+      }
+      .web-nav-btns {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .web-hamburger {
+        display: block;
+      }
+    }
 
     .web-nav-btns {
       display: flex;
@@ -2620,31 +2666,36 @@
 
   <!-- Web View (Desktop Landing Page) -->
   <div class="web-view">
-    <nav class="web-navbar">
+    <nav class="web-navbar" id="webNavbar">
       <div class="web-container" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="logo"
           style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent-gold); font-weight: 700; letter-spacing: 2px; cursor: pointer;"
           onclick="window.location.href='index.html'">
           ASTROLUNA</div>
-        <div class="web-nav-links">
-          <a href="#hero">Home</a>
-          <a href="#web-astrologers">Astrologers</a>
-          <a href="astro-register.html" style="color:var(--brand-purple); font-weight:700;">Join as Astrologer</a>
-          <a href="#web-horoscope">Horoscope</a>
-          <a href="#web-about">About</a>
-          <a href="#web-pricing">Pricing</a>
-          <div class="nav-dropdown">
-            <a href="#">Policies <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:5px;"></i></a>
-            <div class="dropdown-content">
-              <a href="terms-condition.html">Terms & Conditions</a>
-              <a href="privacy-policy.html">Privacy Policy</a>
-              <a href="refund-cancellation-policy.html">Refund Policy</a>
+        <div class="web-nav-menu">
+          <div class="web-nav-links">
+            <a href="#hero">Home</a>
+            <a href="#web-astrologers">Astrologers</a>
+            <a href="astro-register.html" style="color:var(--brand-purple); font-weight:700;">Join as Astrologer</a>
+            <a href="#web-horoscope">Horoscope</a>
+            <a href="#web-about">About</a>
+            <a href="#web-pricing">Pricing</a>
+            <div class="nav-dropdown">
+              <a href="#">Policies <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:5px;"></i></a>
+              <div class="dropdown-content">
+                <a href="terms-condition.html">Terms & Conditions</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="refund-cancellation-policy.html">Refund Policy</a>
+              </div>
             </div>
           </div>
+          <div class="web-nav-btns">
+            <button class="btn-login-outline" onclick="switchToApp('login')">Login</button>
+            <button class="btn-join" onclick="switchToApp('login')">Join Now</button>
+          </div>
         </div>
-        <div class="web-nav-btns">
-          <button class="btn-login-outline" onclick="switchToApp('login')">Login</button>
-          <button class="btn-join" onclick="switchToApp('login')">Join Now</button>
+        <div class="web-hamburger" onclick="document.getElementById('webNavbar').classList.toggle('active')">
+          <i class="fas fa-bars"></i>
         </div>
       </div>
     </nav>

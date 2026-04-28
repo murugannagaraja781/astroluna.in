@@ -195,6 +195,16 @@ const NotificationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const ReviewSchema = new mongoose.Schema({
+  reviewId: { type: String, unique: true },
+  sessionId: { type: String, index: true },
+  clientId: { type: String, index: true },
+  astrologerId: { type: String, index: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  comment: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
 module.exports = {
   User: mongoose.model('User', UserSchema),
   CallRequest: mongoose.model('CallRequest', CallRequestSchema),
@@ -208,5 +218,6 @@ module.exports = {
   Banner: mongoose.model('Banner', BannerSchema),
   AccountDeletionRequest: mongoose.model('AccountDeletionRequest', AccountDeletionRequestSchema),
   AstrologerApplication: mongoose.model('AstrologerApplication', AstrologerApplicationSchema),
-  Notification: mongoose.model('Notification', NotificationSchema)
+  Notification: mongoose.model('Notification', NotificationSchema),
+  Review: mongoose.model('Review', ReviewSchema)
 };

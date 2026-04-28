@@ -1699,7 +1699,7 @@ fun TopServicesSection(onServiceClick: (String) -> Unit = {}) {
         "Horoscope\nMatch" to com.astroluna.R.drawable.ic_match,
         "Daily\nHoroscope" to com.astroluna.R.drawable.ic_daily_horoscope,
         "Astro\nAcademy" to com.astroluna.R.drawable.ic_academy,
-        "Free\nServices" to com.astroluna.R.drawable.ic_free_services
+        "Astro\nService" to com.astroluna.R.drawable.ic_free_services
     )
 
     Row(
