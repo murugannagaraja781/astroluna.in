@@ -2395,8 +2395,10 @@ app.post('/api/call/initiate', async (req, res) => {
       return res.json({ ok: false, error: 'Astrologer is Offline', code: 'OFFLINE' });
     }
 
-    // B. Create Call Request
+    // B. Create Call Request & Real-time Session
     const callId = "CALL_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    
+    // Create Legacy CallRequest (for logging/backwards compat)
     await CallRequest.create({
       callId,
       callerId,
@@ -2404,19 +2406,85 @@ app.post('/api/call/initiate', async (req, res) => {
       status: 'ringing'
     });
 
-    // C. Send FCM Push Notification (WAKE UP APP)
+    // Create Real-time Session (for signaling & billing)
+    const type = req.body.callType || 'audio';
+    await Session.create({ 
+      sessionId: callId, 
+      fromUserId: callerId, 
+      toUserId: receiverId, 
+      type, 
+      startTime: Date.now(),
+      clientId: callerId,
+      astrologerId: receiverId,
+      status: 'ringing'
+    });
+
+    // Update in-memory state for socket signaling
+    activeSessions.set(callId, {
+      type, 
+      users: [callerId, receiverId], 
+      startedAt: Date.now(),
+      clientId: callerId, 
+      astrologerId: receiverId, 
+      elapsedBillableSeconds: 0, 
+      status: 'ringing'
+    });
+    userActiveSession.set(callerId, callId);
+    userActiveSession.set(receiverId, callId);
+
+    // C. Send Socket Notification (If App is Open)
+    const caller = await User.findOne({ userId: callerId });
+    const callerName = caller ? (caller.name || 'Client') : 'Client';
+
+    if (io) {
+      const callPayload = {
+        sessionId: callId,
+        fromUserId: callerId,
+        callerName: callerName,
+        type: req.body.callType || 'audio',
+        iceServers: ICE_SERVERS
+      };
+      io.to(receiverId).emit('incoming-session', callPayload);
+      console.log(`[Socket] Sent incoming-session to ${receiverId} for call ${callId}`);
+      
+      // Missed call timeout (30s)
+      setTimeout(async () => {
+        const s = activeSessions.get(callId);
+        if (s && s.status === 'ringing') {
+          io.to(callerId).emit('session-ended', { sessionId: callId, reason: 'no_answer' });
+          io.to(receiverId).emit('session-ended', { sessionId: callId, reason: 'missed' });
+          
+          userActiveSession.delete(callerId);
+          userActiveSession.delete(receiverId);
+          activeSessions.delete(callId);
+          
+          await Session.updateOne({ sessionId: callId }, { status: 'missed', endTime: Date.now() });
+          await CallRequest.updateOne({ callId }, { status: 'missed' });
+          
+          // If astrologer misses call, set them offline
+          const target = await User.findOne({ userId: receiverId });
+          if (target && target.role === 'astrologer') {
+            console.log(`[Status] Setting ${receiverId} offline due to missed call (REST).`);
+            await User.updateOne({ userId: receiverId }, { isAvailable: false, isOnline: false });
+            broadcastAstroUpdate();
+          }
+        }
+      }, 30000);
+    }
+
+    // D. Send FCM Push Notification (WAKE UP APP / BACKUP)
     // Send FCM v1 Push Notification
     if (astro.fcmToken) {
       const fcmData = {
         type: 'INCOMING_CALL',
         sessionId: callId, // Using sessionId key for consistency with Socket.IO
         callerId: callerId,
-        callerName: 'Client'
+        callerName: callerName
       };
 
       const fcmNotification = {
         title: 'Incoming Call',
-        body: 'Tap to answer video call'
+        body: `Tap to answer call from ${callerName}`
       };
 
       const fcmResult = await sendFcmV1Push(astro.fcmToken, fcmData, fcmNotification);
