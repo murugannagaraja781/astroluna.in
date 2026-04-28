@@ -15,8 +15,8 @@ android {
         applicationId = "com.astroluna"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0"
         multiDexEnabled = false
 
         ndk {
@@ -91,7 +91,8 @@ android {
 
     packaging {
         jniLibs {
-            useLegacyPackaging = false
+            // 16KB page alignment support for Android 15+
+            useLegacyPackaging = true
         }
     }
 }

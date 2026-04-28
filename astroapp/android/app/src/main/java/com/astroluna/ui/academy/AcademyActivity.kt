@@ -1,5 +1,7 @@
 package com.astroluna.ui.academy
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -23,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -32,7 +35,6 @@ import coil.compose.AsyncImage
 import com.astroluna.data.api.ApiClient
 import com.astroluna.ui.theme.CosmicAppTheme
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class AcademyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,16 +60,16 @@ fun AcademyScreen(onBack: () -> Unit) {
             try {
                 val response = ApiClient.api.getAcademyVideos()
                 if (response.isSuccessful && response.body() != null) {
-                    val root = JSONObject(response.body().toString())
-                    val arr = root.optJSONArray("videos")
-                    if (arr != null && arr.length() > 0) {
+                    val root = response.body()!!
+                    val arr = root.getAsJsonArray("videos")
+                    if (arr != null && arr.size() > 0) {
                         val list = mutableListOf<VideoItem>()
-                        for (i in 0 until arr.length()) {
-                            val obj = arr.getJSONObject(i)
+                        for (i in 0 until arr.size()) {
+                            val obj = arr.get(i).asJsonObject
                             list.add(VideoItem(
-                                title = obj.optString("title", "Video"),
-                                url = obj.optString("youtubeUrl", ""),
-                                category = obj.optString("category", "General")
+                                title = if (obj.has("title")) obj.get("title").asString else "Video",
+                                url = if (obj.has("youtubeUrl")) obj.get("youtubeUrl").asString else "",
+                                category = if (obj.has("category")) obj.get("category").asString else "General"
                             ))
                         }
                         videos = list
@@ -147,7 +149,7 @@ fun AcademyScreen(onBack: () -> Unit) {
 @Composable
 fun VideoPlayerScreen(video: VideoItem, allVideos: List<VideoItem>, onVideoSelect: (VideoItem) -> Unit) {
     val videoId = extractYoutubeId(video.url)
-    
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         // YouTube Player embedded in WebView
         Box(
@@ -164,33 +166,46 @@ fun VideoPlayerScreen(video: VideoItem, allVideos: List<VideoItem>, onVideoSelec
                             settings.loadWithOverviewMode = true
                             settings.useWideViewPort = true
                             settings.domStorageEnabled = true
-                            settings.mediaPlaybackRequiresUserGesture = false // Allow autoplay
+                            settings.databaseEnabled = true
+                            settings.mediaPlaybackRequiresUserGesture = false
+                            
+                            // Deep Fix: Set a modern mobile User Agent to ensure YouTube doesn't block the embed
+                            settings.userAgentString = "Mozilla/5.0 (Linux; Android 13; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36"
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                            }
+                            
                             webChromeClient = WebChromeClient()
-                            val html = """
-                                <!DOCTYPE html>
-                                <html>
-                                <head>
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <style>
-                                        body { margin: 0; padding: 0; background-color: black; }
-                                        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-                                        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class="video-container">
-                                        <iframe src="https://www.youtube.com/embed/$videoId?autoplay=1&modestbranding=1&rel=0" 
-                                                allow="autoplay; encrypted-media; picture-in-picture" 
-                                                allowfullscreen></iframe>
-                                    </div>
-                                </body>
-                                </html>
-                            """.trimIndent()
-                            loadDataWithBaseURL("https://www.youtube.com", html, "text/html", "utf-8", null)
                         }
+                    },
+                    update = { webView ->
+                        val embedUrl = "https://www.youtube.com/embed/$videoId?autoplay=1&modestbranding=1&rel=0"
+                        val headers = mapOf("Referer" to "https://www.youtube.com")
+                        
+                        // Force hardware acceleration for video
+                        webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+                        webView.loadUrl(embedUrl, headers)
                     },
                     modifier = Modifier.fillMaxSize()
                 )
+
+                // Fallback Button overlay if the video is persistent black or has issues
+                Box(
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(video.url))
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red.copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        Text("Open in YouTube", color = Color.White, fontSize = 10.sp)
+                    }
+                }
             } else {
                 Text("Invalid Video URL", color = Color.White, modifier = Modifier.align(Alignment.Center))
             }
@@ -306,7 +321,9 @@ fun PremiumVideoCard(video: VideoItem, onClick: () -> Unit) {
 }
 
 fun extractYoutubeId(url: String): String {
-    val pattern = ".*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*"
+    if (url.length == 11 && !url.contains("/")) return url // Direct ID case
+    
+    val pattern = """(?i)(?:https?://)?(?:www\.|m\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|watch\?v=|watch\?.+&v=|shorts/|live/))([\w-]{11})"""
     val regex = Regex(pattern)
     val matchResult = regex.find(url)
     return matchResult?.groups?.get(1)?.value ?: ""
@@ -319,4 +336,6 @@ fun getFallbackVideos(): List<VideoItem> {
     )
 }
 
-data class VideoItem(val title: String, val url: String, val category: String)
+
+// VideoItem moved to com.astroluna.data.model.VideoItem for ProGuard safety
+typealias VideoItem = com.astroluna.data.model.VideoItem

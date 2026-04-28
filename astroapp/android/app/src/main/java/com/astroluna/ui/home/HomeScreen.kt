@@ -411,11 +411,8 @@ fun HomeScreen(
                             .fillMaxSize()
                             .background(Color.Transparent) // Let gradient show through
                     ) {
-                        // ... existing items ...
                         if (selectedTab == 0) {
                             item { TopServicesSection(onServiceClick) }
-                        }
-                        if (selectedTab == 0) {
                             item { DailyHoroscopeCard(horoscope) }
                             if (!isGuest && referralCode.isNotEmpty()) {
                                 item { ReferAndEarnSection(referralCode, refStats) }
@@ -1693,13 +1690,12 @@ fun StarField() {
 
 @Composable
 fun TopServicesSection(onServiceClick: (String) -> Unit = {}) {
-    val context = LocalContext.current
     val services: List<Pair<String, Int>> = listOf(
         "Free\nHoroscope" to com.astroluna.R.drawable.ic_free_kundali,
         "Horoscope\nMatch" to com.astroluna.R.drawable.ic_match,
         "Daily\nHoroscope" to com.astroluna.R.drawable.ic_daily_horoscope,
-        "Astro\nAcademy" to com.astroluna.R.drawable.ic_academy,
-        "Astro\nService" to com.astroluna.R.drawable.ic_free_services
+        "Astro\nAcademy" to com.astroluna.R.drawable.ic_academy
+        // "Astro\nService" removed as per user request
     )
 
     Row(
@@ -1719,7 +1715,6 @@ fun TopServicesSection(onServiceClick: (String) -> Unit = {}) {
 
 @Composable
 fun ServiceItem(name: String, iconRes: Int, onClick: () -> Unit) {
-    // MARKETPLACE SHORTCUT STYLE: White, 12dp, Thin Red Outline
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -1737,7 +1732,7 @@ fun ServiceItem(name: String, iconRes: Int, onClick: () -> Unit) {
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = null,
-                modifier = Modifier.size(40.dp) // Slightly larger for better visibility
+                modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -1748,11 +1743,14 @@ fun ServiceItem(name: String, iconRes: Int, onClick: () -> Unit) {
                     textAlign = TextAlign.Center,
                     lineHeight = 13.sp
                 ),
-                color = Color.DarkGray
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.Black
             )
         }
     }
 }
+
 
 @Composable
 fun CustomerStoriesSection() {
