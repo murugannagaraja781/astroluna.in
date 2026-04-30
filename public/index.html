@@ -4765,6 +4765,10 @@
           <i class="fas fa-users"></i>
           <span>User List</span>
         </div>
+        <div class="admin-sidebar-item" id="side-managers" onclick="navAdmin('managers')">
+          <i class="fas fa-user-shield"></i>
+          <span>User Managers</span>
+        </div>
         <div class="admin-sidebar-item" id="side-requests" onclick="navAdmin('requests')">
           <i class="fas fa-user-plus"></i>
           <span>Astro Requests</span>
@@ -5548,6 +5552,16 @@
           </div>
         </div>
 
+        <!-- Section: User Managers -->
+        <div id="admin-sect-managers" class="admin-tab-section">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="font-family: var(--font-heading); color: var(--accent-gold); margin:0;">User Managers</h2>
+          </div>
+          <div id="adminManagerList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+            <!-- Managers will be rendered here -->
+          </div>
+        </div>
+
         <!-- Tab: Referral Withdrawals -->
         <div id="admin-sect-referrals" class="admin-tab-section">
           <div class="dashboard-header">
@@ -5697,6 +5711,10 @@
           <div class="admin-nav-item" id="anav-users" onclick="navAdmin('users')">
             <i class="fas fa-users"></i>
             <span>Users</span>
+          </div>
+          <div class="admin-nav-item" id="anav-managers" onclick="navAdmin('managers')">
+            <i class="fas fa-user-shield"></i>
+            <span>Managers</span>
           </div>
           <div class="admin-nav-item" id="anav-academy" onclick="navAdmin('academy')">
             <i class="fas fa-graduation-cap"></i>
@@ -8650,6 +8668,9 @@
           loadAdminDeletionRequests();
         } else if (tab === 'settings') {
           fetchAdminConfig();
+        } else if (tab === 'managers') {
+          const managers = adminUsersCache.filter(u => u.role === 'user-manager');
+          renderAdminManagers(managers);
         }
       };
 
@@ -8704,7 +8725,7 @@
 
         // Role-based UI adjustments for Managers
         const isAdmin = state.me.role === 'superadmin';
-        document.querySelectorAll('#side-earnings, #side-settings, #side-referrals, #anav-earnings, #anav-settings, #anav-referrals').forEach(el => {
+        document.querySelectorAll('#side-earnings, #side-settings, #side-referrals, #side-managers, #anav-earnings, #anav-settings, #anav-referrals, #anav-managers').forEach(el => {
           el.style.display = isAdmin ? 'flex' : 'none';
         });
         
@@ -9312,13 +9333,53 @@
               <button class="btn-admin btn-role" style="background:#6366F1;" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn-admin btn-block" onclick="adminBan('${u.userId}', ${!u.isBanned})" style="background:${u.isBanned ? '#EF4444' : '#eee'}; color:${u.isBanned ? 'white' : '#666'};">
-                <i class="fas fa-ban"></i>
+              <button class="btn-admin btn-ban" style="background:${u.isBanned ? '#10b981' : '#f43f5e'}" onclick="adminBan('${u.userId}', ${u.isBanned})" title="${u.isBanned ? 'Unban' : 'Ban'} User">
+                <i class="fas ${u.isBanned ? 'fa-unlock' : 'fa-ban'}"></i> ${u.isBanned ? 'Unban' : 'Ban'}
               </button>
-            </div>
-           `;
+           </div>
+          `;
           container.appendChild(div);
         });
+      }
+
+      function renderAdminManagers(list) {
+        const container = document.getElementById('adminManagerList');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (list.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;"><i class="fas fa-user-shield" style="font-size:2rem; margin-bottom:10px; display:block;"></i>No managers found</div>';
+          return;
+        }
+
+        list.forEach(u => {
+          const div = document.createElement('div');
+          div.className = 'admin-user-card';
+          div.innerHTML = `
+           <div class="admin-user-header">
+             <div>
+               <div class="admin-user-name" style="color: #7C3AED;">
+                 <i class="fas fa-user-shield"></i> ${u.name}
+               </div>
+               <div style="font-size:0.8rem; color:#9ca3af; margin-top:2px;">${u.phone}</div>
+               <div style="font-size:0.7rem; color:#6b7280; margin-top:4px;">UID: ${u.userId}</div>
+             </div>
+             <div style="text-align:right;">
+               <div style="font-weight:700; color:#059669; font-size:1.1rem;">₹${u.walletBalance || 0}</div>
+             </div>
+           </div>
+           <div class="admin-actions">
+              <button class="btn-admin btn-role" style="background:#6366F1;" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
+                <i class="fas fa-edit"></i> Edit / Role
+              </button>
+              <button class="btn-admin btn-ban" style="background:#f43f5e;" onclick="adminBan('${u.userId}', ${u.isBanned})" title="Ban Manager">
+                <i class="fas fa-ban"></i> Ban
+              </button>
+           </div>
+          `;
+          container.appendChild(div);
+        });
+      }
       }
 
       window.adminWallet = (uid) => {
