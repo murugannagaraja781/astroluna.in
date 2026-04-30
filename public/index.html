@@ -8839,9 +8839,8 @@
         });
 
         if (isManager) {
-          // Managers see: Most things EXCEPT Financials, User Managers, Deletions
-          const hiddenSelectors = '#side-earnings, #side-managers, #side-deletions, #anav-earnings, #anav-managers, #anav-deletions';
-          document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
+          // Managers see: Everything (as requested to look like super dashboard)
+          document.querySelectorAll('.admin-sidebar-item, .admin-nav-item').forEach(el => el.style.display = 'flex');
         } else if (isStaff) {
           // Staff only see: Home, Academy, Slider
           const hiddenSelectors = '#side-earnings, #side-payouts, #side-users, #side-managers, #side-requests, #side-deletions, #side-referrals, #side-settings, #anav-earnings, #anav-payouts, #anav-users, #anav-managers, #anav-requests, #anav-deletions, #anav-referrals, #anav-settings';
