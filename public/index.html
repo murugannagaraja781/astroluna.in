@@ -825,6 +825,46 @@
       }
     }
 
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 11000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.7s forwards;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toast.success { border-color: #10b981; background: rgba(6, 78, 59, 0.9); }
+    .toast.error { border-color: #ef4444; background: rgba(127, 29, 29, 0.9); }
+
+    @keyframes toastIn {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes toastOut {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-20px); opacity: 0; }
+    }
+
     .dashboard-container {
       min-height: 100vh;
       display: flex;
@@ -5500,14 +5540,21 @@
             style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
             <i class="fas fa-users" style="color:#1e3a8a;"></i> Customer List
           </h2>
-          <div style="margin-bottom: 15px; position: sticky; top: 0; background: #f9fafb; z-index: 10; padding: 5px 0;">
-            <div style="position: relative;">
+          <div style="margin-bottom: 15px; position: sticky; top: 0; background: #f9fafb; z-index: 10; padding: 5px 0; display:flex; gap:10px;">
+            <div style="position: relative; flex:1;">
               <i class="fas fa-search"
                 style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
               <input type="text" id="adminUserSearch" oninput="searchAdminUsers()"
-                placeholder="Search by name, phone or ID..."
+                placeholder="Search name, phone or ID..."
                 style="width: 100%; padding: 10px 10px 10px 35px; border-radius: 10px; border: 1px solid #e5e7eb; font-size: 0.9rem; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
             </div>
+            <select id="adminUserRoleFilter" onchange="searchAdminUsers()" style="padding: 10px; border-radius: 10px; border: 1px solid #e5e7eb; font-size: 0.9rem; outline: none; background: white; min-width:120px;">
+              <option value="all">All Roles</option>
+              <option value="client">Clients</option>
+              <option value="astrologer">Astrologers</option>
+              <option value="user-manager">Managers</option>
+              <option value="staff">Staff</option>
+            </select>
           </div>
           <div id="adminClientList" style="display:flex; flex-direction:column; gap:12px;">
             <!-- Populated via JS -->
@@ -7012,6 +7059,24 @@
           hideAllScreens();
           loadClientDash(state.me || { name: 'Guest', userId: 'guest', role: 'guest', walletBalance: 0 });
         }
+      }
+
+      // --- Toast Notification ---
+      function showToast(message, type = 'success') {
+        let container = document.querySelector('.toast-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.className = 'toast-container';
+          document.body.appendChild(container);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+        
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
       }
 
       function hideAllScreens() {
@@ -9208,11 +9273,11 @@
 
         socket.emit('admin-create-user', { name, phone, role }, (res) => {
           if (res.ok) {
-            alert('User created successfully!');
+            showToast('User created successfully!', 'success');
             document.getElementById('adminCreateUserModal').classList.add('hidden');
             loadAdminDash(); // Refresh everything
           } else {
-            alert('Error: ' + res.error);
+            showToast('Error: ' + res.error, 'error');
           }
         });
       };
@@ -9379,8 +9444,16 @@
           div.className = 'admin-user-card';
 
           const isAstro = u.role === 'astrologer';
+          const isManager = u.role === 'user-manager';
+          const isStaff = u.role === 'staff';
           const isVerified = u.isVerified || false;
           const isDocs = u.isDocumentVerified || false;
+
+          // Role Styling
+          let pillBg = '#EFF6FF'; let pillColor = '#1E3A8A';
+          if (isAstro) { pillBg = '#fef3c7'; pillColor = '#d97706'; }
+          else if (isManager) { pillBg = '#F3E8FF'; pillColor = '#6B21A8'; }
+          else if (isStaff) { pillBg = '#E0F2FE'; pillColor = '#0369A1'; }
 
           div.innerHTML = `
            <div class="admin-user-header">
@@ -9400,7 +9473,7 @@
                   L3: <b style="color:#7C3AED;">${u.refStats.l3}</b>
                 </div>` : ''}
                <div style="margin-top:5px;">
-                  <span class="user-pill" style="background:${isAstro ? '#fef3c7' : '#EFF6FF'}; color:${isAstro ? '#d97706' : '#1E3A8A'}; font-weight:bold; font-size:0.7rem; padding:2px 8px; border-radius:10px;">${u.role.toUpperCase()}</span>
+                  <span class="user-pill" style="background:${pillBg}; color:${pillColor}; font-weight:bold; font-size:0.7rem; padding:2px 8px; border-radius:10px;">${u.role.toUpperCase()}</span>
                   ${isAstro && isDocs ? '<span style="font-size:0.7rem; color:#059669; margin-left:5px;"><i class="fas fa-file-contract"></i> Docs</span>' : ''}
                </div>
              </div>
@@ -9743,12 +9816,15 @@
 
       window.searchAdminUsers = () => {
         const query = document.getElementById('adminUserSearch').value.toLowerCase();
-        const filtered = adminUsersCache.filter(u =>
-          u.role !== 'superadmin' &&
-          ((u.name && u.name.toLowerCase().includes(query)) ||
-            (u.phone && u.phone.includes(query)) ||
-            (u.userId && u.userId.toLowerCase().includes(query)))
-        );
+        const roleFilter = document.getElementById('adminUserRoleFilter').value;
+        
+        const filtered = adminUsersCache.filter(u => {
+          const matchQuery = (u.name && u.name.toLowerCase().includes(query)) ||
+                             (u.phone && u.phone.includes(query)) ||
+                             (u.userId && u.userId.toLowerCase().includes(query));
+          const matchRole = roleFilter === 'all' || u.role === roleFilter;
+          return u.role !== 'superadmin' && matchQuery && matchRole;
+        });
         renderAdminClients(filtered);
       };
 
