@@ -8839,8 +8839,9 @@
         });
 
         if (isManager) {
-          // Managers see: Everything (as requested to look like super dashboard)
-          document.querySelectorAll('.admin-sidebar-item, .admin-nav-item').forEach(el => el.style.display = 'flex');
+          // Managers see: All Tabs EXCEPT Home, Earnings, Managers, Deletions
+          const hiddenSelectors = '#side-home, #side-earnings, #side-managers, #side-deletions, #anav-home, #anav-earnings, #anav-managers, #anav-deletions';
+          document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
         } else if (isStaff) {
           // Staff only see: Home, Academy, Slider
           const hiddenSelectors = '#side-earnings, #side-payouts, #side-users, #side-managers, #side-requests, #side-deletions, #side-referrals, #side-settings, #anav-earnings, #anav-payouts, #anav-users, #anav-managers, #anav-requests, #anav-deletions, #anav-referrals, #anav-settings';
@@ -8856,9 +8857,11 @@
           else if (isStaff) el.innerText = 'CONTENT STAFF';
         });
 
-        navAdmin('home'); // Everyone goes to Home by default now
+        if (isManager) navAdmin('payouts'); // Managers go to Astrologers by default since home is hidden
+        else navAdmin('home'); 
 
-        if (isAdmin || isManager) loadAdminWithdrawals(); // Allow Managers to see financials if they look like super admins
+        if (isAdmin) loadAdminWithdrawals(); 
+        if (isManager) loadAdminWithdrawals(); // Keep this if they still manage payouts
 
         // Fetch initial data
         socket.emit('get-all-users', (res) => {
@@ -9438,6 +9441,8 @@
           return 0;
         });
 
+        const isAdmin = state.me.role === 'superadmin';
+
         list.forEach(u => {
           const div = document.createElement('div');
           div.className = 'admin-user-card';
@@ -9483,6 +9488,7 @@
            </div>
 
            <div class="admin-actions">
+              ${isAdmin ? `
               <button class="btn-admin btn-wallet" onclick="adminWallet('${u.userId}')" title="Add Funds">
                 <i class="fas fa-plus"></i> Wallet
               </button>
