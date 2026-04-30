@@ -9473,6 +9473,7 @@
                 </div>` : ''}
                <div style="margin-top:5px;">
                   <span class="user-pill" style="background:${pillBg}; color:${pillColor}; font-weight:bold; font-size:0.7rem; padding:2px 8px; border-radius:10px;">${u.role.toUpperCase()}</span>
+                  ${u.isBanned ? '<span style="background:#fee2e2; color:#ef4444; font-weight:bold; font-size:0.7rem; padding:2px 8px; border-radius:10px; margin-left:5px;"><i class="fas fa-ban"></i> BANNED</span>' : ''}
                   ${isAstro && isDocs ? '<span style="font-size:0.7rem; color:#059669; margin-left:5px;"><i class="fas fa-file-contract"></i> Docs</span>' : ''}
                </div>
              </div>
@@ -9491,8 +9492,8 @@
               <button class="btn-admin btn-role" style="background:#6366F1;" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn-admin btn-ban" style="background:${u.isBanned ? '#10b981' : '#f43f5e'}" onclick="adminBan('${u.userId}', ${u.isBanned})" title="${u.isBanned ? 'Unban' : 'Ban'} User">
-                <i class="fas ${u.isBanned ? 'fa-unlock' : 'fa-ban'}"></i> ${u.isBanned ? 'Unban' : 'Ban'}
+              <button class="btn-admin btn-ban" style="background:#f43f5e;" onclick="adminDeleteUser('${u.userId}', '${u.name}')">
+                <i class="fas fa-trash-alt"></i> Delete
               </button>
            </div>
           `;
@@ -9535,8 +9536,8 @@
               <button class="btn-admin btn-role" style="background:#6366F1;" onclick="openAdminEditUser('${u.userId}')" title="Edit Profile">
                 <i class="fas fa-edit"></i> Edit / Role
               </button>
-              <button class="btn-admin btn-ban" style="background:#f43f5e;" onclick="adminBan('${u.userId}', ${u.isBanned})" title="Ban Manager">
-                <i class="fas fa-ban"></i> Ban
+              <button class="btn-admin btn-ban" style="background:#f43f5e;" onclick="adminDeleteUser('${u.userId}', '${u.name}')" title="Delete Manager">
+                <i class="fas fa-trash-alt"></i> Delete
               </button>
            </div>
           `;
@@ -9766,6 +9767,17 @@
       // Hook into Admin Nav
       const originalNavAdmin = window.navAdmin;
 
+      window.adminDeleteUser = (uid, name) => {
+        if (!confirm(`Are you sure you want to PERMANENTLY DELETE user "${name}"? This action cannot be undone.`)) return;
+        socket.emit('admin-delete-user', { userId: uid }, (res) => {
+          if (res.ok) {
+            showToast('User deleted successfully!');
+            loadAdminDash();
+          } else {
+            showToast('Delete failed: ' + res.error, 'error');
+          }
+        });
+      };
 
       function refreshAdminData() {
         socket.emit('get-all-users', (res) => {
