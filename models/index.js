@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
   userId: { type: String, unique: true },
   phone: { type: String, unique: true },
   name: String,
-  role: { type: String, enum: ['client', 'astrologer', 'superadmin'], default: 'client' },
+  role: { type: String, enum: ['client', 'astrologer', 'superadmin', 'user-manager', 'staff'], default: 'client' },
   isOnline: { type: Boolean, default: false },
   isChatOnline: { type: Boolean, default: false },
   isAudioOnline: { type: Boolean, default: false },
