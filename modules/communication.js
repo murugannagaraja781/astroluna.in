@@ -579,7 +579,8 @@ module.exports = function(io, shared) {
       try {
         const userId = socketToUser.get(socket.id);
         const user = await User.findOne({ userId });
-        if (!user || user.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+        const isAuth = user && (user.role === 'superadmin' || user.role === 'user-manager');
+        if (!isAuth) return safeAck(cb, { ok: false, error: 'Unauthorized' });
 
         const list = await Withdrawal.find().sort({ requestedAt: -1 }).lean();
         
@@ -654,7 +655,8 @@ module.exports = function(io, shared) {
       try {
         const adminId = socketToUser.get(socket.id);
         const admin = await User.findOne({ userId: adminId });
-        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+        const isAuthorized = admin && (admin.role === 'superadmin' || admin.role === 'user-manager');
+        if (!isAuthorized) return safeAck(cb, { ok: false, error: 'Unauthorized' });
 
         const users = await User.find({}, {
           userId: 1, name: 1, phone: 1, role: 1, walletBalance: 1,

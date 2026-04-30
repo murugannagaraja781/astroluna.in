@@ -8841,8 +8841,8 @@
         });
 
         if (isManager) {
-          // Managers see: All Tabs EXCEPT Home, Earnings, Managers, Deletions
-          const hiddenSelectors = '#side-home, #side-earnings, #side-managers, #side-deletions, #anav-home, #anav-earnings, #anav-managers, #anav-deletions';
+          // Managers see: All Tabs EXCEPT Home, Earnings, User List, Managers, Deletions
+          const hiddenSelectors = '#side-home, #side-earnings, #side-users, #side-managers, #side-deletions, #anav-home, #anav-earnings, #anav-users, #anav-managers, #anav-deletions';
           document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
         } else if (isStaff) {
           // Staff only see: Home, Academy, Slider
