@@ -8839,8 +8839,8 @@
         });
 
         if (isManager) {
-          // Managers ONLY see: Astro Requests
-          const hiddenSelectors = '#side-home, #side-payouts, #side-earnings, #side-users, #side-managers, #side-deletions, #side-referrals, #side-academy, #side-slider, #side-settings, #anav-home, #anav-payouts, #anav-earnings, #anav-users, #anav-managers, #anav-deletions, #anav-referrals, #anav-academy, #anav-slider, #anav-settings';
+          // Managers see: Most things EXCEPT Financials, User Managers, Deletions
+          const hiddenSelectors = '#side-earnings, #side-managers, #side-deletions, #anav-earnings, #anav-managers, #anav-deletions';
           document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
         } else if (isStaff) {
           // Staff only see: Home, Academy, Slider
