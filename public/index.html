@@ -3409,6 +3409,9 @@
         <button class="topbar-nav-item" id="dtNav-profile" onclick="desktopNavSwitch('profile')">
           <i class="fas fa-history"></i> History
         </button>
+        <button class="topbar-nav-item" id="dtNav-admin" onclick="loadAdminDash(state.me)" style="display: none; color: #7C3AED; border: 1px solid rgba(124, 58, 237, 0.2); background: rgba(124, 58, 237, 0.05);">
+          <i class="fas fa-shield-alt"></i> Admin Panel
+        </button>
       </div>
       <div class="topbar-right">
         <div class="topbar-wallet" onclick="refreshWallet()">
@@ -4695,6 +4698,16 @@
         <div style="margin-bottom:15px;">
           <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Display Name</label>
           <input type="text" id="adminEditName" class="app-input" placeholder="User Name">
+        </div>
+
+        <div style="margin-bottom:15px;" id="adminEditRoleContainer">
+          <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">User Role</label>
+          <select id="adminEditRole" class="app-input">
+            <option value="client">Client</option>
+            <option value="astrologer">Astrologer</option>
+            <option value="user-manager">User Manager</option>
+            <option value="superadmin">Super Admin</option>
+          </select>
         </div>
 
         <!-- Astrologer Specific Fields -->
@@ -6769,7 +6782,7 @@
 
               sLogin.classList.add('hidden');
               if (state.me.role === 'astrologer') loadAstroDash(state.me);
-              else if (state.me.role === 'superadmin') loadAdminDash(state.me);
+              else if (state.me.role === 'superadmin' || state.me.role === 'user-manager') loadAdminDash(state.me);
               else {
                 loadClientDash(state.me);
               }
@@ -6807,7 +6820,16 @@
           } else {
             authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login / Join Now';
             authBtn.onclick = (e) => { e.preventDefault(); drawerNav('login'); };
-            authBtn.style.color = '';
+          }
+        }
+        
+        // Handle Admin Button visibility in Desktop Topbar
+        const dtAdminBtn = document.getElementById('dtNav-admin');
+        if (dtAdminBtn) {
+          if (state.me && (state.me.role === 'superadmin' || state.me.role === 'user-manager')) {
+            dtAdminBtn.style.display = 'flex';
+          } else {
+            dtAdminBtn.style.display = 'none';
           }
         }
       }
@@ -8680,8 +8702,19 @@
         const afoot = document.querySelector('.admin-footer');
         if (afoot) afoot.classList.add('show');
 
+        // Role-based UI adjustments for Managers
+        const isAdmin = state.me.role === 'superadmin';
+        document.querySelectorAll('#side-earnings, #side-settings, #side-referrals, #anav-earnings, #anav-settings, #anav-referrals').forEach(el => {
+          el.style.display = isAdmin ? 'flex' : 'none';
+        });
+        
+        // Update Admin Header Text
+        document.querySelectorAll('.admin-sidebar-header span, #screen-admin .app-header div:first-child').forEach(el => {
+          el.innerText = isAdmin ? 'MASTER ADMIN' : 'MANAGER';
+        });
+
         navAdmin('home'); // Default to home tab
-        loadAdminWithdrawals(); // Refresh badges/payouts
+        if (isAdmin) loadAdminWithdrawals(); // Only load financials for superadmin
 
         // Fetch initial data
         socket.emit('get-all-users', (res) => {
@@ -9088,6 +9121,16 @@
         document.getElementById('adminEditAvatar').src = u.image || `https://ui-avatars.com/api/?name=${u.name}&background=random`;
         tempAvatarUrl = ''; // Reset for new edit session
 
+        // Role management - Only Super Admin can change roles
+        const roleContainer = document.getElementById('adminEditRoleContainer');
+        const roleSelect = document.getElementById('adminEditRole');
+        if (state.me.role === 'superadmin') {
+          roleContainer.style.display = 'block';
+          roleSelect.value = u.role || 'client';
+        } else {
+          roleContainer.style.display = 'none';
+        }
+
         const astroFields = document.getElementById('adminEditAstroFields');
         if (u.role === 'astrologer') {
           astroFields.style.display = 'block';
@@ -9112,6 +9155,10 @@
         const u = adminUsersCache.find(x => x.userId === uid);
 
         const updates = { name };
+        
+        if (state.me.role === 'superadmin') {
+          updates.role = document.getElementById('adminEditRole').value;
+        }
 
         if (u.role === 'astrologer') {
           updates.price = document.getElementById('adminEditPrice').value;
@@ -11232,16 +11279,18 @@
       };
 
       socket.on('admin-notification', (msg) => {
-        if (state.me && state.me.role === 'superadmin') {
+        if (state.me && (state.me.role === 'superadmin' || state.me.role === 'user-manager')) {
           // Create Popup
           const div = document.createElement('div');
           div.className = 'admin-notification-popup';
-          div.id = `notif-${msg.data ? msg.data.withdrawalId : Date.now()}`;
+          div.id = `notif-${msg.data ? (msg.data.withdrawalId || msg.data.applicationId) : Date.now()}`;
           div.innerHTML = `
              <div style="font-weight:bold; margin-bottom:5px; color:#111;">🔔 Notification</div>
              <div style="margin-bottom:10px; color:#555;">${msg.text}</div>
              ${msg.data && msg.data.withdrawalId ?
               `<button class="approve" onclick="approveWithdrawal('${msg.data.withdrawalId}', ${msg.data.amount})">Accept & Deduct</button>` : ''}
+             ${msg.type === 'astrologer_request' ? 
+              `<button class="approve" onclick="navAdmin('requests'); this.parentElement.remove();">View Requests</button>` : ''}
              <button class="close" onclick="this.parentElement.remove()">Close</button>
           `;
           document.body.appendChild(div);

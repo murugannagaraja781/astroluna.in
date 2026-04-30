@@ -87,9 +87,9 @@ module.exports = function(io, shared) {
           userSockets.set(resolvedUserId, socket.id);
           socketToUser.set(socket.id, resolvedUserId);
           socket.join(resolvedUserId); 
-          if (user.role === 'superadmin') {
+          if (user.role === 'superadmin' || user.role === 'user-manager') {
             socket.join('superadmin');
-            console.log(`[Socket] Admin ${user.name} joined superadmin room`);
+            console.log(`[Socket] Admin/Manager ${user.name} joined superadmin room`);
           }
 
           safeAck(cb, {
@@ -120,7 +120,7 @@ module.exports = function(io, shared) {
             broadcastAstroUpdate();
           }
           
-          if (user.role === 'superadmin') {
+          if (user.role === 'superadmin' || user.role === 'user-manager') {
             socket.join('superadmin');
           }
         });
