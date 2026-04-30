@@ -759,13 +759,52 @@ module.exports = function(io, shared) {
         const { userId, updates } = data || {};
         const adminId = socketToUser.get(socket.id);
         const admin = await User.findOne({ userId: adminId });
-        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+        
+        // Allow SuperAdmin, Manager, and Staff to update details
+        const isAuth = admin && (admin.role === 'superadmin' || admin.role === 'user-manager' || admin.role === 'staff');
+        if (!isAuth) return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        // PROTECT ROLE: Only Super Admin can change roles
+        if (admin.role !== 'superadmin' && updates.role) {
+          delete updates.role;
+        }
 
         await User.updateOne({ userId }, updates);
         broadcastAstroUpdate(); 
         logActivity('admin', `Admin ${adminId} updated user ${userId} details: ${JSON.stringify(updates)}`);
         safeAck(cb, { ok: true });
       } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- Admin: Create User Manually ---
+    socket.on('admin-create-user', async (data, cb) => {
+      try {
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        if (!admin || admin.role !== 'superadmin') return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const { name, phone, role } = data || {};
+        if (!name || !phone || !role) return safeAck(cb, { ok: false, error: 'Missing fields' });
+
+        // Check if user already exists
+        const existing = await User.findOne({ phone });
+        if (existing) return safeAck(cb, { ok: false, error: 'User already exists with this phone number' });
+
+        const userId = crypto.randomUUID();
+        await User.create({
+          userId,
+          name,
+          phone,
+          role,
+          walletBalance: 0
+        });
+
+        logActivity('admin', `SuperAdmin ${adminId} created new user: ${name} (${phone}) as ${role}`);
+        safeAck(cb, { ok: true });
+      } catch (e) { 
+        console.error('Create user error:', e);
+        safeAck(cb, { ok: false, error: 'Server error' }); 
+      }
     });
 
     socket.on('disconnect', () => {

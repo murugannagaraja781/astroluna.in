@@ -4706,6 +4706,7 @@
             <option value="client">Client</option>
             <option value="astrologer">Astrologer</option>
             <option value="user-manager">User Manager</option>
+            <option value="staff">Staff / Content</option>
             <option value="superadmin">Super Admin</option>
           </select>
         </div>
@@ -4739,6 +4740,41 @@
           <button class="btn-admin" style="background:#e5e7eb; color:#333;"
             onclick="document.getElementById('adminEditModal').classList.add('hidden')">Cancel</button>
           <button class="btn-admin" style="background:#1e40af;" onclick="saveAdminEditUser()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Create User Modal -->
+    <div id="adminCreateUserModal" class="modal-overlay hidden" style="align-items: center; justify-content: center; z-index: 10002;">
+      <div style="background: white; width: 90%; max-width: 400px; padding: 25px; border-radius: 20px; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+        <h3 style="margin-top:0; color:#1e3a8a; display:flex; align-items:center; gap:10px;">
+          <i class="fas fa-user-plus" style="color:var(--accent-gold);"></i> Create Admin Account
+        </h3>
+        <p style="font-size:0.85rem; color:#666; margin-bottom:20px;">Register a new manager, staff, or super admin manually.</p>
+        
+        <div style="margin-bottom:15px;">
+          <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Full Name</label>
+          <input type="text" id="adminCreateName" class="app-input" placeholder="e.g. John Doe">
+        </div>
+
+        <div style="margin-bottom:15px;">
+          <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Phone Number (with prefix)</label>
+          <input type="text" id="adminCreatePhone" class="app-input" placeholder="e.g. +919876543210">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-size:0.8rem; color:#666; margin-bottom:5px;">Assigned Role</label>
+          <select id="adminCreateRole" class="app-input">
+            <option value="user-manager">User Manager (Astro Only)</option>
+            <option value="staff">Staff (Content Only)</option>
+            <option value="superadmin">Super Admin (Full Access)</option>
+          </select>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="btn-admin" style="background:#f3f4f6; color:#333; border:1px solid #ddd;"
+            onclick="document.getElementById('adminCreateUserModal').classList.add('hidden')">Cancel</button>
+          <button class="btn-admin" style="background:#1e40af; color:white; border:none; box-shadow:0 4px 12px rgba(30,64,175,0.3);" onclick="submitAdminCreateUser()">Create User</button>
         </div>
       </div>
     </div>
@@ -5556,6 +5592,9 @@
         <div id="admin-sect-managers" class="admin-tab-section">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 style="font-family: var(--font-heading); color: var(--accent-gold); margin:0;">User Managers</h2>
+            <button class="cosmic-btn" style="padding: 8px 16px; font-size:0.9rem;" onclick="openAdminCreateUser()">
+              <i class="fas fa-plus"></i> Create Manager
+            </button>
           </div>
           <div id="adminManagerList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
             <!-- Managers will be rendered here -->
@@ -8723,15 +8762,35 @@
         const afoot = document.querySelector('.admin-footer');
         if (afoot) afoot.classList.add('show');
 
-        // Role-based UI adjustments for Managers
-        const isAdmin = state.me.role === 'superadmin';
-        document.querySelectorAll('#side-earnings, #side-settings, #side-referrals, #side-managers, #anav-earnings, #anav-settings, #anav-referrals, #anav-managers').forEach(el => {
-          el.style.display = isAdmin ? 'flex' : 'none';
+        // Role-based UI adjustments for Managers & Staff
+        const role = state.me.role;
+        const isAdmin = role === 'superadmin';
+        const isManager = role === 'user-manager';
+        const isStaff = role === 'staff';
+
+        // Visibility adjustments
+        document.querySelectorAll('.admin-sidebar-item, .admin-nav-item').forEach(el => {
+          el.style.display = 'flex'; // Default to show
         });
-        
+
+        if (isManager) {
+          // Managers only see: Home, Astrologers, Requests
+          const hiddenSelectors = '#side-earnings, #side-users, #side-managers, #side-deletions, #side-referrals, #side-academy, #side-slider, #side-settings, #anav-earnings, #anav-users, #anav-managers, #anav-deletions, #anav-referrals, #anav-academy, #anav-slider, #anav-settings';
+          document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
+        } else if (isStaff) {
+          // Staff only see: Home, Academy, Slider
+          const hiddenSelectors = '#side-earnings, #side-payouts, #side-users, #side-managers, #side-requests, #side-deletions, #side-referrals, #side-settings, #anav-earnings, #anav-payouts, #anav-users, #anav-managers, #anav-requests, #anav-deletions, #anav-referrals, #anav-settings';
+          document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
+        } else if (!isAdmin) {
+          // Fallback for anyone else
+          document.querySelectorAll('.admin-sidebar-item:not(#side-home), .admin-nav-item:not(#anav-home)').forEach(el => el.style.display = 'none');
+        }
+
         // Update Admin Header Text
         document.querySelectorAll('.admin-sidebar-header span, #screen-admin .app-header div:first-child').forEach(el => {
-          el.innerText = isAdmin ? 'MASTER ADMIN' : 'MANAGER';
+          if (isAdmin) el.innerText = 'MASTER ADMIN';
+          else if (isManager) el.innerText = 'ASTRO MANAGER';
+          else if (isStaff) el.innerText = 'CONTENT STAFF';
         });
 
         navAdmin('home'); // Default to home tab
@@ -9130,6 +9189,33 @@
         const el = document.getElementById(id);
         if (el) el.innerHTML = val;
       }
+
+      // --- Admin Create User Logic ---
+      window.openAdminCreateUser = () => {
+        document.getElementById('adminCreateName').value = '';
+        document.getElementById('adminCreatePhone').value = '';
+        document.getElementById('adminCreateRole').value = 'user-manager';
+        document.getElementById('adminCreateUserModal').classList.remove('hidden');
+      };
+
+      window.submitAdminCreateUser = () => {
+        const name = document.getElementById('adminCreateName').value.trim();
+        const phone = document.getElementById('adminCreatePhone').value.trim();
+        const role = document.getElementById('adminCreateRole').value;
+
+        if (!name || !phone) return alert('Please enter both name and phone number');
+        if (!phone.startsWith('+')) return alert('Please enter phone with country code (e.g. +91...)');
+
+        socket.emit('admin-create-user', { name, phone, role }, (res) => {
+          if (res.ok) {
+            alert('User created successfully!');
+            document.getElementById('adminCreateUserModal').classList.add('hidden');
+            loadAdminDash(); // Refresh everything
+          } else {
+            alert('Error: ' + res.error);
+          }
+        });
+      };
 
       // --- Admin Edit User Modal Logic ---
       window.openAdminEditUser = (userId) => {
