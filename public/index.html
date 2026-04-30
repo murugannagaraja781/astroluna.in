@@ -7247,7 +7247,7 @@
             sLogin.classList.add('hidden');
             if (res.role === 'astrologer') {
               loadAstroDash(res);
-            } else if (res.role === 'superadmin') {
+            } else if (res.role === 'superadmin' || res.role === 'user-manager' || res.role === 'staff') {
               loadAdminDash(res);
             } else {
               // Restore intake details if sent from server
@@ -8852,15 +8852,13 @@
 
         // Update Admin Header Text
         document.querySelectorAll('.admin-sidebar-header span, #screen-admin .app-header div:first-child').forEach(el => {
-          if (isAdmin) el.innerText = 'MASTER ADMIN';
-          else if (isManager) el.innerText = 'ASTRO MANAGER';
+          if (isAdmin || isManager) el.innerText = 'MASTER ADMIN'; // Managers see "MASTER ADMIN" too
           else if (isStaff) el.innerText = 'CONTENT STAFF';
         });
 
-        if (isManager) navAdmin('requests'); // Managers go directly to Requests
-        else navAdmin('home'); // Others go to Home
+        navAdmin('home'); // Everyone goes to Home by default now
 
-        if (isAdmin) loadAdminWithdrawals(); // Only load financials for superadmin
+        if (isAdmin || isManager) loadAdminWithdrawals(); // Allow Managers to see financials if they look like super admins
 
         // Fetch initial data
         socket.emit('get-all-users', (res) => {
@@ -9976,7 +9974,7 @@
 
       // Load request count on admin startup
       setTimeout(() => {
-        if (state.me && state.me.role === 'superadmin') {
+        if (state.me && (state.me.role === 'superadmin' || state.me.role === 'user-manager')) {
           loadAstrologerRequests(); // Pre-load to show badge
         }
       }, 2000);
