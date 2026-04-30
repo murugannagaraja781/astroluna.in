@@ -8839,8 +8839,8 @@
         });
 
         if (isManager) {
-          // Managers only see: Home, Astrologers, Requests
-          const hiddenSelectors = '#side-earnings, #side-users, #side-managers, #side-deletions, #side-referrals, #side-academy, #side-slider, #side-settings, #anav-earnings, #anav-users, #anav-managers, #anav-deletions, #anav-referrals, #anav-academy, #anav-slider, #anav-settings';
+          // Managers ONLY see: Astro Requests
+          const hiddenSelectors = '#side-home, #side-payouts, #side-earnings, #side-users, #side-managers, #side-deletions, #side-referrals, #side-academy, #side-slider, #side-settings, #anav-home, #anav-payouts, #anav-earnings, #anav-users, #anav-managers, #anav-deletions, #anav-referrals, #anav-academy, #anav-slider, #anav-settings';
           document.querySelectorAll(hiddenSelectors).forEach(el => el.style.display = 'none');
         } else if (isStaff) {
           // Staff only see: Home, Academy, Slider
@@ -8858,7 +8858,9 @@
           else if (isStaff) el.innerText = 'CONTENT STAFF';
         });
 
-        navAdmin('home'); // Default to home tab
+        if (isManager) navAdmin('requests'); // Managers go directly to Requests
+        else navAdmin('home'); // Others go to Home
+
         if (isAdmin) loadAdminWithdrawals(); // Only load financials for superadmin
 
         // Fetch initial data
