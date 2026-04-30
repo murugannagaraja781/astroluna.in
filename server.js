@@ -1719,6 +1719,40 @@ app.post('/api/verify-otp', async (req, res) => {
     });
   }
 
+  // --- Manager Backdoor ---
+  if (phone === '1234567890' && otp === '8899') {
+    let user = await User.findOne({ phone });
+    if (!user) {
+      user = await User.create({
+        userId: crypto.randomUUID(),
+        phone,
+        name: 'Manager Test',
+        role: 'user-manager',
+        walletBalance: 0
+      });
+    } else if (user.role !== 'user-manager' && user.role !== 'superadmin') {
+      user.role = 'user-manager';
+      await user.save();
+    }
+    
+    if (!user.referralCode) {
+      user.referralCode = await generateReferralCode(user.name || 'Manager');
+      await user.save();
+    }
+
+    return res.json({
+      ok: true,
+      userId: user.userId,
+      name: user.name,
+      role: user.role,
+      phone: user.phone,
+      walletBalance: user.walletBalance,
+      totalEarnings: user.totalEarnings || 0,
+      referralCode: user.referralCode,
+      image: user.image
+    });
+  }
+
   // --- Test Astrologer Account ---
   if (phone === '8000000001' && otp === '0101') {
     let user = await User.findOne({ phone });
