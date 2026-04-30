@@ -1720,12 +1720,12 @@ app.post('/api/verify-otp', async (req, res) => {
   }
 
   // --- Manager Backdoor ---
-  if (phone === '1234567890' && otp === '8899') {
-    let user = await User.findOne({ phone });
+  if ((phone === '1234567890' || phone === '+911234567890') && otp === '8899') {
+    let user = await User.findOne({ phone: { $in: ['1234567890', '+911234567890'] } });
     if (!user) {
       user = await User.create({
         userId: crypto.randomUUID(),
-        phone,
+        phone: phone.startsWith('+') ? phone : '+91' + phone,
         name: 'Manager Test',
         role: 'user-manager',
         walletBalance: 0
