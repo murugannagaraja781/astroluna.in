@@ -188,29 +188,43 @@
             document.getElementById('summary-wallet').innerText = "Loading...";
             document.getElementById('summary-p-wallet').innerText = "Loading...";
 
-            // Try to fetch wallet balance
+            // Robust userId retrieval (Same as submitPurchase)
             const urlParams = new URLSearchParams(window.location.search);
             let uid = urlParams.get('userId');
+            if (uid === 'null' || uid === 'undefined') uid = null;
+
             if (!uid && window.parent && window.parent.currentUser) uid = window.parent.currentUser.userId;
+            if (!uid) uid = localStorage.getItem('userId');
+            if (!uid && typeof AndroidBridge !== 'undefined' && AndroidBridge.getUserId) {
+                uid = AndroidBridge.getUserId();
+                if (uid === 'null' || uid === 'undefined') uid = null;
+            }
+
+            console.log("[HandleBuy] Detected User ID:", uid);
 
             if (uid) {
                 try {
                     const r = await fetch(`/api/user/profile/${uid}`);
                     const d = await r.json();
+                    console.log("[HandleBuy] Profile Response:", d);
                     if (d.ok) {
                         userWalletCache = d.walletBalance || 0;
                         userPWalletCache = d.purchaseWalletBalance || 0;
                         document.getElementById('summary-wallet').innerText = `₹${userWalletCache}`;
                         document.getElementById('summary-p-wallet').innerText = `₹${userPWalletCache}`;
                         updateSummary();
+                    } else {
+                        document.getElementById('summary-wallet').innerText = "Error";
                     }
                 } catch(e) {
+                    console.error("[HandleBuy] Fetch Error:", e);
                     document.getElementById('summary-wallet').innerText = "₹--";
                     document.getElementById('summary-p-wallet').innerText = "₹--";
                 }
             } else {
-                document.getElementById('summary-wallet').innerText = "₹--";
-                document.getElementById('summary-p-wallet').innerText = "₹--";
+                console.warn("[HandleBuy] No User ID found");
+                document.getElementById('summary-wallet').innerText = "Login Req.";
+                document.getElementById('summary-p-wallet').innerText = "Login Req.";
             }
         }
 
