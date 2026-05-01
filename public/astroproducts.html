@@ -70,6 +70,17 @@
                 <textarea id="ship-address" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
             </div>
 
+            <div id="checkout-summary" style="background:#f8fafc; border-radius:15px; padding:15px; margin-bottom:20px; border:1px solid #e2e8f0;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="font-size:13px; color:var(--text-muted);">Product Price:</span>
+                    <span id="summary-price" style="font-size:14px; font-weight:700; color:var(--brand-purple);">₹0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px dashed #cbd5e1;">
+                    <span style="font-size:13px; color:var(--text-muted);">Your Wallet:</span>
+                    <span id="summary-wallet" style="font-size:14px; font-weight:700; color:#22c55e;">₹0</span>
+                </div>
+            </div>
+
             <div style="margin-bottom:20px;">
                 <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment Method:</p>
                 <div style="display:flex; gap:10px;">
@@ -147,10 +158,43 @@
         }
 
         let currentBuyingProduct = null;
+        let userWalletCache = 0;
 
-        function handleBuy(price, name, id) {
+        async function handleBuy(price, name, id) {
             currentBuyingProduct = { price, name, id };
+            document.getElementById('summary-price').innerText = `₹${price}`;
             document.getElementById('address-modal').style.display = 'flex';
+            
+            // Default wallet display
+            document.getElementById('summary-wallet').innerText = "Loading...";
+
+            // Try to fetch wallet balance
+            const urlParams = new URLSearchParams(window.location.search);
+            let uid = urlParams.get('userId');
+            
+            // Try parent window if embedded
+            if (!uid && window.parent && window.parent.currentUser) uid = window.parent.currentUser.userId;
+
+            if (uid) {
+                try {
+                    const r = await fetch(`/api/user/profile/${uid}`);
+                    const d = await r.json();
+                    if (d.ok) {
+                        userWalletCache = d.user.walletBalance || 0;
+                        document.getElementById('summary-wallet').innerText = `₹${userWalletCache}`;
+                        
+                        if (userWalletCache < price) {
+                            document.getElementById('summary-wallet').style.color = '#ef4444'; // Red for low balance
+                        } else {
+                            document.getElementById('summary-wallet').style.color = '#22c55e'; // Green for ok
+                        }
+                    }
+                } catch(e) {
+                    document.getElementById('summary-wallet').innerText = "₹--";
+                }
+            } else {
+                document.getElementById('summary-wallet').innerText = "₹--";
+            }
         }
 
         function closeModal() {
