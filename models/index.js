@@ -233,6 +233,7 @@ const ProductOrderSchema = new mongoose.Schema({
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   paymentId: String,
   paymentStatus: { type: String, default: 'pending' },
+  paymentMethod: { type: String, enum: ['online', 'cod'], default: 'online' },
   requestedAt: { type: Date, default: Date.now },
   processedAt: Date
 });

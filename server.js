@@ -3472,7 +3472,7 @@ app.post('/api/admin/upload-product-image', productUpload.single('image'), (req,
 
 app.post('/api/products/initiate-purchase', async (req, res) => {
   try {
-    const { productId, address, phone, userId } = req.body;
+    const { productId, address, phone, userId, paymentMethod } = req.body;
     if (!productId || !address || !phone || !userId) {
       return res.json({ ok: false, error: 'Missing required fields' });
     }
@@ -3481,6 +3481,32 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
     if (!product) return res.json({ ok: false, error: 'Product not found' });
 
     const merchantOrderId = 'PROD_' + Date.now();
+    const method = paymentMethod === 'cod' ? 'cod' : 'online';
+
+    if (method === 'cod') {
+      const order = new ProductOrder({
+        orderId: merchantOrderId,
+        userId,
+        productId,
+        productName: product.name,
+        amount: product.price,
+        address,
+        phone,
+        paymentStatus: 'pending',
+        paymentMethod: 'cod',
+        status: 'pending'
+      });
+      await order.save();
+
+      // Notify Admin
+      io.emit('admin-notification', { 
+        title: 'New Product Order', 
+        text: `${order.productName} (COD) ordered by ${userId}. Check Dashboard.` 
+      });
+
+      return res.json({ ok: true, cod: true });
+    }
+
     const amountPaisa = product.price * 100;
 
     // Create a Payment record first

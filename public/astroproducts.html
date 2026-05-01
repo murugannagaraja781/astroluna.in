@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Astro Products Catalog</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --brand-purple: #7C3AED;
@@ -68,6 +69,21 @@
                 <input type="tel" id="ship-phone" placeholder="Mobile Number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
                 <textarea id="ship-address" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
             </div>
+
+            <div style="margin-bottom:20px;">
+                <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment Method:</p>
+                <div style="display:flex; gap:10px;">
+                    <div id="method-online" onclick="setPaymentMethod('online')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:12px; text-align:center; cursor:pointer; background:#f5f3ff;">
+                        <i class="fas fa-credit-card" style="display:block; margin-bottom:5px; color:var(--brand-purple);"></i>
+                        <span style="font-size:12px; font-weight:700; color:var(--brand-purple);">Online Pay</span>
+                    </div>
+                    <div id="method-cod" onclick="setPaymentMethod('cod')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:12px; text-align:center; cursor:pointer;">
+                        <i class="fas fa-truck" style="display:block; margin-bottom:5px; color:#64748b;"></i>
+                        <span style="font-size:12px; font-weight:700; color:#64748b;">COD</span>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="selected-method" value="online">
             
             <div style="display:flex; gap:10px;">
                 <button onclick="closeModal()" style="flex:1; padding:14px; border-radius:14px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer; font-size:14px;">Cancel</button>
@@ -119,10 +135,39 @@
             document.getElementById('address-modal').style.display = 'none';
         }
 
+        function setPaymentMethod(method) {
+            document.getElementById('selected-method').value = method;
+            const online = document.getElementById('method-online');
+            const cod = document.getElementById('method-cod');
+            
+            if (method === 'online') {
+                online.style.borderColor = 'var(--brand-purple)';
+                online.style.background = '#f5f3ff';
+                online.querySelector('i').style.color = 'var(--brand-purple)';
+                online.querySelector('span').style.color = 'var(--brand-purple)';
+                
+                cod.style.borderColor = '#e2e8f0';
+                cod.style.background = 'white';
+                cod.querySelector('i').style.color = '#64748b';
+                cod.querySelector('span').style.color = '#64748b';
+            } else {
+                cod.style.borderColor = 'var(--brand-purple)';
+                cod.style.background = '#f5f3ff';
+                cod.querySelector('i').style.color = 'var(--brand-purple)';
+                cod.querySelector('span').style.color = 'var(--brand-purple)';
+                
+                online.style.borderColor = '#e2e8f0';
+                online.style.background = 'white';
+                online.querySelector('i').style.color = '#64748b';
+                online.querySelector('span').style.color = '#64748b';
+            }
+        }
+
         async function submitPurchase() {
             const name = document.getElementById('ship-name').value;
             const phone = document.getElementById('ship-phone').value;
             const address = document.getElementById('ship-address').value;
+            const paymentMethod = document.getElementById('selected-method').value;
 
             if (!name || !phone || !address) {
                 alert("Please fill all shipping details.");
@@ -150,12 +195,18 @@
                         productId: currentBuyingProduct.id,
                         address: `${name}, ${address}`,
                         phone: phone,
-                        userId: userId
+                        userId: userId,
+                        paymentMethod: paymentMethod
                     })
                 });
                 const data = await res.json();
-                if (data.ok && data.redirectUrl) {
-                    window.location.href = data.redirectUrl;
+                if (data.ok) {
+                    if (data.cod) {
+                        alert("🎉 Order placed successfully via Cash on Delivery!");
+                        window.location.href = `/payment-status?merchantOrderId=${currentBuyingProduct.name}`;
+                    } else if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
                 } else {
                     alert("Error: " + (data.error || "Failed to initiate payment"));
                     payBtn.disabled = false;
