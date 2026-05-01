@@ -66,6 +66,12 @@ class TokenManager(context: Context) {
         saveUserSession(updated)
     }
 
+    fun updatePurchaseBalance(balance: Double) {
+        val session = getUserSession() ?: return
+        val updated = session.copy(purchaseWalletBalance = balance)
+        saveUserSession(updated)
+    }
+
     fun updateProfileImage(imageUrl: String) {
         val session = getUserSession() ?: return
         val updated = session.copy(image = imageUrl)

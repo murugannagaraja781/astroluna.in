@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
   skills: [String],
   price: { type: Number, default: 20 },
   walletBalance: { type: Number, default: 108 },
+  purchaseWalletBalance: { type: Number, default: 0 },
   totalEarnings: { type: Number, default: 0 },
   experience: { type: Number, default: 0 },
   isVerified: { type: Boolean, default: false },
@@ -211,6 +212,27 @@ const GlobalConfigSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const ProductSchema = new mongoose.Schema({
+  productId: { type: String, unique: true },
+  name: { type: String, required: true },
+  description: String,
+  price: { type: Number, required: true },
+  image: String,
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const ProductOrderSchema = new mongoose.Schema({
+  orderId: { type: String, unique: true },
+  userId: { type: String, required: true },
+  productId: { type: String, required: true },
+  productName: String,
+  amount: Number,
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+  requestedAt: { type: Date, default: Date.now },
+  processedAt: Date
+});
+
 module.exports = {
   User: mongoose.model('User', UserSchema),
   GlobalConfig: mongoose.model('GlobalConfig', GlobalConfigSchema),
@@ -226,5 +248,7 @@ module.exports = {
   AccountDeletionRequest: mongoose.model('AccountDeletionRequest', AccountDeletionRequestSchema),
   AstrologerApplication: mongoose.model('AstrologerApplication', AstrologerApplicationSchema),
   Notification: mongoose.model('Notification', NotificationSchema),
-  Review: mongoose.model('Review', ReviewSchema)
+  Review: mongoose.model('Review', ReviewSchema),
+  Product: mongoose.model('Product', ProductSchema),
+  ProductOrder: mongoose.model('ProductOrder', ProductOrderSchema)
 };

@@ -3762,6 +3762,12 @@
               <span class="symbol">₹</span><span id="dashWalletBalance">0.00</span>
               <i id="dashWalletSpinner" class="fas fa-sync-alt fa-spin" style="display:none; font-size:1.5rem;"></i>
             </div>
+            
+            <!-- Purchase Bonus Wallet -->
+            <div id="purchaseWalletSection" style="margin-top: -15px; margin-bottom: 24px; background: rgba(255,255,255,0.06); padding: 12px; border-radius: 16px; border: 1px dashed rgba(212, 175, 55, 0.4); text-align: center;">
+               <div style="font-size: 0.7rem; color: var(--accent-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Shopping Bonus Wallet</div>
+               <div style="font-size: 1.6rem; color: #fff; font-weight: 800; font-family: 'Outfit', sans-serif;">₹<span id="dashPurchaseBalance">0.00</span></div>
+            </div>
             <div class="w-actions">
               <button class="add-btn" onclick="initiateRecharge()">
                 <i class="fas fa-plus-circle"></i> Add Funds
@@ -3944,6 +3950,16 @@
             <i class="fas fa-calculator"></i> Get Birth Chart
           </button>
         </div>
+
+        <div id="section-products" class="hidden" style="width: 100%; height: calc(100vh - 65px); padding: 0; margin: 0; display: flex; flex-direction: column; background: #000;">
+          <div style="padding: 15px 20px; background: #1a1a1a; border-bottom: 1px solid rgba(212, 175, 55, 0.2); display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif;">Astro Products</h2>
+            <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; padding: 6px 12px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);">
+               Bonus: ₹<span id="prodPurchaseBalance">0.00</span>
+            </div>
+          </div>
+          <iframe id="productsWebview" src="about:blank" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -3982,8 +3998,8 @@
     <div class="nav-item" id="nav-chat" onclick="navSwitch('chat')">
       <i class="fas fa-comment-dots"></i><span>Chat</span>
     </div>
-    <div class="nav-item" id="nav-profile" onclick="navSwitch('profile')">
-      <i class="fas fa-history"></i><span>History</span>
+    <div class="nav-item" id="nav-products" onclick="navSwitch('products')">
+      <i class="fas fa-shopping-bag"></i><span>Products</span>
     </div>
   </div>
 
@@ -4868,6 +4884,10 @@
         <div class="admin-sidebar-item" id="side-settings" onclick="navAdmin('settings')">
           <i class="fas fa-cog"></i>
           <span>Settings</span>
+        </div>
+        <div class="admin-sidebar-item" id="side-products" onclick="navAdmin('products')">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Astro Products</span>
         </div>
       </div>
       <div class="admin-sidebar-footer">
@@ -7367,6 +7387,17 @@
           if (refresh) refresh.style.display = 'inline';
           if (dashSpinner) dashSpinner.style.display = 'none';
 
+          if (data.purchaseBalance !== undefined) {
+             const pbal = Number(data.purchaseBalance || 0).toFixed(2);
+             if (document.getElementById('dashPurchaseBalance')) {
+               document.getElementById('dashPurchaseBalance').innerText = pbal;
+             }
+             if (document.getElementById('prodPurchaseBalance')) {
+               document.getElementById('prodPurchaseBalance').innerText = pbal;
+             }
+             state.me.purchaseWalletBalance = data.purchaseBalance;
+          }
+
           // Refresh History
           if (window.fetchTransactionHistory) window.fetchTransactionHistory();
 
@@ -7481,7 +7512,6 @@
 
       function navSwitch(tab) {
         if (state.me && state.me.role === 'guest') {
-          // Force login for everything except Home (unless user tries to interact)
           if (tab !== 'home') {
             showLogin();
             return;
@@ -7493,45 +7523,59 @@
 
         const sectHome = document.getElementById('section-home');
         const sectDash = document.getElementById('section-dash');
+        const sectProd = document.getElementById('section-products');
         const horoSection = document.getElementById('dailyHoroscopeSection');
 
         if (horoSection) {
-          // Only show Horoscope on Home tab
           horoSection.style.display = (tab === 'home') ? 'block' : 'none';
         }
 
-        if (tab === 'home') {
+        // Hide all by default
+        if (sectHome) sectHome.classList.add('hidden');
+        if (sectDash) sectDash.classList.add('hidden');
+        if (sectProd) sectProd.classList.add('hidden');
+
+        if (tab === 'home' || tab === 'call' || tab === 'chat') {
           if (sectHome) sectHome.classList.remove('hidden');
-          if (sectDash) sectDash.classList.add('hidden');
-          if (document.getElementById('topFilterTabs')) document.getElementById('topFilterTabs').classList.remove('hidden');
-          renderAstroList(state.astroList);
+          
+          if (tab === 'home') {
+            if (document.getElementById('topFilterTabs')) document.getElementById('topFilterTabs').classList.remove('hidden');
+            renderAstroList(state.astroList);
+          } else {
+            if (document.getElementById('topFilterTabs')) document.getElementById('topFilterTabs').classList.add('hidden');
+            const filterType = tab === 'call' ? 'isAudioOnline' : 'isChatOnline';
+            const online = state.astroList.filter(a => a[filterType]);
+            const offline = state.astroList.filter(a => !a[filterType]);
+            renderAstroList([...online, ...offline]);
+          }
         }
         else if (tab === 'dash') {
-          if (sectHome) sectHome.classList.add('hidden');
           if (sectDash) sectDash.classList.remove('hidden');
         }
-        else if (tab === 'call') {
-          if (sectHome) sectHome.classList.remove('hidden');
-          if (sectDash) sectDash.classList.add('hidden');
-          if (document.getElementById('topFilterTabs')) document.getElementById('topFilterTabs').classList.add('hidden');
-
-          const online = state.astroList.filter(a => a.isAudioOnline);
-          const offline = state.astroList.filter(a => !a.isAudioOnline);
-          renderAstroList([...online, ...offline]);
-        }
-        else if (tab === 'chat') {
-          if (sectHome) sectHome.classList.remove('hidden');
-          if (sectDash) sectDash.classList.add('hidden');
-          if (document.getElementById('topFilterTabs')) document.getElementById('topFilterTabs').classList.add('hidden');
-
-          const online = state.astroList.filter(a => a.isChatOnline);
-          const offline = state.astroList.filter(a => !a.isChatOnline);
-          renderAstroList([...online, ...offline]);
+        else if (tab === 'products') {
+          if (sectProd) {
+            sectProd.classList.remove('hidden');
+            const iframe = document.getElementById('productsWebview');
+            if (iframe && iframe.src === 'about:blank') {
+              iframe.src = 'https://astroluna.in/astroproducts';
+            }
+          }
         }
         else if (tab === 'profile') {
           showHistory();
         }
       };
+
+      function payWithPurchaseWallet(amount, productName) {
+        if (!state.socket) return;
+        state.socket.emit('purchase-product', { amount, productName }, (res) => {
+           if (res.ok) {
+             showAppNotification(`✅ Paid ₹${amount} from Purchase Wallet`, 'success');
+           } else {
+             showAppNotification(`❌ Error: ${res.error || 'Payment failed'}`, 'error');
+           }
+        });
+      }
 
       // Desktop Navigation - calls navSwitch and syncs desktop topbar active states
       function desktopNavSwitch(tab) {
@@ -12044,6 +12088,32 @@
 
       // Initialize for Landing Page
       fetchAstrologers();
+
+      window.payWithPurchaseWallet = function (amount, productName, productId) {
+        if (!state.me || state.me.role === 'guest') {
+          showToast('Please login to purchase products', 'error');
+          return;
+        }
+        
+        if ((state.me.purchaseWalletBalance || 0) < amount) {
+          showToast('Insufficient balance in Shopping Bonus Wallet', 'error');
+          return;
+        }
+
+        if (confirm(`Confirm purchase of ${productName} for ₹${amount}?`)) {
+          socket.emit('purchase-product', { amount, productName, productId }, (res) => {
+            if (res.ok) {
+              showToast(`Order Request Sent: ${productName}. Wait for Admin approval.`, 'success');
+              if (res.balance !== undefined) {
+                state.me.purchaseWalletBalance = res.balance;
+                updateUIBalance();
+              }
+            } else {
+              showToast(res.error || 'Purchase failed', 'error');
+            }
+          });
+        }
+      };
 
       // --- Astrologer Signup Logic ---
       function openAstroSignup() {

@@ -310,6 +310,20 @@ object SocketManager {
         })
     }
 
+    fun purchaseProduct(amount: Double, productName: String, callback: ((JSONObject?) -> Unit)? = null) {
+        val payload = JSONObject().apply {
+            put("amount", amount)
+            put("productName", productName)
+        }
+        socket?.emit("purchase-product", payload, Ack { args ->
+            if (args != null && args.isNotEmpty()) {
+                callback?.invoke(args[0] as? JSONObject)
+            } else {
+                callback?.invoke(null)
+            }
+        })
+    }
+
     fun getMyWithdrawals(callback: ((List<JSONObject>) -> Unit)) {
         socket?.emit("get-my-withdrawals", null, Ack { args ->
             val list = mutableListOf<JSONObject>()

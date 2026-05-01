@@ -237,6 +237,7 @@ fun PremiumCard(
 @Composable
 fun HomeScreen(
     walletBalance: Double,
+    purchaseBalance: Double,
     referralCode: String = "",
     horoscope: String,
     astrologers: List<Astrologer>,
@@ -367,6 +368,7 @@ fun HomeScreen(
             topBar = {
                 HomeTopBar(
                     balance = walletBalance,
+                    purchaseBalance = purchaseBalance,
                     onWalletClick = onWalletClick,
                     onMenuClick = { scope.launch { drawerState.open() } },
                     isGuest = isGuest,
@@ -402,6 +404,8 @@ fun HomeScreen(
                         referralCode = referralCode,
                         isTamil = isTamil
                     )
+                } else if (selectedTab == 4) {
+                    AstroProductsScreen()
                 } else {
                     // Content Layer
                     LazyColumn(
@@ -1049,6 +1053,7 @@ fun AppDrawer(onItemClick: (String) -> Unit, onClose: () -> Unit) {
 @Composable
 fun HomeTopBar(
     balance: Double,
+    purchaseBalance: Double = 0.0,
     onWalletClick: () -> Unit,
     onMenuClick: () -> Unit,
     isGuest: Boolean = false,
@@ -1121,6 +1126,32 @@ fun HomeTopBar(
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Black),
                         color = Color.White
                     )
+                }
+            }
+
+            if (purchaseBalance > 0) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(Color(0xFFFFD700).copy(alpha = 0.15f))
+                        .border(1.dp, Color(0xFFFFD700).copy(alpha = 0.3f), RoundedCornerShape(50))
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.ShoppingCart,
+                            contentDescription = null,
+                            tint = Color(0xFFFFD700), // Gold
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "₹${purchaseBalance.toInt()}",
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Color(0xFFFFD700)
+                        )
+                    }
                 }
             }
         } else {
@@ -1389,12 +1420,11 @@ fun HomeBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
         containerColor = Color.White,
         contentColor = PeacockGreen
     ) {
-        val items = listOf(
             Triple("Home", androidx.compose.material.icons.Icons.Default.Home, 0),
             Triple("Chat", androidx.compose.material.icons.Icons.Default.Send, 1),
             Triple("Refer", androidx.compose.material.icons.Icons.Default.Person, 5),
             Triple("Call", androidx.compose.material.icons.Icons.Default.Phone, 3),
-            Triple("Profile", androidx.compose.material.icons.Icons.Default.Person, 4)
+            Triple("Products", androidx.compose.material.icons.Icons.Default.ShoppingCart, 4)
         )
 
         items.forEach { (label, icon, index) ->
@@ -1875,5 +1905,50 @@ fun StickyFooterButtons(
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+@Composable
+fun AstroProductsScreen() {
+    val context = LocalContext.current
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+        AndroidView(
+            factory = { context ->
+                android.webkit.WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                    settings.domStorageEnabled = true
+                    settings.databaseEnabled = true
+                    settings.setSupportZoom(true)
+                    settings.builtInZoomControls = true
+                    settings.displayZoomControls = false
+                    
+                    // Inject Bridge for Purchases
+                    addJavascriptInterface(object {
+                        @android.webkit.JavascriptInterface
+                        fun payWithBonusWallet(amount: Double, productName: String) {
+                            com.astroluna.data.remote.SocketManager.purchaseProduct(amount, productName) { response ->
+                                post {
+                                    if (response?.optBoolean("ok") == true) {
+                                        Toast.makeText(context, "Purchase Successful!", Toast.LENGTH_SHORT).show()
+                                        loadUrl("javascript:onPaymentSuccess('$productName')")
+                                    } else {
+                                        val error = response?.optString("error") ?: "Payment Failed"
+                                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                                        loadUrl("javascript:onPaymentError('$error')")
+                                    }
+                                }
+                            }
+                        }
+                    }, "AndroidBridge")
+
+                    webViewClient = android.webkit.WebViewClient()
+                    webChromeClient = android.webkit.WebChromeClient()
+                    
+                    loadUrl("https://astroluna.in/astroproducts")
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }

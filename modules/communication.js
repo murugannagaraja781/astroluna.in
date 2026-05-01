@@ -98,6 +98,7 @@ module.exports = function(io, shared) {
             role: user.role,
             name: user.name,
             walletBalance: user.walletBalance,
+            purchaseWalletBalance: user.purchaseWalletBalance || 0,
             totalEarnings: user.totalEarnings || 0,
             referralCode: user.referralCode,
             hasRecharged: user.hasRecharged || false
@@ -128,6 +129,165 @@ module.exports = function(io, shared) {
         console.error('register error', err);
         safeAck(cb, { ok: false, error: 'Internal error' });
       }
+    });
+
+    // --- Get Wallet ---
+    socket.on('get-wallet', async (data, cb) => {
+      try {
+        const userId = data.userId || socketToUser.get(socket.id);
+        if (!userId) return safeAck(cb, { ok: false, error: 'Not authenticated' });
+        
+        const user = await User.findOne({ userId }, { walletBalance: 1, purchaseWalletBalance: 1 });
+        if (user) {
+          safeAck(cb, { 
+            ok: true, 
+            walletBalance: user.walletBalance, 
+            purchaseWalletBalance: user.purchaseWalletBalance || 0 
+          });
+          socket.emit('wallet-update', { 
+            balance: user.walletBalance, 
+            purchaseBalance: user.purchaseWalletBalance || 0 
+          });
+        }
+      } catch (e) { safeAck(cb, { ok: false }); }
+    });
+
+    // --- Purchase Product ---
+    socket.on('purchase-product', async (data, cb) => {
+      try {
+        const { amount, productName, productId } = data || {};
+        const userId = socketToUser.get(socket.id);
+        if (!userId || !amount) return safeAck(cb, { ok: false, error: 'Invalid request' });
+
+        const user = await User.findOne({ userId });
+        if (!user) return safeAck(cb, { ok: false, error: 'User not found' });
+
+        if ((user.purchaseWalletBalance || 0) < amount) {
+          return safeAck(cb, { ok: false, error: 'Insufficient balance in Purchase Wallet' });
+        }
+
+        // Deduct balance (hold)
+        user.purchaseWalletBalance -= amount;
+        await user.save();
+
+        // Create Order Request
+        const orderId = 'ORD' + Date.now();
+        const order = new ProductOrder({
+          orderId,
+          userId,
+          productId: productId || 'custom',
+          productName: productName || 'Product',
+          amount,
+          status: 'pending'
+        });
+        await order.save();
+
+        // Notify user
+        socket.emit('wallet-update', { 
+          balance: user.walletBalance, 
+          purchaseBalance: user.purchaseWalletBalance 
+        });
+        
+        socket.emit('app-notification', { 
+          text: `🛍️ Order Requested: ${productName || 'Product'} (₹${amount}). Waiting for Admin approval.` 
+        });
+
+        // Notify Super Admins
+        io.to('superadmin').emit('new-product-order', { orderId, productName, amount, userName: user.name });
+
+        safeAck(cb, { ok: true, orderId, balance: user.purchaseWalletBalance });
+        logActivity('purchase', `User ${userId} requested purchase ${productName} for ₹${amount}`);
+
+      } catch (e) {
+        console.error('purchase-product error', e);
+        safeAck(cb, { ok: false, error: 'Server error' });
+      }
+    });
+
+    // --- Product Management (Super Admin) ---
+    socket.on('add-product', async (data, cb) => {
+      try {
+        const userId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId, role: 'superadmin' });
+        if (!admin) return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const { name, price, description, image } = data || {};
+        if (!name || !price) return safeAck(cb, { ok: false, error: 'Name and price required' });
+
+        const productId = 'PROD' + Date.now();
+        const product = new Product({
+          productId,
+          name,
+          price,
+          description,
+          image,
+          isActive: true
+        });
+        await product.save();
+
+        safeAck(cb, { ok: true, productId });
+        io.emit('product-list-updated'); // Notify all
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    socket.on('get-products', async (data, cb) => {
+      try {
+        const products = await Product.find({ isActive: true }).sort({ createdAt: -1 });
+        safeAck(cb, { ok: true, products });
+      } catch (e) { safeAck(cb, { ok: false }); }
+    });
+
+    socket.on('get-product-orders', async (data, cb) => {
+      try {
+        const userId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId, role: { $in: ['superadmin', 'user-manager'] } });
+        if (!admin) return safeAck(cb, { ok: false });
+
+        const orders = await ProductOrder.find().sort({ requestedAt: -1 }).limit(50);
+        safeAck(cb, { ok: true, orders });
+      } catch (e) { safeAck(cb, { ok: false }); }
+    });
+
+    socket.on('process-product-order', async (data, cb) => {
+      try {
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId, role: 'superadmin' });
+        if (!admin) return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        const { orderId, action } = data || {}; // action: 'accepted' or 'rejected'
+        const order = await ProductOrder.findOne({ orderId });
+        if (!order || order.status !== 'pending') return safeAck(cb, { ok: false, error: 'Order not found' });
+
+        order.status = action;
+        order.processedAt = new Date();
+        await order.save();
+
+        if (action === 'rejected') {
+          // Refund balance
+          const user = await User.findOne({ userId: order.userId });
+          if (user) {
+            user.purchaseWalletBalance += order.amount;
+            await user.save();
+            
+            const targetSId = userSockets.get(user.userId);
+            if (targetSId) {
+              io.to(targetSId).emit('wallet-update', { 
+                balance: user.walletBalance, 
+                purchaseBalance: user.purchaseWalletBalance 
+              });
+              io.to(targetSId).emit('app-notification', { text: `❌ Order Rejected: ${order.productName}. Amount refunded.` });
+            }
+          }
+        } else {
+          // Accepted
+          const targetSId = userSockets.get(order.userId);
+          if (targetSId) {
+            io.to(targetSId).emit('app-notification', { text: `✅ Order Accepted: ${order.productName}. Your product will be processed.` });
+          }
+        }
+
+        safeAck(cb, { ok: true });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
     });
 
     // --- Rejoin Session ---

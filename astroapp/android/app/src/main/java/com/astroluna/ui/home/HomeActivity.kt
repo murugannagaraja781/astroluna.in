@@ -44,6 +44,7 @@ class HomeActivity : AppCompatActivity() {
 
     // State Holders
     private val _walletBalance = MutableStateFlow(0.0)
+    private val _purchaseBalance = MutableStateFlow(0.0)
     private val _horoscope = MutableStateFlow("Loading Horoscope...")
     private val _astrologers = MutableStateFlow<List<Astrologer>>(emptyList())
     private val _isLoading = MutableStateFlow(true)
@@ -70,6 +71,7 @@ class HomeActivity : AppCompatActivity() {
             // Dynamic Cosmic Theme
             com.astroluna.ui.theme.CosmicAppTheme {
                 val balance by _walletBalance.collectAsState()
+                val purchaseBalance by _purchaseBalance.collectAsState()
                 val horoscope by _horoscope.collectAsState()
                 val astrologers by _astrologers.collectAsState()
                 val isLoading by _isLoading.collectAsState()
@@ -83,6 +85,7 @@ class HomeActivity : AppCompatActivity() {
 
                 HomeScreen(
                     walletBalance = balance,
+                    purchaseBalance = purchaseBalance,
                     referralCode = referralCode,
                     horoscope = horoscope,
                     astrologers = astrologers,
@@ -177,8 +180,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadWalletBalance() {
         val session = tokenManager.getUserSession()
-        val balance = session?.walletBalance ?: 0.0
-        _walletBalance.value = balance
+        _walletBalance.value = session?.walletBalance ?: 0.0
+        _purchaseBalance.value = session?.purchaseWalletBalance ?: 0.0
     }
 
     private fun refreshWalletBalance() {
@@ -408,8 +411,15 @@ class HomeActivity : AppCompatActivity() {
         socket?.on("wallet-update") { args ->
             val data = args[0] as JSONObject
             val balance = data.optDouble("balance", 0.0)
+            val pBalance = data.optDouble("purchaseBalance", -1.0)
+            
             _walletBalance.value = balance
             tokenManager.updateWalletBalance(balance)
+            
+            if (pBalance != -1.0) {
+                _purchaseBalance.value = pBalance
+                tokenManager.updatePurchaseBalance(pBalance)
+            }
             _userSession.value = tokenManager.getUserSession()
         }
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        h1 { font-size: 24px; font-weight: 800; color: #0f172a; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .tab { padding: 10px 20px; cursor: pointer; border-radius: 6px; font-weight: 600; color: #64748b; transition: all 0.2s; }
+        .tab.active { background: #3b82f6; color: white; }
+        
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 24px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #475569; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        
+        .product-card { border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; background: #f1f5f9; }
+        .product-info { padding: 16px; }
+        .product-price { font-size: 20px; font-weight: 800; color: #3b82f6; margin: 8px 0; }
+        
+        .order-row { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9; }
+        .order-info b { font-size: 16px; color: #0f172a; }
+        .order-status { font-size: 12px; text-transform: uppercase; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: white; padding: 32px; border-radius: 16px; width: 100%; max-width: 500px; }
+        
+        #notification { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; transform: translateY(100px); transition: all 0.3s; z-index: 1000; }
+        #notification.show { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Astro Products Management</h1>
+            <button class="btn btn-primary" onclick="showAddModal()">+ Add New Product</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" id="tab-products" onclick="switchTab('products')">Product Catalog</div>
+            <div class="tab" id="tab-orders" onclick="switchTab('orders')">Purchase Requests</div>
+        </div>
+
+        <div id="section-products">
+            <div class="grid" id="product-list">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+
+        <div id="section-orders" style="display: none;">
+            <div class="card" id="order-list">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">Add New Product</h2>
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="p-name" placeholder="e.g. Premium Gemstone">
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="p-price" placeholder="1000">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="p-desc" rows="3" placeholder="Tell users about this product..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="text" id="p-image" placeholder="https://example.com/image.jpg">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="addProduct()">Add Product</button>
+                <button class="btn" style="background: #e2e8f0;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification"></div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            document.getElementById('section-products').style.display = tab === 'products' ? 'block' : 'none';
+            document.getElementById('section-orders').style.display = tab === 'orders' ? 'block' : 'none';
+            
+            if (tab === 'products') loadProducts();
+            else loadOrders();
+        }
+
+        function showAddModal() { document.getElementById('addModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+
+        function notify(text, type = 'success') {
+            const n = document.getElementById('notification');
+            n.textContent = text;
+            n.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 3000);
+        }
+
+        async function loadProducts() {
+            const list = document.getElementById('product-list');
+            list.innerHTML = '<p>Loading products...</p>';
+            try {
+                const res = await fetch('/api/admin/products');
+                const data = await res.json();
+                if (data.ok) {
+                    list.innerHTML = data.products.map(p => `
+                        <div class="product-card card">
+                            <img src="${p.image || 'https://via.placeholder.com/300x200?text=No+Image'}" class="product-img">
+                            <div class="product-info">
+                                <b>${p.name}</b>
+                                <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${p.description || 'No description'}</p>
+                                <div class="product-price">₹${p.price}</div>
+                                <button class="btn btn-danger" style="width: 100%; font-size: 12px;">Disable Product</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { notify('Failed to load products', 'error'); }
+        }
+
+        async function addProduct() {
+            const name = document.getElementById('p-name').value;
+            const price = document.getElementById('p-price').value;
+            const description = document.getElementById('p-desc').value;
+            const image = document.getElementById('p-image').value;
+
+            if (!name || !price) return alert('Name and Price are required');
+
+            try {
+                const res = await fetch('/api/admin/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, description, image })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    notify('Product Added Successfully!');
+                    closeModal();
+                    loadProducts();
+                }
+            } catch (e) { notify('Error adding product', 'error'); }
+        }
+
+        async function loadOrders() {
+            const list = document.getElementById('order-list');
+            list.innerHTML = '<p>Loading requests...</p>';
+            try {
+                const res = await fetch('/api/admin/product-orders?status=pending');
+                const data = await res.json();
+                if (data.ok) {
+                    if (data.orders.length === 0) {
+                        list.innerHTML = '<p style="text-align: center; color: #64748b;">No pending purchase requests.</p>';
+                        return;
+                    }
+                    list.innerHTML = data.orders.map(o => `
+                        <div class="order-row">
+                            <div class="order-info">
+                                <b>${o.productName}</b><br>
+                                <span style="font-size: 13px; color: #64748b;">User ID: ${o.userId} | Amount: ₹${o.amount}</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-success" style="padding: 6px 12px;" onclick="processOrder('${o.orderId}', 'accepted')">Accept</button>
+                                <button class="btn btn-danger" style="padding: 6px 12px;" onclick="processOrder('${o.orderId}', 'rejected')">Reject</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { notify('Failed to load orders', 'error'); }
+        }
+
+        async function processOrder(orderId, action) {
+            if (!confirm(`Are you sure you want to ${action} this order?`)) return;
+            try {
+                const res = await fetch('/api/admin/process-product-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, action })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    notify(`Order ${action === 'accepted' ? 'Approved' : 'Rejected'}!`);
+                    loadOrders();
+                }
+            } catch (e) { notify('Error processing order', 'error'); }
+        }
+
+        // Init
+        loadProducts();
+    </script>
+</body>
+</html>

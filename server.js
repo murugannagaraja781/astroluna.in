@@ -504,6 +504,8 @@ app.get('/shipping-policy', (req, res) => res.sendFile(path.join(__dirname, 'pub
 // Admin Pages
 app.get('/admin/astrologer-requests', (req, res) => res.sendFile(path.join(__dirname, 'public/admin/astrologer-requests.html')));
 app.get('/admin/deletion-requests', (req, res) => res.sendFile(path.join(__dirname, 'public/admin/deletion-requests.html')));
+app.get('/admin/products', (req, res) => res.sendFile(path.join(__dirname, 'public/admin/products.html')));
+app.get('/astroproducts', (req, res) => res.sendFile(path.join(__dirname, 'public/astroproducts.html')));
 
 // Routes
 const rasiEngRouter = require("./routes/rasiEng");
@@ -3310,6 +3312,7 @@ app.get('/api/phonepe/status/:transactionId', async (req, res) => {
         const user = await User.findOne({ userId: payment.userId });
         if (user) {
           user.walletBalance += payment.amount;
+          user.purchaseWalletBalance = (user.purchaseWalletBalance || 0) + (payment.amount * 0.02);
           user.hasRecharged = true;
           await user.save();
           console.log(`[PhonePe] Wallet Credited: ${user.name} +₹${payment.amount}`);
@@ -3317,7 +3320,10 @@ app.get('/api/phonepe/status/:transactionId', async (req, res) => {
           // Notify via Socket
           const sId = userSockets.get(user.userId);
           if (sId) {
-            io.to(sId).emit('wallet-update', { balance: user.walletBalance });
+            io.to(sId).emit('wallet-update', { 
+              balance: user.walletBalance, 
+              purchaseBalance: user.purchaseWalletBalance 
+            });
             io.to(sId).emit('app-notification', { text: `✅ Recharge Successful! +₹${payment.amount}` });
           }
         }
@@ -3372,6 +3378,7 @@ app.post('/api/phonepe/callback', async (req, res) => {
       const user = await User.findOne({ userId: payment.userId });
       if (user) {
         user.walletBalance += payment.amount;
+        user.purchaseWalletBalance = (user.purchaseWalletBalance || 0) + (payment.amount * 0.02);
         user.hasRecharged = true;
         await user.save();
         console.log(`[PhonePe Callback] Wallet Credited: ${user.name} +₹${payment.amount}`);
@@ -3379,7 +3386,10 @@ app.post('/api/phonepe/callback', async (req, res) => {
         // Notify Socket if online
         const sId = userSockets.get(user.userId);
         if (sId) {
-          io.to(sId).emit('wallet-update', { balance: user.walletBalance });
+          io.to(sId).emit('wallet-update', { 
+            balance: user.walletBalance, 
+            purchaseBalance: user.purchaseWalletBalance 
+          });
           io.to(sId).emit('app-notification', { text: `✅ Recharge Successful! +₹${payment.amount}` });
         }
       }
@@ -3394,6 +3404,64 @@ app.post('/api/phonepe/callback', async (req, res) => {
     console.error("PhonePe Callback Error:", e);
     res.status(200).send('OK'); // Always return 200
   }
+});
+
+app.post('/api/admin/config/update', async (req, res) => {
+  try {
+    const { config } = req.body;
+    for (const key in config) {
+      await GlobalConfig.findOneAndUpdate({ key }, { value: config[key] }, { upsert: true });
+    }
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false }); }
+});
+
+// --- Product Management ---
+app.get('/api/admin/products', async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json({ ok: true, products });
+  } catch (e) { res.status(500).json({ ok: false }); }
+});
+
+app.post('/api/admin/products', async (req, res) => {
+  try {
+    const { name, price, description, image } = req.body;
+    const productId = 'PROD' + Date.now();
+    const product = new Product({ productId, name, price, description, image });
+    await product.save();
+    res.json({ ok: true, product });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.get('/api/admin/product-orders', async (req, res) => {
+  try {
+    const status = req.query.status || 'pending';
+    const orders = await ProductOrder.find({ status }).sort({ requestedAt: -1 });
+    res.json({ ok: true, orders });
+  } catch (e) { res.status(500).json({ ok: false }); }
+});
+
+app.post('/api/admin/process-product-order', async (req, res) => {
+  try {
+    const { orderId, action } = req.body; // action: 'accepted' or 'rejected'
+    const order = await ProductOrder.findOne({ orderId });
+    if (!order || order.status !== 'pending') return res.json({ ok: false, error: 'Order not found' });
+
+    order.status = action;
+    order.processedAt = new Date();
+    await order.save();
+
+    if (action === 'rejected') {
+      const user = await User.findOne({ userId: order.userId });
+      if (user) {
+        user.purchaseWalletBalance += order.amount;
+        await user.save();
+      }
+    }
+
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false }); }
 });
 
 // ============================================================================

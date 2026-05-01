@@ -23,6 +23,7 @@ data class AuthResponse(
     val role: String?,
     val phone: String?,
     val walletBalance: Double? = 0.0,
+    val purchaseWalletBalance: Double? = 0.0,
     val referralCode: String? = null,
     val image: String?,
     val error: String?
