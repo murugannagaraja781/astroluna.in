@@ -3512,6 +3512,52 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
       return res.json({ ok: true, cod: true });
     }
 
+    if (method === 'wallet') {
+      const user = await User.findOne({ userId });
+      if (!user) return res.json({ ok: false, error: 'User not found' });
+      if (user.walletBalance < product.price) {
+        return res.json({ ok: false, error: `Insufficient balance! Current: ₹${user.walletBalance}. Please recharge.` });
+      }
+
+      // Deduct balance
+      user.walletBalance -= product.price;
+      await user.save();
+
+      // Create Order
+      const order = new ProductOrder({
+        orderId: merchantOrderId,
+        userId,
+        productId,
+        productName: product.name,
+        amount: product.price,
+        address,
+        phone,
+        paymentStatus: 'paid', // Wallet is instant
+        paymentMethod: 'wallet',
+        status: 'pending'
+      });
+      await order.save();
+
+      // Notify Admin
+      const adminNotif = new Notification({
+        userId: 'admin',
+        type: 'product_order',
+        title: 'New Product Order (Wallet)',
+        message: `${order.productName} (Wallet) ordered by ${userId}. Check Dashboard.`,
+        details: { orderId: order.orderId }
+      });
+      await adminNotif.save();
+
+      io.emit('admin-notification', { 
+        type: 'product_order',
+        title: 'New Product Order (Wallet)', 
+        text: adminNotif.message,
+        data: adminNotif.details
+      });
+
+      return res.json({ ok: true, wallet: true, newBalance: user.walletBalance });
+    }
+
     const amountPaisa = product.price * 100;
 
     // Create a Payment record first

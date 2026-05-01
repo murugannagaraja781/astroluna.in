@@ -81,6 +81,10 @@
                         <i class="fas fa-truck" style="display:block; margin-bottom:5px; color:#64748b;"></i>
                         <span style="font-size:12px; font-weight:700; color:#64748b;">COD</span>
                     </div>
+                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:12px; text-align:center; cursor:pointer;">
+                        <i class="fas fa-wallet" style="display:block; margin-bottom:5px; color:#64748b;"></i>
+                        <span style="font-size:12px; font-weight:700; color:#64748b;">Wallet</span>
+                    </div>
                 </div>
             </div>
             <input type="hidden" id="selected-method" value="online">
@@ -161,30 +165,29 @@
             document.getElementById('selected-method').value = method;
             const online = document.getElementById('method-online');
             const cod = document.getElementById('method-cod');
-            
-            if (method === 'online') {
-                online.style.borderColor = 'var(--brand-purple)';
-                online.style.background = '#f5f3ff';
-                online.querySelector('i').style.color = 'var(--brand-purple)';
-                online.querySelector('span').style.color = 'var(--brand-purple)';
-                
-                cod.style.borderColor = '#e2e8f0';
-                cod.style.background = 'white';
-                cod.querySelector('i').style.color = '#64748b';
-                cod.querySelector('span').style.color = '#64748b';
-            } else {
-                cod.style.borderColor = 'var(--brand-purple)';
-                cod.style.background = '#f5f3ff';
-                cod.querySelector('i').style.color = 'var(--brand-purple)';
-                cod.querySelector('span').style.color = 'var(--brand-purple)';
-                
-                online.style.borderColor = '#e2e8f0';
-                online.style.background = 'white';
-                online.querySelector('i').style.color = '#64748b';
-                online.querySelector('span').style.color = '#64748b';
+            const wallet = document.getElementById('method-wallet');
+            const payBtn = document.getElementById('pay-btn');
+
+            [online, cod, wallet].forEach(el => {
+                if (el) {
+                    el.style.borderColor = '#e2e8f0';
+                    el.style.background = 'white';
+                    el.querySelector('i').style.color = '#64748b';
+                    el.querySelector('span').style.color = '#64748b';
+                }
+            });
+
+            const active = method === 'online' ? online : (method === 'cod' ? cod : wallet);
+            if (active) {
+                active.style.borderColor = 'var(--brand-purple)';
+                active.style.background = '#f5f3ff';
+                active.querySelector('i').style.color = 'var(--brand-purple)';
+                active.querySelector('span').style.color = 'var(--brand-purple)';
             }
-            
-            document.getElementById('pay-btn').innerText = method === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
+
+            if (method === 'online') payBtn.innerText = "Pay with PhonePe";
+            else if (method === 'cod') payBtn.innerText = "Complete Order (COD)";
+            else payBtn.innerText = "Pay with Wallet Balance";
         }
 
         async function submitPurchase() {
@@ -248,8 +251,11 @@
                 });
                 const data = await res.json();
                 if (data.ok) {
-                    if (data.cod) {
-                        showSuccessModal("🎉 Order placed successfully via Cash on Delivery!\nOur team will contact you soon.");
+                    if (data.cod || data.wallet) {
+                        const successMsg = data.wallet ? 
+                            `🎉 Purchase successful using Wallet!\nNew Balance: ₹${data.newBalance}` : 
+                            "🎉 Order placed successfully via Cash on Delivery!\nOur team will contact you soon.";
+                        showSuccessModal(successMsg);
                         fetchProducts(); // Refresh stock
                     } else if (data.redirectUrl) {
                         window.location.href = data.redirectUrl;
@@ -258,7 +264,8 @@
                     console.error("[Purchase Error Response]", data);
                     alert("Error: " + (data.error || "Failed to initiate payment"));
                     payBtn.disabled = false;
-                    payBtn.innerText = paymentMethod === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
+                    const labels = { online: "Pay with PhonePe", cod: "Complete Order (COD)", wallet: "Pay with Wallet Balance" };
+                    payBtn.innerText = labels[paymentMethod] || "Submit";
                 }
             } catch (e) {
                 console.error("[Purchase Exception]", e);
