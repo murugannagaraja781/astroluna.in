@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +41,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.animation.core.*
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -1420,6 +1422,7 @@ fun HomeBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
         containerColor = Color.White,
         contentColor = PeacockGreen
     ) {
+        val items = listOf(
             Triple("Home", androidx.compose.material.icons.Icons.Default.Home, 0),
             Triple("Chat", androidx.compose.material.icons.Icons.Default.Send, 1),
             Triple("Refer", androidx.compose.material.icons.Icons.Default.Person, 5),
@@ -1912,8 +1915,8 @@ fun AstroProductsScreen() {
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         AndroidView(
-            factory = { context ->
-                android.webkit.WebView(context).apply {
+            factory = { ctx: Context ->
+                android.webkit.WebView(ctx).apply {
                     settings.javaScriptEnabled = true
                     settings.loadWithOverviewMode = true
                     settings.useWideViewPort = true

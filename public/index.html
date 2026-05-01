@@ -2598,6 +2598,55 @@
       background: #10ae4a;
     }
 
+    /* ===== PRODUCT CARDS ===== */
+    .product-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .product-admin-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #eee;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    .product-admin-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+    .product-admin-info {
+      padding: 15px;
+      flex: 1;
+    }
+    .product-admin-name {
+      font-weight: 700;
+      color: #1f2937;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    .product-admin-desc {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 10px;
+      height: 40px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .product-admin-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #3b82f6;
+      margin-bottom: 10px;
+    }
+
     .btn-role {
       background: #3b82f6;
     }
@@ -5756,6 +5805,47 @@
           </div>
         </div>
 
+        <div id="admin-sect-products" class="admin-tab-section">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title">
+              <i class="fas fa-shopping-cart"></i> Astro Products
+            </h2>
+          </div>
+
+          <div style="max-width:1000px; margin: 0 auto;">
+            <!-- Tabs for Products vs Orders -->
+            <div style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
+               <button onclick="switchProductSubTab('catalog')" class="chip-btn active" id="btn-prod-catalog">Product Catalog</button>
+               <button onclick="switchProductSubTab('orders')" class="chip-btn" id="btn-prod-orders">Purchase Requests</button>
+            </div>
+
+            <div id="prod-sub-catalog">
+               <div style="background:white; border-radius:15px; padding:20px; border:1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                  <div style="font-weight:700; color:#1e293b; margin-bottom:15px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">Add New Product</div>
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                     <input type="text" id="adminProdName" class="app-input" placeholder="Product Name (e.g. Rudraksha)">
+                     <input type="number" id="adminProdPrice" class="app-input" placeholder="Price (₹)">
+                  </div>
+                  <textarea id="adminProdDesc" class="app-input" placeholder="Product Description..." style="width:100%; height:80px; margin-bottom:15px;"></textarea>
+                  <input type="text" id="adminProdImage" class="app-input" placeholder="Image URL (https://...)" style="width:100%; margin-bottom:15px;">
+                  <button class="cosmic-btn" style="width:100%; padding:12px;" onclick="addAdminProduct()">
+                     <i class="fas fa-plus"></i> Upload Product Successfully
+                  </button>
+               </div>
+
+               <div id="adminProductList" class="product-admin-grid">
+                  <!-- Products load here -->
+               </div>
+            </div>
+
+            <div id="prod-sub-orders" class="hidden">
+               <div id="adminProductOrderList" style="display:flex; flex-direction:column; gap:12px;">
+                  <!-- Orders load here -->
+               </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Admin Footer (Static) -->
         <div class="admin-footer">
           <div class="admin-footer-content">
@@ -8823,6 +8913,9 @@
         } else if (tab === 'managers') {
           const managers = adminUsersCache.filter(u => u.role === 'user-manager' || u.role === 'staff');
           renderAdminManagers(managers);
+        } else if (tab === 'products') {
+          fetchAdminProducts();
+          loadAdminProductOrders();
         }
       };
 
@@ -9141,6 +9234,118 @@
           }
         } catch (err) { alert('Error deleting video'); }
       }
+
+      // --- Admin Products Logic ---
+      window.switchProductSubTab = (tab) => {
+        document.getElementById('prod-sub-catalog').classList.toggle('hidden', tab !== 'catalog');
+        document.getElementById('prod-sub-orders').classList.toggle('hidden', tab !== 'orders');
+        document.getElementById('btn-prod-catalog').classList.toggle('active', tab === 'catalog');
+        document.getElementById('btn-prod-orders').classList.toggle('active', tab === 'orders');
+      };
+
+      async function fetchAdminProducts() {
+        const list = document.getElementById('adminProductList');
+        if (!list) return;
+        list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#6b7280;"><i class="fas fa-circle-notch fa-spin"></i> Loading Catalog...</div>';
+        try {
+          const res = await fetch('/api/admin/products');
+          const data = await res.json();
+          if (data.ok) {
+            if (data.products.length === 0) {
+              list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#6b7280;">No products in catalog.</div>';
+              return;
+            }
+            list.innerHTML = data.products.map(p => `
+              <div class="product-admin-card">
+                <img src="${p.image || 'https://via.placeholder.com/300x200?text=No+Image'}" class="product-admin-img">
+                <div class="product-admin-info">
+                  <div class="product-admin-name">${p.name}</div>
+                  <div class="product-admin-desc">${p.description || 'No description'}</div>
+                  <div class="product-admin-price">₹${p.price}</div>
+                  <div style="font-size:0.7rem; color:#9ca3af; margin-bottom:10px;">ID: ${p.productId}</div>
+                  <button class="btn-admin btn-delete" style="width:100%;" onclick="alert('Product deletion coming soon')">
+                    <i class="fas fa-trash"></i> Disable Product
+                  </button>
+                </div>
+              </div>
+            `).join('');
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      async function addAdminProduct() {
+        const name = document.getElementById('adminProdName').value;
+        const price = document.getElementById('adminProdPrice').value;
+        const description = document.getElementById('adminProdDesc').value;
+        const image = document.getElementById('adminProdImage').value;
+
+        if (!name || !price) return alert('Name and Price are required');
+
+        try {
+          const res = await fetch('/api/admin/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, price, description, image })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            alert('✅ Product added successfully!');
+            document.getElementById('adminProdName').value = '';
+            document.getElementById('adminProdPrice').value = '';
+            document.getElementById('adminProdDesc').value = '';
+            document.getElementById('adminProdImage').value = '';
+            fetchAdminProducts();
+          }
+        } catch (e) { alert('Error adding product'); }
+      }
+
+      async function loadAdminProductOrders() {
+        const list = document.getElementById('adminProductOrderList');
+        if (!list) return;
+        list.innerHTML = '<div style="text-align:center; padding:20px; color:#6b7280;"><i class="fas fa-circle-notch fa-spin"></i> Loading requests...</div>';
+        try {
+          const res = await fetch('/api/admin/product-orders?status=pending');
+          const data = await res.json();
+          if (data.ok) {
+            if (data.orders.length === 0) {
+              list.innerHTML = '<div style="text-align:center; padding:40px; border-radius:15px; border:2px dashed #eee; color:#9ca3af;">No pending purchase requests.</div>';
+              return;
+            }
+            list.innerHTML = data.orders.map(o => `
+              <div class="admin-user-card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                  <div>
+                    <div style="font-weight:700; color:#1f2937;">${o.productName}</div>
+                    <div style="font-size:0.8rem; color:#6b7280; margin-top:2px;">User: ${o.userId} | Date: ${new Date(o.requestedAt).toLocaleDateString()}</div>
+                    <div style="font-weight:800; color:#059669; margin-top:5px; font-size:1.1rem;">₹${o.amount}</div>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button class="btn-admin" style="background:#10b981; padding:6px 12px;" onclick="processProductOrderAdmin('${o.orderId}', 'accepted')">Accept</button>
+                    <button class="btn-admin" style="background:#ef4444; padding:6px 12px;" onclick="processProductOrderAdmin('${o.orderId}', 'rejected')">Reject</button>
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      window.processProductOrderAdmin = async (orderId, action) => {
+        if (!confirm(`Are you sure you want to ${action} this order?`)) return;
+        try {
+          const res = await fetch('/api/admin/process-product-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, action })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            alert(`Order ${action === 'accepted' ? 'Approved' : 'Rejected'}!`);
+            loadAdminProductOrders();
+            refreshAdminData();
+          }
+        } catch (e) { alert('Error processing order'); }
+      };
 
       // --- Admin Slider Logic ---
       async function fetchAdminBanners() {

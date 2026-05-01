@@ -54,6 +54,7 @@ class GuestDashboardActivity : AppCompatActivity() {
 
                 HomeScreen(
                     walletBalance = 0.0, // Guest has 0 balance
+                    purchaseBalance = 0.0,
                     horoscope = horoscope,
                     astrologers = astrologers,
                     isLoading = isLoading,
