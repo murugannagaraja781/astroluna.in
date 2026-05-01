@@ -57,6 +57,25 @@
         <div class="skeleton"></div>
     </div>
 
+    <!-- Address Modal -->
+    <div id="address-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center; padding: 20px;">
+        <div style="background:white; width:100%; max-width:400px; border-radius:20px; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <h2 style="font-size:20px; font-weight:800; margin-bottom:8px; color:var(--brand-purple);">Shipping Details</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Enter your delivery information for shipping.</p>
+            
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+                <input type="text" id="ship-name" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <input type="tel" id="ship-phone" placeholder="Mobile Number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <textarea id="ship-address" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
+            </div>
+            
+            <div style="display:flex; gap:10px;">
+                <button onclick="closeModal()" style="flex:1; padding:14px; border-radius:14px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer; font-size:14px;">Cancel</button>
+                <button onclick="submitPurchase()" id="pay-btn" style="flex:2; padding:14px; border-radius:14px; border:none; background:var(--brand-purple); color:white; font-weight:700; cursor:pointer; font-size:14px;">Pay with PhonePe</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         async function fetchProducts() {
             try {
@@ -89,21 +108,64 @@
             `).join('');
         }
 
+        let currentBuyingProduct = null;
+
         function handleBuy(price, name, id) {
-            // 1. Try Android Bridge (App)
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.payWithBonusWallet) {
-                AndroidBridge.payWithBonusWallet(price, name);
+            currentBuyingProduct = { price, name, id };
+            document.getElementById('address-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('address-modal').style.display = 'none';
+        }
+
+        async function submitPurchase() {
+            const name = document.getElementById('ship-name').value;
+            const phone = document.getElementById('ship-phone').value;
+            const address = document.getElementById('ship-address').value;
+
+            if (!name || !phone || !address) {
+                alert("Please fill all shipping details.");
                 return;
             }
-            
-            // 2. Try Parent Window (Web Iframe)
-            if (window.parent && window.parent.payWithPurchaseWallet) {
-                window.parent.payWithPurchaseWallet(price, name, id);
+
+            // Get userId from URL or Parent
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId') || (window.parent && window.parent.currentUser ? window.parent.currentUser.userId : null);
+
+            if (!userId) {
+                alert("Please login to proceed with the purchase.");
                 return;
             }
-            
-            // 3. Fallback
-            alert("Please login to the Astroluna app or website to purchase this product using your bonus wallet.");
+
+            const payBtn = document.getElementById('pay-btn');
+            payBtn.disabled = true;
+            payBtn.innerText = "Processing...";
+
+            try {
+                const res = await fetch('/api/products/initiate-purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: currentBuyingProduct.id,
+                        address: `${name}, ${address}`,
+                        phone: phone,
+                        userId: userId
+                    })
+                });
+                const data = await res.json();
+                if (data.ok && data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert("Error: " + (data.error || "Failed to initiate payment"));
+                    payBtn.disabled = false;
+                    payBtn.innerText = "Pay with PhonePe";
+                }
+            } catch (e) {
+                alert("Network error. Please try again.");
+                payBtn.disabled = false;
+                payBtn.innerText = "Pay with PhonePe";
+            }
         }
 
         // Functions called by Android/Web to update UI

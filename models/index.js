@@ -228,7 +228,11 @@ const ProductOrderSchema = new mongoose.Schema({
   productId: { type: String, required: true },
   productName: String,
   amount: Number,
+  address: String,
+  phone: String,
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+  paymentId: String,
+  paymentStatus: { type: String, default: 'pending' },
   requestedAt: { type: Date, default: Date.now },
   processedAt: Date
 });

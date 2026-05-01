@@ -3388,23 +3388,40 @@ app.post('/api/phonepe/callback', async (req, res) => {
       payment.providerRefId = transactionId;
       await payment.save();
 
-      // Credit Wallet
-      const user = await User.findOne({ userId: payment.userId });
-      if (user) {
-        user.walletBalance += payment.amount;
-        user.purchaseWalletBalance = (user.purchaseWalletBalance || 0) + (payment.amount * 0.02);
-        user.hasRecharged = true;
-        await user.save();
-        console.log(`[PhonePe Callback] Wallet Credited: ${user.name} +₹${payment.amount}`);
-
-        // Notify Socket if online
-        const sId = userSockets.get(user.userId);
-        if (sId) {
-          io.to(sId).emit('wallet-update', { 
-            balance: user.walletBalance, 
-            purchaseBalance: user.purchaseWalletBalance 
+      if (merchantTransactionId.startsWith('PROD_')) {
+        // Handle Product Purchase
+        const order = await ProductOrder.findOne({ orderId: merchantTransactionId });
+        if (order) {
+          order.paymentStatus = 'success';
+          order.paymentId = transactionId;
+          await order.save();
+          console.log(`[PhonePe Callback] Product Order Paid: ${order.orderId}`);
+          
+          // Notify Super Admin (emit to all admins)
+          io.emit('admin-notification', { 
+            title: 'New Product Order', 
+            text: `${order.productName} (₹${order.amount}) purchased. Check Dashboard.` 
           });
-          io.to(sId).emit('app-notification', { text: `✅ Recharge Successful! +₹${payment.amount}` });
+        }
+      } else {
+        // Credit Wallet
+        const user = await User.findOne({ userId: payment.userId });
+        if (user) {
+          user.walletBalance += payment.amount;
+          user.purchaseWalletBalance = (user.purchaseWalletBalance || 0) + (payment.amount * 0.02);
+          user.hasRecharged = true;
+          await user.save();
+          console.log(`[PhonePe Callback] Wallet Credited: ${user.name} +₹${payment.amount}`);
+
+          // Notify Socket if online
+          const sId = userSockets.get(user.userId);
+          if (sId) {
+            io.to(sId).emit('wallet-update', { 
+              balance: user.walletBalance, 
+              purchaseBalance: user.purchaseWalletBalance 
+            });
+            io.to(sId).emit('app-notification', { text: `✅ Recharge Successful! +₹${payment.amount}` });
+          }
         }
       }
     } else if (code !== 'PAYMENT_SUCCESS' && payment.status === 'pending') {
@@ -3453,6 +3470,59 @@ app.post('/api/admin/upload-product-image', productUpload.single('image'), (req,
   res.json({ ok: true, imageUrl: `/uploads/products/${req.file.filename}` });
 });
 
+app.post('/api/products/initiate-purchase', async (req, res) => {
+  try {
+    const { productId, address, phone, userId } = req.body;
+    if (!productId || !address || !phone || !userId) {
+      return res.json({ ok: false, error: 'Missing required fields' });
+    }
+
+    const product = await Product.findOne({ productId });
+    if (!product) return res.json({ ok: false, error: 'Product not found' });
+
+    const merchantOrderId = 'PROD_' + Date.now();
+    const amountPaisa = product.price * 100;
+
+    // Create a Payment record first
+    const payment = new Payment({
+      transactionId: merchantOrderId,
+      merchantTransactionId: merchantOrderId,
+      userId,
+      amount: product.price,
+      status: 'pending',
+      isApp: false
+    });
+    await payment.save();
+
+    // Create a pending product order
+    const order = new ProductOrder({
+      orderId: merchantOrderId,
+      userId,
+      productId,
+      productName: product.name,
+      amount: product.price,
+      address,
+      phone,
+      paymentStatus: 'pending',
+      status: 'pending'
+    });
+    await order.save();
+
+    // Initiate PhonePe Payment (v2 Standard Checkout)
+    const redirectUrl = `https://astroluna.in/payment-status?merchantOrderId=${merchantOrderId}`;
+    const payRes = await callPhonePePayV2(merchantOrderId, amountPaisa, redirectUrl, phone);
+
+    if (payRes.success) {
+      res.json({ ok: true, redirectUrl: payRes.data.redirectUrl });
+    } else {
+      res.json({ ok: false, error: 'Payment gateway error: ' + (payRes.data?.message || 'Unknown') });
+    }
+  } catch (e) { 
+    console.error("Product Purchase Init Error:", e);
+    res.status(500).json({ ok: false, error: e.message }); 
+  }
+});
+
 app.delete('/api/admin/products/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
@@ -3495,9 +3565,24 @@ app.post('/api/admin/process-product-order', async (req, res) => {
         }
       }
     } else {
+      // Notify User: Delivered in 7 days
+      const deliveryDate = new Date();
+      deliveryDate.setDate(deliveryDate.getDate() + 7);
+      const dateStr = deliveryDate.toLocaleDateString();
+      
       if (targetSId) {
-        io.to(targetSId).emit('app-notification', { text: `✅ Order Accepted: ${order.productName}. Your product will be processed.` });
+        io.to(targetSId).emit('app-notification', { 
+          title: 'Order Accepted! ✅',
+          text: `Your order for ${order.productName} has been accepted. It will be delivered by ${dateStr}.` 
+        });
       }
+      // Also save to notification model
+      const notif = new Notification({
+        userId: order.userId,
+        title: 'Order Accepted!',
+        message: `Your order for ${order.productName} will be delivered by ${dateStr}.`
+      });
+      await notif.save();
     }
 
     res.json({ ok: true });

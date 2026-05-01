@@ -9429,7 +9429,9 @@
                   <div>
                     <div style="font-weight:700; color:#1f2937;">${o.productName}</div>
                     <div style="font-size:0.8rem; color:#6b7280; margin-top:2px;">User: ${o.userId} | Date: ${new Date(o.requestedAt).toLocaleDateString()}</div>
-                    <div style="font-weight:800; color:#059669; margin-top:5px; font-size:1.1rem;">₹${o.amount}</div>
+                    <div style="font-size:0.8rem; color:#3b82f6; font-weight:600; margin-top:5px;"><i class="fas fa-phone"></i> ${o.phone || 'N/A'}</div>
+                    <div style="font-size:0.8rem; color:#4b5563; background:#f9fafb; padding:8px; border-radius:6px; margin-top:5px; border:1px solid #edf2f7;"><i class="fas fa-map-marker-alt"></i> ${o.address || 'No Address Provided'}</div>
+                    <div style="font-weight:800; color:#059669; margin-top:10px; font-size:1.1rem;">₹${o.amount}</div>
                   </div>
                   <div style="display:flex; gap:8px;">
                     <button class="btn-admin" style="background:#10b981; padding:6px 12px;" onclick="processProductOrderAdmin('${o.orderId}', 'accepted')">Accept</button>
