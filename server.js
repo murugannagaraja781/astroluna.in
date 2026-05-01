@@ -3682,8 +3682,15 @@ app.get('/api/admin/product-orders', async (req, res) => {
     if (status) query.status = status;
     if (deliveryStatus) query.deliveryStatus = deliveryStatus;
     
-    const orders = await ProductOrder.find(query).sort({ requestedAt: -1 });
-    res.json({ ok: true, orders });
+    const orders = await ProductOrder.find(query).sort({ requestedAt: -1 }).lean();
+    
+    // Enrich with user name
+    const enriched = await Promise.all(orders.map(async (o) => {
+      const user = await User.findOne({ userId: o.userId }, { name: 1 });
+      return { ...o, userName: user ? user.name : 'Unknown User' };
+    }));
+    
+    res.json({ ok: true, orders: enriched });
   } catch (e) { res.status(500).json({ ok: false }); }
 });
 
