@@ -3523,6 +3523,43 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
   }
 });
 
+app.get('/payment-status', (req, res) => {
+  const { merchantOrderId } = req.query;
+  res.send(`
+    <html>
+      <head>
+        <title>Order Status</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+          body { font-family: 'Outfit', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; }
+          .card { background: white; padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 400px; width: 90%; }
+          .icon { font-size: 50px; color: #7C3AED; margin-bottom: 20px; }
+          h2 { margin-bottom: 10px; color: #1e293b; }
+          p { color: #64748b; font-size: 14px; line-height: 1.6; }
+          .btn { display: inline-block; margin-top: 25px; background: #7C3AED; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.2s; }
+          .btn:active { transform: scale(0.95); }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="icon">✨</div>
+          <h2>Payment Completed!</h2>
+          <p>Your order <b>${merchantOrderId}</b> is being processed. You will receive a notification once the Admin accepts it.</p>
+          <a href="astroluna://close" class="btn">Return to App</a>
+          <br><br>
+          <a href="/" style="color:#7C3AED; font-size:12px; text-decoration:none;">Go to Homepage</a>
+        </div>
+        <script>
+          setTimeout(() => {
+             window.location.href = "astroluna://payment-complete";
+          }, 3000);
+        </script>
+      </body>
+    </html>
+  `);
+});
+
 app.delete('/api/admin/products/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
