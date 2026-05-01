@@ -161,6 +161,8 @@
                 online.querySelector('i').style.color = '#64748b';
                 online.querySelector('span').style.color = '#64748b';
             }
+            
+            document.getElementById('pay-btn').innerText = method === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
         }
 
         async function submitPurchase() {
@@ -174,12 +176,29 @@
                 return;
             }
 
-            // Get userId from URL or Parent
+            // Get userId from URL or Parent or LocalStorage
             const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('userId') || (window.parent && window.parent.currentUser ? window.parent.currentUser.userId : null);
+            let userId = urlParams.get('userId');
+            
+            if (!userId && window.parent && window.parent.currentUser) {
+                userId = window.parent.currentUser.userId;
+            }
+            
+            if (!userId) {
+                // Try one more place - many webviews store it in localStorage
+                userId = localStorage.getItem('userId');
+            }
+            
+            if (!userId && typeof AndroidBridge !== 'undefined' && AndroidBridge.getUserId) {
+                userId = AndroidBridge.getUserId();
+            }
+
+            console.log("Attempting purchase for User:", userId, "Method:", paymentMethod);
 
             if (!userId) {
                 alert("Please login to proceed with the purchase.");
+                payBtn.disabled = false;
+                payBtn.innerText = paymentMethod === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
                 return;
             }
 

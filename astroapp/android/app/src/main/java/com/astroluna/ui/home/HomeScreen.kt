@@ -407,7 +407,7 @@ fun HomeScreen(
                         isTamil = isTamil
                     )
                 } else if (selectedTab == 4) {
-                    AstroProductsScreen()
+                    AstroProductsScreen(userId)
                 } else {
                     // Content Layer
                     LazyColumn(
@@ -1911,7 +1911,7 @@ fun StickyFooterButtons(
     }
 }
 @Composable
-fun AstroProductsScreen() {
+fun AstroProductsScreen(userId: String) {
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         AndroidView(
@@ -1928,6 +1928,9 @@ fun AstroProductsScreen() {
                     
                     // Inject Bridge for Purchases
                     addJavascriptInterface(object {
+                        @android.webkit.JavascriptInterface
+                        fun getUserId(): String = userId
+
                         @android.webkit.JavascriptInterface
                         fun payWithBonusWallet(amount: Double, productName: String) {
                             com.astroluna.data.remote.SocketManager.purchaseProduct(amount, productName) { response ->
@@ -1948,7 +1951,7 @@ fun AstroProductsScreen() {
                     webViewClient = android.webkit.WebViewClient()
                     webChromeClient = android.webkit.WebChromeClient()
                     
-                    loadUrl("https://astroluna.in/astroproducts")
+                    loadUrl("https://astroluna.in/astroproducts?userId=$userId")
                 }
             },
             modifier = Modifier.fillMaxSize()

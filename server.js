@@ -3457,9 +3457,13 @@ app.get('/api/admin/products', async (req, res) => {
 
 app.post('/api/admin/products', async (req, res) => {
   try {
-    const { name, price, description, image } = req.body;
+    const { name, price, description, image, costPrice, stockQuantity } = req.body;
     const productId = 'PROD' + Date.now();
-    const product = new Product({ productId, name, price, description, image });
+    const product = new Product({ 
+      productId, name, price, description, image, 
+      costPrice: Number(costPrice) || 0, 
+      stockQuantity: Number(stockQuantity) || 0 
+    });
     await product.save();
     res.json({ ok: true, product });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
@@ -3596,27 +3600,83 @@ app.delete('/api/admin/products/:productId', async (req, res) => {
 
 app.get('/api/admin/product-orders', async (req, res) => {
   try {
-    const status = req.query.status || 'pending';
-    const orders = await ProductOrder.find({ status }).sort({ requestedAt: -1 });
+    const { status, deliveryStatus } = req.query;
+    const query = {};
+    if (status) query.status = status;
+    if (deliveryStatus) query.deliveryStatus = deliveryStatus;
+    
+    const orders = await ProductOrder.find(query).sort({ requestedAt: -1 });
     res.json({ ok: true, orders });
+  } catch (e) { res.status(500).json({ ok: false }); }
+});
+
+app.get('/api/admin/product-stats', async (req, res) => {
+  try {
+    const totalOrders = await ProductOrder.countDocuments({ status: 'accepted' });
+    const pendingOrders = await ProductOrder.countDocuments({ status: 'pending' });
+    const deliveredOrders = await ProductOrder.countDocuments({ deliveryStatus: 'delivered' });
+    
+    const orders = await ProductOrder.find({ status: 'accepted' });
+    let totalRevenue = 0;
+    let totalCost = 0;
+    orders.forEach(o => {
+      totalRevenue += o.amount;
+      totalCost += (o.costPrice || 0);
+    });
+    
+    const profit = totalRevenue - totalCost;
+    
+    const products = await Product.find({});
+    let totalStock = 0;
+    products.forEach(p => totalStock += (p.stockQuantity || 0));
+
+    res.json({
+      ok: true,
+      stats: {
+        totalOrders,
+        pendingOrders,
+        deliveredOrders,
+        totalRevenue,
+        profit,
+        totalStock
+      }
+    });
   } catch (e) { res.status(500).json({ ok: false }); }
 });
 
 app.post('/api/admin/process-product-order', async (req, res) => {
   try {
-    const { orderId, action } = req.body; // action: 'accepted' or 'rejected'
+    const { orderId, action, deliveryStatus } = req.body; // action: 'accepted' or 'rejected'
     const order = await ProductOrder.findOne({ orderId });
-    if (!order || order.status !== 'pending') return res.json({ ok: false, error: 'Order not found' });
+    if (!order) return res.json({ ok: false, error: 'Order not found' });
+
+    if (deliveryStatus) {
+       order.deliveryStatus = deliveryStatus;
+       await order.save();
+       return res.json({ ok: true });
+    }
+
+    if (order.status !== 'pending') return res.json({ ok: false, error: 'Order already processed' });
 
     order.status = action;
     order.processedAt = new Date();
+
+    const product = await Product.findOne({ productId: order.productId });
+    if (action === 'accepted' && product) {
+      order.costPrice = product.costPrice || 0;
+      if (product.stockQuantity > 0) {
+        product.stockQuantity -= 1;
+        await product.save();
+      }
+    }
+    
     await order.save();
 
     const targetSId = userSockets.get(order.userId);
     const user = await User.findOne({ userId: order.userId });
 
     if (action === 'rejected') {
-      if (user) {
+      if (user && order.paymentMethod === 'online') {
         user.purchaseWalletBalance += order.amount;
         await user.save();
         if (targetSId) {

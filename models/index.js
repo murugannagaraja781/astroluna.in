@@ -217,6 +217,8 @@ const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   price: { type: Number, required: true },
+  costPrice: { type: Number, default: 0 },
+  stockQuantity: { type: Number, default: 0 },
   image: String,
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
@@ -234,6 +236,8 @@ const ProductOrderSchema = new mongoose.Schema({
   paymentId: String,
   paymentStatus: { type: String, default: 'pending' },
   paymentMethod: { type: String, enum: ['online', 'cod'], default: 'online' },
+  deliveryStatus: { type: String, enum: ['pending', 'shipped', 'delivered'], default: 'pending' },
+  costPrice: { type: Number, default: 0 }, // Snapshot of cost at purchase
   requestedAt: { type: Date, default: Date.now },
   processedAt: Date
 });
