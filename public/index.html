@@ -11996,6 +11996,8 @@
              <div style="margin-bottom:10px; color:#555;">${msg.text}</div>
              ${msg.data && msg.data.withdrawalId ?
               `<button class="approve" onclick="approveWithdrawal('${msg.data.withdrawalId}', ${msg.data.amount})">Accept & Deduct</button>` : ''}
+             ${msg.type === 'product_order' ? 
+              `<button class="approve" onclick="showTab('products'); switchProductSubTab('orders'); this.parentElement.remove();">View Orders</button>` : ''}
              ${msg.type === 'astrologer_request' ? 
               `<button class="approve" onclick="navAdmin('requests'); this.parentElement.remove();">View Requests</button>` : ''}
              <button class="close" onclick="this.parentElement.remove()">Close</button>
