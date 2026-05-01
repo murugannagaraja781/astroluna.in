@@ -5851,6 +5851,7 @@
             <div style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
                <button onclick="switchProductSubTab('catalog')" class="chip-btn active" id="btn-prod-catalog">Product Catalog</button>
                <button onclick="switchProductSubTab('orders')" class="chip-btn" id="btn-prod-orders">Purchase Requests</button>
+               <button onclick="switchProductSubTab('manage')" class="chip-btn" id="btn-prod-manage">Manage & Stats</button>
             </div>
 
             <div id="prod-sub-catalog">
@@ -5858,7 +5859,9 @@
                   <div style="font-weight:700; color:#1e293b; margin-bottom:15px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">Add New Product</div>
                   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
                      <input type="text" id="adminProdName" class="app-input" placeholder="Product Name (e.g. Rudraksha)">
-                     <input type="number" id="adminProdPrice" class="app-input" placeholder="Price (₹)">
+                     <input type="number" id="adminProdPrice" class="app-input" placeholder="Selling Price (₹)">
+                     <input type="number" id="adminProdCost" class="app-input" placeholder="Cost Price (₹)">
+                     <input type="number" id="adminProdStock" class="app-input" placeholder="Initial Stock Qty">
                   </div>
                   <textarea id="adminProdDesc" class="app-input" placeholder="Product Description..." style="width:100%; height:80px; margin-bottom:15px;"></textarea>
                   
@@ -5880,9 +5883,26 @@
                </div>
             </div>
 
-            <div id="prod-sub-orders" class="hidden">
+            <div id="prod-sub-orders" class="hidden" style="display:none;">
                <div id="adminProductOrderList" style="display:flex; flex-direction:column; gap:12px;">
                   <!-- Orders load here -->
+               </div>
+            </div>
+
+            <div id="prod-sub-manage" class="hidden" style="display:none;">
+               <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:15px; margin-bottom:20px;" id="product-stats-container">
+                   <!-- Stats load here -->
+               </div>
+               
+               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                  <div>
+                     <h4 style="margin-bottom:10px; color:#1e293b; font-size:0.9rem;"><i class="fas fa-boxes"></i> Inventory Status</h4>
+                     <div id="product-inventory-list" style="max-height:300px; overflow-y:auto; border:1px solid #f1f5f9; border-radius:10px; background:#fff;"></div>
+                  </div>
+                  <div>
+                     <h4 style="margin-bottom:10px; color:#1e293b; font-size:0.9rem;"><i class="fas fa-shipping-fast"></i> Delivered Products</h4>
+                     <div id="product-delivered-list" style="max-height:300px; overflow-y:auto; border:1px solid #f1f5f9; border-radius:10px; background:#fff;"></div>
+                  </div>
                </div>
             </div>
           </div>
@@ -9318,6 +9338,8 @@
       async function addAdminProduct() {
         const name = document.getElementById('adminProdName').value;
         const price = document.getElementById('adminProdPrice').value;
+        const costPrice = document.getElementById('adminProdCost').value;
+        const stockQuantity = document.getElementById('adminProdStock').value;
         const description = document.getElementById('adminProdDesc').value;
         const image = document.getElementById('adminProdImage').value;
 
@@ -9328,19 +9350,88 @@
           const res = await fetch('/api/admin/products', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, price, description, image })
+            body: JSON.stringify({ name, price, description, image, costPrice, stockQuantity })
           });
           const data = await res.json();
           if (data.ok) {
             alert('✅ Product added successfully!');
             document.getElementById('adminProdName').value = '';
             document.getElementById('adminProdPrice').value = '';
+            document.getElementById('adminProdCost').value = '';
+            document.getElementById('adminProdStock').value = '';
             document.getElementById('adminProdDesc').value = '';
             document.getElementById('adminProdImage').value = '';
             document.getElementById('adminProdPreview').style.display = 'none';
             fetchAdminProducts();
           }
         } catch (e) { alert('Error adding product'); }
+      }
+
+      function switchProductSubTab(tab) {
+          document.getElementById('prod-sub-catalog').style.display = tab === 'catalog' ? 'block' : 'none';
+          document.getElementById('prod-sub-orders').style.display = tab === 'orders' ? 'block' : 'none';
+          document.getElementById('prod-sub-manage').style.display = tab === 'manage' ? 'block' : 'none';
+          
+          document.getElementById('btn-prod-catalog').classList.toggle('active', tab === 'catalog');
+          document.getElementById('btn-prod-orders').classList.toggle('active', tab === 'orders');
+          document.getElementById('btn-prod-manage').classList.toggle('active', tab === 'manage');
+          
+          if (tab === 'catalog') fetchAdminProducts();
+          if (tab === 'orders') loadAdminProductOrders();
+          if (tab === 'manage') loadAdminProductStats();
+      }
+
+      async function loadAdminProductStats() {
+        const res = await fetch('/api/admin/product-stats');
+        const data = await res.json();
+        if (data.ok) {
+            const s = data.stats;
+            document.getElementById('product-stats-container').innerHTML = `
+                <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <div style="font-size:0.8rem; color:#64748b;">Revenue</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:#1e293b;">₹${s.totalRevenue}</div>
+                </div>
+                <div style="background:#f0fdf4; padding:15px; border-radius:12px; border:1px solid #bbf7d0;">
+                    <div style="font-size:0.8rem; color:#166534;">Profit</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:#15803d;">₹${s.profit}</div>
+                </div>
+                <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <div style="font-size:0.8rem; color:#64748b;">Stock</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:#1e293b;">${s.totalStock} items</div>
+                </div>
+                <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <div style="font-size:0.8rem; color:#64748b;">Delivered</div>
+                    <div style="font-size:1.2rem; font-weight:800; color:#1e293b;">${s.deliveredOrders}</div>
+                </div>
+            `;
+            
+            // Load inventory
+            const pRes = await fetch('/api/admin/products');
+            const pData = await pRes.json();
+            if (pData.ok) {
+                document.getElementById('product-inventory-list').innerHTML = pData.products.map(p => `
+                    <div style="padding:10px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; font-size:0.9rem;">${p.name}</div>
+                            <div style="font-size:0.75rem; color:#64748b;">Cost: ₹${p.costPrice || 0} | Sale: ₹${p.price}</div>
+                        </div>
+                        <div style="font-weight:800; color:${p.stockQuantity < 5 ? '#ef4444' : '#10b981'};">${p.stockQuantity}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Load delivered
+            const dRes = await fetch('/api/admin/product-orders?deliveryStatus=delivered');
+            const dData = await dRes.json();
+            if (dData.ok) {
+                document.getElementById('product-delivered-list').innerHTML = dData.orders.map(o => `
+                    <div style="padding:10px; border-bottom:1px solid #f1f5f9;">
+                        <div style="font-weight:700; font-size:0.9rem;">${o.productName}</div>
+                        <div style="font-size:0.75rem; color:#64748b;">Profit: <span style="color:#10b981; font-weight:700;">₹${o.amount - (o.costPrice || 0)}</span> | Date: ${new Date(o.processedAt).toLocaleDateString()}</div>
+                    </div>
+                `).join('') || '<p style="color:#999; font-size:0.8rem; padding:10px;">No products delivered yet.</p>';
+            }
+        }
       }
 
       window.handleAdminProdFileSelect = async (input) => {

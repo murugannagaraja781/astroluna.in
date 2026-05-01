@@ -109,19 +109,29 @@
                 grid.innerHTML = '<p class="loading">No products available at the moment.</p>';
                 return;
             }
-            grid.innerHTML = products.map(p => `
-                <div class="product-card">
+            grid.innerHTML = products.map(p => {
+                const outOfStock = (p.stockQuantity || 0) <= 0;
+                return `
+                <div class="product-card" style="${outOfStock ? 'opacity:0.7; filter:grayscale(0.5);' : ''}">
                     <img src="${p.image || 'https://via.placeholder.com/400x300?text=Astro+Product'}" class="product-img">
+                    ${outOfStock ? '<div style="position:absolute; top:10px; right:10px; background:#ef4444; color:white; padding:4px 10px; border-radius:8px; font-size:10px; font-weight:800; z-index:10;">OUT OF STOCK</div>' : ''}
                     <div class="product-content">
                         <div class="product-name">${p.name}</div>
                         <div class="product-desc">${p.description || 'Exclusive spiritual item from Astroluna.'}</div>
+                        <div style="font-size:11px; color:${p.stockQuantity < 5 ? '#ef4444' : '#10b981'}; font-weight:700; margin-bottom:10px;">
+                            ${outOfStock ? 'Currently Unavailable' : `Only ${p.stockQuantity} items left!`}
+                        </div>
                         <div class="product-footer">
                             <div class="product-price">₹${p.price}</div>
-                            <button class="buy-btn" onclick="handleBuy(${p.price}, '${p.name.replace(/'/g, "\\'")}', '${p.productId}')">Buy Now</button>
+                            <button class="buy-btn" 
+                                ${outOfStock ? 'disabled style="background:#cbd5e1; cursor:not-allowed;"' : ''} 
+                                onclick="handleBuy(${p.price}, '${p.name.replace(/'/g, "\\'")}', '${p.productId}')">
+                                ${outOfStock ? 'Out of Stock' : 'Buy Now'}
+                            </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;}).join('');
         }
 
         let currentBuyingProduct = null;
