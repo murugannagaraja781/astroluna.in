@@ -73,25 +73,21 @@
             <div style="margin-bottom:20px;">
                 <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment Method:</p>
                 <div style="display:flex; gap:10px;">
-                    <div id="method-online" onclick="setPaymentMethod('online')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:12px; text-align:center; cursor:pointer; background:#f5f3ff;">
-                        <i class="fas fa-credit-card" style="display:block; margin-bottom:5px; color:var(--brand-purple);"></i>
-                        <span style="font-size:12px; font-weight:700; color:var(--brand-purple);">Online Pay</span>
+                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:12px; text-align:center; cursor:pointer; background:#f5f3ff;">
+                        <i class="fas fa-wallet" style="display:block; margin-bottom:5px; color:var(--brand-purple);"></i>
+                        <span style="font-size:12px; font-weight:700; color:var(--brand-purple);">Wallet Pay</span>
                     </div>
                     <div id="method-cod" onclick="setPaymentMethod('cod')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:12px; text-align:center; cursor:pointer;">
                         <i class="fas fa-truck" style="display:block; margin-bottom:5px; color:#64748b;"></i>
                         <span style="font-size:12px; font-weight:700; color:#64748b;">COD</span>
                     </div>
-                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:12px; text-align:center; cursor:pointer;">
-                        <i class="fas fa-wallet" style="display:block; margin-bottom:5px; color:#64748b;"></i>
-                        <span style="font-size:12px; font-weight:700; color:#64748b;">Wallet</span>
-                    </div>
                 </div>
             </div>
-            <input type="hidden" id="selected-method" value="online">
+            <input type="hidden" id="selected-method" value="wallet">
             
             <div style="display:flex; gap:10px;">
                 <button onclick="closeModal()" style="flex:1; padding:14px; border-radius:14px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer; font-size:14px;">Cancel</button>
-                <button onclick="submitPurchase()" id="pay-btn" style="flex:2; padding:14px; border-radius:14px; border:none; background:var(--brand-purple); color:white; font-weight:700; cursor:pointer; font-size:14px;">Pay with PhonePe</button>
+                <button onclick="submitPurchase()" id="pay-btn" style="flex:2; padding:14px; border-radius:14px; border:none; background:var(--brand-purple); color:white; font-weight:700; cursor:pointer; font-size:14px;">Pay with Wallet Balance</button>
             </div>
         </div>
     </div>
@@ -163,12 +159,11 @@
 
         function setPaymentMethod(method) {
             document.getElementById('selected-method').value = method;
-            const online = document.getElementById('method-online');
             const cod = document.getElementById('method-cod');
             const wallet = document.getElementById('method-wallet');
             const payBtn = document.getElementById('pay-btn');
 
-            [online, cod, wallet].forEach(el => {
+            [cod, wallet].forEach(el => {
                 if (el) {
                     el.style.borderColor = '#e2e8f0';
                     el.style.background = 'white';
@@ -177,7 +172,7 @@
                 }
             });
 
-            const active = method === 'online' ? online : (method === 'cod' ? cod : wallet);
+            const active = method === 'cod' ? cod : wallet;
             if (active) {
                 active.style.borderColor = 'var(--brand-purple)';
                 active.style.background = '#f5f3ff';
@@ -185,8 +180,7 @@
                 active.querySelector('span').style.color = 'var(--brand-purple)';
             }
 
-            if (method === 'online') payBtn.innerText = "Pay with PhonePe";
-            else if (method === 'cod') payBtn.innerText = "Complete Order (COD)";
+            if (method === 'cod') payBtn.innerText = "Complete Order (COD)";
             else payBtn.innerText = "Pay with Wallet Balance";
         }
 
