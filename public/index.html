@@ -9050,7 +9050,10 @@
                             </div>
                         </div>
                         ${n.type === 'product_order' ? 
-                            `<button class="btn-admin" style="background:#7c3aed; padding:5px 12px; font-size:0.8rem;" onclick="navAdmin('products'); switchProductSubTab('orders');">View Order</button>` : ''}
+                            `<div style="display:flex; flex-direction:column; gap:5px;">
+                                ${n.details && n.details.orderId ? `<button class="btn-admin" style="background:#10b981; padding:5px 12px; font-size:0.8rem;" onclick="acceptProductOrder('${n.details.orderId}')">Accept Order</button>` : ''}
+                                <button class="btn-admin" style="background:#7c3aed; padding:5px 12px; font-size:0.8rem;" onclick="navAdmin('products'); switchProductSubTab('orders');">View Orders</button>
+                             </div>` : ''}
                     </div>
                 `).join('') || '<div style="text-align:center; padding:40px; color:#9ca3af; border:2px dashed #eee; border-radius:15px;">No notifications yet.</div>';
             }
@@ -12071,6 +12074,8 @@
             alert('✅ Order Accepted!');
             const el = document.getElementById(`notif-${orderId}`);
             if (el) el.remove();
+            if (typeof loadAdminProductOrders === 'function') loadAdminProductOrders();
+            if (typeof loadAdminNotifications === 'function') loadAdminNotifications();
           } else {
             alert('❌ Error: ' + res.error);
           }
