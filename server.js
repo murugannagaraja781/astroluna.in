@@ -37,7 +37,8 @@ const {
   User, GlobalConfig, Session, CallRequest, PairMonth,
   BillingLedger, Withdrawal, Payment,
   AstrologerApplication, Notification, ChatMessage,
-  AcademyVideo, Banner, AccountDeletionRequest
+  AcademyVideo, Banner, AccountDeletionRequest,
+  Product, ProductOrder
 } = require('./models');
 const billingModule = require('./modules/billing');
 const communicationModule = require('./modules/communication');
