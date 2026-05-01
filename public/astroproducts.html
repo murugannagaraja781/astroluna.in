@@ -188,6 +188,7 @@
         }
 
         async function submitPurchase() {
+            const payBtn = document.getElementById('pay-btn');
             const name = document.getElementById('ship-name').value.trim();
             const phone = document.getElementById('ship-phone').value.trim();
             const address = document.getElementById('ship-address').value.trim();
@@ -207,6 +208,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             let userId = urlParams.get('userId');
             
+            if (userId === 'null' || userId === 'undefined') userId = null;
+
             if (!userId && window.parent && window.parent.currentUser) {
                 userId = window.parent.currentUser.userId;
             }
@@ -218,18 +221,16 @@
             
             if (!userId && typeof AndroidBridge !== 'undefined' && AndroidBridge.getUserId) {
                 userId = AndroidBridge.getUserId();
+                if (userId === 'null' || userId === 'undefined') userId = null;
             }
 
             console.log("Attempting purchase for User:", userId, "Method:", paymentMethod);
 
             if (!userId) {
                 alert("Please login to proceed with the purchase.");
-                payBtn.disabled = false;
-                payBtn.innerText = paymentMethod === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
                 return;
             }
 
-            const payBtn = document.getElementById('pay-btn');
             payBtn.disabled = true;
             payBtn.innerText = "Processing...";
 
