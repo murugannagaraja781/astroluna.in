@@ -13,6 +13,11 @@ const admin = require('firebase-admin'); // Firebase Admin for Mobile App
 const { DateTime } = require('luxon');
 const { fetchDailyHoroscope } = require("./utils/rasiEng/horoscopeData");
 
+// Polyfill for fetch (Node.js 18+ has it built-in)
+if (!global.fetch) {
+  global.fetch = require('node-fetch');
+}
+
 // MULTER CONFIG FOR PROFILE PHOTOS
 const photoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -238,23 +243,9 @@ async function callPhonePePayV1(merchantOrderId, amount, redirectUrl, userMobile
   }
 }
 
-  // Debug Log
-  try {
-    const logMsg = `\n--- ${new Date().toISOString()} ---\n[v2 INIT] URL: ${endpoint}\nOrderId: ${merchantOrderId}\nAmount: ${amount}\nStatus: ${response.status}\nRes: ${JSON.stringify(data)}\n`;
-    fs.appendFileSync('phonepe_debug.log', logMsg);
-  } catch (err) { }
-
-  const isSuccess = response.ok && data.orderId && data.redirectUrl;
-  console.log(`[PhonePe v2] Response Status: ${response.status}, Success: ${isSuccess}`);
-
-  return { success: isSuccess, data, status: response.status };
-}
 
 
-// Polyfill for fetch (Node.js 18+ has it built-in)
-if (!global.fetch) {
-  global.fetch = require('node-fetch');
-}
+
 
 // ===== Referral Helpers =====
 async function generateReferralCode(userName) {
