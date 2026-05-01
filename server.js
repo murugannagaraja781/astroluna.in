@@ -3475,7 +3475,9 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
     if (!product) return res.json({ ok: false, error: 'Product not found' });
 
     const merchantOrderId = 'PROD_' + Date.now();
-    const method = paymentMethod === 'cod' ? 'cod' : 'online';
+    const method = paymentMethod || 'online';
+    const qty = parseInt(req.body.qty) || 1;
+    const totalAmount = product.price * qty;
 
     if (method === 'cod') {
       const order = new ProductOrder({
@@ -3483,7 +3485,8 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         userId,
         productId,
         productName: product.name,
-        amount: product.price,
+        quantity: qty,
+        amount: totalAmount,
         address,
         phone,
         paymentStatus: 'pending',
@@ -3511,9 +3514,6 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
 
       return res.json({ ok: true, cod: true });
     }
-
-    const qty = parseInt(req.body.qty) || 1;
-    const totalAmount = product.price * qty;
 
     if (method === 'wallet') {
       const user = await User.findOne({ userId });
