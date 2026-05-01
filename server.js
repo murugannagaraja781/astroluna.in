@@ -3431,6 +3431,13 @@ app.post('/api/admin/config/update', async (req, res) => {
 });
 
 // --- Product Management ---
+app.get('/api/admin/notifications', async (req, res) => {
+  try {
+    const notifs = await Notification.find({ userId: 'admin' }).sort({ createdAt: -1 }).limit(100);
+    res.json({ ok: true, notifications: notifs });
+  } catch (e) { res.status(500).json({ ok: false }); }
+});
+
 app.get('/api/admin/products', async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
@@ -3485,11 +3492,21 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
       });
       await order.save();
 
-      // Notify Admin
+      // Notify Admin & Save
+      const adminNotif = new Notification({
+        userId: 'admin',
+        type: 'product_order',
+        title: 'New Product Order',
+        message: `${order.productName} (COD) ordered by ${userId}. Check Dashboard.`,
+        details: { orderId: order.orderId }
+      });
+      await adminNotif.save();
+
       io.emit('admin-notification', { 
         type: 'product_order',
         title: 'New Product Order', 
-        text: `${order.productName} (COD) ordered by ${userId}. Check Dashboard.` 
+        text: adminNotif.message,
+        data: adminNotif.details
       });
 
       return res.json({ ok: true, cod: true });

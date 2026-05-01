@@ -176,13 +176,18 @@
         }
 
         async function submitPurchase() {
-            const name = document.getElementById('ship-name').value;
-            const phone = document.getElementById('ship-phone').value;
-            const address = document.getElementById('ship-address').value;
+            const name = document.getElementById('ship-name').value.trim();
+            const phone = document.getElementById('ship-phone').value.trim();
+            const address = document.getElementById('ship-address').value.trim();
             const paymentMethod = document.getElementById('selected-method').value;
 
-            if (!name || !phone || !address) {
-                alert("Please fill all shipping details.");
+            if (!name || !address) {
+                alert("Please enter both recipient name and full delivery address.");
+                return;
+            }
+            
+            if (phone.length < 10) {
+                alert("Please enter a valid 10-digit phone number.");
                 return;
             }
 

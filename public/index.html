@@ -4972,6 +4972,10 @@
           <i class="fas fa-shopping-cart"></i>
           <span>Astro Products</span>
         </div>
+        <div class="admin-sidebar-item" id="side-notifications" onclick="navAdmin('notifications')">
+          <i class="fas fa-bell"></i>
+          <span>Notifications</span>
+        </div>
       </div>
       <div class="admin-sidebar-footer">
         <button onclick="clearSession()" class="app-btn-gradient" style="width:100%; border-radius:10px;">
@@ -5908,6 +5912,17 @@
           </div>
         </div>
 
+        <!-- Tab: Notifications History -->
+        <div id="admin-sect-notifications" class="admin-tab-section">
+          <div class="dashboard-header">
+            <h2 class="dashboard-title"><i class="fas fa-bell"></i> System Notifications</h2>
+            <button class="btn-admin" style="background:#f3f4f6; color:#333;" onclick="loadAdminNotifications()">Refresh</button>
+          </div>
+          <div id="adminNotificationsList" style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+            <div style="text-align:center; padding:30px; color:#9ca3af;">Loading notifications...</div>
+          </div>
+        </div>
+
         <!-- Admin Footer (Static) -->
         <div class="admin-footer">
           <div class="admin-footer-content">
@@ -6635,6 +6650,22 @@
       // Persistent Session Helper
       const SESSION_KEY = 'astro_session';
       const TWO_MONTHS = 60 * 24 * 60 * 60 * 1000;
+      
+      const ADMIN_TABS = {
+        'home': 'admin-sect-home',
+        'earnings': 'admin-sect-earnings',
+        'payouts': 'admin-sect-payouts',
+        'referrals': 'admin-sect-referrals',
+        'users': 'admin-sect-users',
+        'managers': 'admin-sect-managers',
+        'academy': 'admin-sect-academy',
+        'slider': 'admin-sect-slider',
+        'requests': 'admin-sect-requests',
+        'deletions': 'admin-sect-deletions',
+        'settings': 'admin-sect-settings',
+        'products': 'admin-sect-products',
+        'notifications': 'admin-sect-notifications'
+      };
 
       function saveSession(user) {
         const session = { ...user, expiresAt: Date.now() + TWO_MONTHS };
@@ -6678,6 +6709,22 @@
         // Clear Android SharedPreferences
         if (window.Android && window.Android.clearUserSession) {
           try {
+            const name = document.getElementById('ship-name').value.trim();
+            const phone = document.getElementById('ship-phone').value.trim();
+            const address = document.getElementById('ship-address').value.trim();
+            const paymentMethod = document.getElementById('selected-method').value;
+
+            if (!name || !address) {
+                alert("Please enter both recipient name and full delivery address.");
+                return;
+            }
+            
+            if (phone.length < 10) {
+                alert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            let userId = new URLSearchParams(window.location.search).get('userId');
             window.Android.clearUserSession();
             console.log('[Android] Session cleared from SharedPreferences');
           } catch (e) {
@@ -8978,8 +9025,40 @@
         } else if (tab === 'products') {
           fetchAdminProducts();
           loadAdminProductOrders();
+        } else if (tab === 'notifications') {
+          loadAdminNotifications();
         }
       };
+
+      async function loadAdminNotifications() {
+        const list = document.getElementById('adminNotificationsList');
+        if (!list) return;
+        list.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div>';
+        try {
+            const res = await fetch('/api/admin/notifications');
+            const data = await res.json();
+            if (data.ok) {
+                list.innerHTML = data.notifications.map(n => `
+                    <div style="background:white; border:1px solid #e5e7eb; border-radius:12px; padding:15px; display:flex; justify-content:space-between; align-items:start; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                        <div>
+                            <div style="font-weight:700; color:#111; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+                                <i class="fas fa-bell" style="color:#7c3aed;"></i> ${n.title}
+                            </div>
+                            <div style="color:#555; font-size:0.9rem; line-height:1.4;">${n.message}</div>
+                            <div style="font-size:0.75rem; color:#9ca3af; margin-top:8px;">
+                                <i class="far fa-clock"></i> ${new Date(n.createdAt).toLocaleString()}
+                            </div>
+                        </div>
+                        ${n.type === 'product_order' ? 
+                            `<button class="btn-admin" style="background:#7c3aed; padding:5px 12px; font-size:0.8rem;" onclick="navAdmin('products'); switchProductSubTab('orders');">View Order</button>` : ''}
+                    </div>
+                `).join('') || '<div style="text-align:center; padding:40px; color:#9ca3af; border:2px dashed #eee; border-radius:15px;">No notifications yet.</div>';
+            }
+        } catch (e) { 
+            console.error(e); 
+            list.innerHTML = '<div style="text-align:center; padding:30px; color:#ef4444;">Error loading notifications.</div>';
+        }
+      }
 
       async function openAcademyModal() {
         document.getElementById('clientAcademyModal').classList.remove('hidden');
