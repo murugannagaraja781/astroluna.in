@@ -2647,6 +2647,40 @@
       margin-bottom: 10px;
     }
 
+    .drop-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 15px;
+    }
+    .drop-zone:hover, .drop-zone.active {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .drop-zone i {
+      font-size: 2rem;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .drop-zone p {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    .img-preview-box {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: none;
+      border: 1px solid #eee;
+    }
+
     .btn-role {
       background: #3b82f6;
     }
@@ -5827,7 +5861,15 @@
                      <input type="number" id="adminProdPrice" class="app-input" placeholder="Price (₹)">
                   </div>
                   <textarea id="adminProdDesc" class="app-input" placeholder="Product Description..." style="width:100%; height:80px; margin-bottom:15px;"></textarea>
-                  <input type="text" id="adminProdImage" class="app-input" placeholder="Image URL (https://...)" style="width:100%; margin-bottom:15px;">
+                  
+                  <div class="drop-zone" id="adminProdDropZone" onclick="document.getElementById('adminProdFile').click()">
+                     <i class="fas fa-cloud-upload-alt"></i>
+                     <p>Drag & Drop Product Image or <b>Click to Upload</b></p>
+                     <input type="file" id="adminProdFile" hidden accept="image/*" onchange="handleAdminProdFileSelect(this)">
+                     <img id="adminProdPreview" class="img-preview-box">
+                  </div>
+                  <input type="hidden" id="adminProdImage">
+
                   <button class="cosmic-btn" style="width:100%; padding:12px;" onclick="addAdminProduct()">
                      <i class="fas fa-plus"></i> Upload Product Successfully
                   </button>
@@ -9263,8 +9305,8 @@
                   <div class="product-admin-desc">${p.description || 'No description'}</div>
                   <div class="product-admin-price">₹${p.price}</div>
                   <div style="font-size:0.7rem; color:#9ca3af; margin-bottom:10px;">ID: ${p.productId}</div>
-                  <button class="btn-admin btn-delete" style="width:100%;" onclick="alert('Product deletion coming soon')">
-                    <i class="fas fa-trash"></i> Disable Product
+                  <button class="btn-admin btn-delete" style="width:100%;" onclick="deleteAdminProduct('${p.productId}')">
+                    <i class="fas fa-trash"></i> Delete Product
                   </button>
                 </div>
               </div>
@@ -9280,6 +9322,7 @@
         const image = document.getElementById('adminProdImage').value;
 
         if (!name || !price) return alert('Name and Price are required');
+        if (!image) return alert('Please upload a product image');
 
         try {
           const res = await fetch('/api/admin/products', {
@@ -9294,9 +9337,78 @@
             document.getElementById('adminProdPrice').value = '';
             document.getElementById('adminProdDesc').value = '';
             document.getElementById('adminProdImage').value = '';
+            document.getElementById('adminProdPreview').style.display = 'none';
             fetchAdminProducts();
           }
         } catch (e) { alert('Error adding product'); }
+      }
+
+      window.handleAdminProdFileSelect = async (input) => {
+        const file = input.files[0];
+        if (!file) return;
+        uploadProductImage(file);
+      };
+
+      async function uploadProductImage(file) {
+        const preview = document.getElementById('adminProdPreview');
+        const hiddenInput = document.getElementById('adminProdImage');
+        const dropZone = document.getElementById('adminProdDropZone');
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        // Upload
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          dropZone.style.opacity = '0.5';
+          const res = await fetch('/api/admin/upload-product-image', {
+            method: 'POST',
+            body: formData
+          });
+          const data = await res.json();
+          if (data.ok) {
+            hiddenInput.value = data.imageUrl;
+            showToast('Image uploaded successfully', 'success');
+          } else {
+            alert('Upload failed: ' + data.error);
+          }
+        } catch (e) { alert('Upload error'); }
+        finally { dropZone.style.opacity = '1'; }
+      }
+
+      // Drag and Drop listeners
+      setTimeout(() => {
+        const zone = document.getElementById('adminProdDropZone');
+        if (!zone) return;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+          zone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+        });
+        zone.addEventListener('dragover', () => zone.classList.add('active'));
+        zone.addEventListener('dragleave', () => zone.classList.remove('active'));
+        zone.addEventListener('drop', (e) => {
+          zone.classList.remove('active');
+          const file = e.dataTransfer.files[0];
+          if (file) uploadProductImage(file);
+        });
+      }, 2000);
+
+      async function deleteAdminProduct(pid) {
+        if (!confirm('Are you sure you want to delete this product?')) return;
+        try {
+          const res = await fetch('/api/admin/products/' + pid, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.ok) {
+            alert('Product Deleted');
+            fetchAdminProducts();
+          }
+        } catch (e) { alert('Error deleting product'); }
       }
 
       async function loadAdminProductOrders() {

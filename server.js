@@ -32,6 +32,19 @@ const photoUpload = multer({
   limits: { fileSize: 15 * 1024 * 1024 } // 15MB limit
 });
 
+const productStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = path.join(__dirname, 'uploads', 'products');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+    cb(null, `product_${Date.now()}${ext}`);
+  }
+});
+const productUpload = multer({ storage: productStorage });
+
 // MODULAR EXPORTS - New separation architecture
 const {
   User, GlobalConfig, Session, CallRequest, PairMonth,
@@ -3433,6 +3446,19 @@ app.post('/api/admin/products', async (req, res) => {
     await product.save();
     res.json({ ok: true, product });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.post('/api/admin/upload-product-image', productUpload.single('image'), (req, res) => {
+  if (!req.file) return res.json({ ok: false, error: 'No file uploaded' });
+  res.json({ ok: true, imageUrl: `/uploads/products/${req.file.filename}` });
+});
+
+app.delete('/api/admin/products/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    await Product.findOneAndDelete({ productId });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false }); }
 });
 
 app.get('/api/admin/product-orders', async (req, res) => {
