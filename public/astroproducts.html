@@ -60,7 +60,7 @@
 
     <!-- Address Modal -->
     <div id="address-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center; padding: 20px;">
-        <div style="background:white; width:100%; max-width:400px; border-radius:20px; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        <div style="background:white; width:100%; max-width:400px; border-radius:24px; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); max-height:90vh; overflow-y:auto;">
             <h2 style="font-size:20px; font-weight:800; margin-bottom:8px; color:var(--brand-purple);">Shipping Details</h2>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Enter your delivery information for shipping.</p>
             
@@ -98,14 +98,14 @@
 
             <div style="margin-bottom:20px;">
                 <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment Method:</p>
-                <div style="display:flex; gap:10px;">
-                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:12px; text-align:center; cursor:pointer; background:#f5f3ff;">
-                        <i class="fas fa-wallet" style="display:block; margin-bottom:5px; color:var(--brand-purple);"></i>
-                        <span style="font-size:12px; font-weight:700; color:var(--brand-purple);">Wallet Pay</span>
+                <div style="display:flex; gap:8px;">
+                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer; background:#f5f3ff;">
+                        <i class="fas fa-wallet" style="display:block; margin-bottom:4px; color:var(--brand-purple); font-size:14px;"></i>
+                        <span style="font-size:11px; font-weight:700; color:var(--brand-purple);">Wallet Pay</span>
                     </div>
-                    <div id="method-cod" onclick="setPaymentMethod('cod')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:12px; text-align:center; cursor:pointer;">
-                        <i class="fas fa-truck" style="display:block; margin-bottom:5px; color:#64748b;"></i>
-                        <span style="font-size:12px; font-weight:700; color:#64748b;">COD</span>
+                    <div id="method-cod" onclick="setPaymentMethod('cod')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer;">
+                        <i class="fas fa-truck" style="display:block; margin-bottom:4px; color:#64748b; font-size:14px;"></i>
+                        <span style="font-size:11px; font-weight:700; color:#64748b;">COD</span>
                     </div>
                 </div>
             </div>
@@ -198,8 +198,8 @@
                     const r = await fetch(`/api/user/profile/${uid}`);
                     const d = await r.json();
                     if (d.ok) {
-                        userWalletCache = d.user.walletBalance || 0;
-                        userPWalletCache = d.user.purchaseWalletBalance || 0;
+                        userWalletCache = d.walletBalance || 0;
+                        userPWalletCache = d.purchaseWalletBalance || 0;
                         document.getElementById('summary-wallet').innerText = `₹${userWalletCache}`;
                         document.getElementById('summary-p-wallet').innerText = `₹${userPWalletCache}`;
                         updateSummary();
