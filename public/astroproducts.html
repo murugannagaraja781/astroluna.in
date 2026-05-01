@@ -98,6 +98,10 @@
                         <span style="font-size:12px; color:var(--text-muted);">Purchase Wallet:</span>
                         <span id="summary-p-wallet" style="font-size:13px; font-weight:700; color:#0ea5e9;">₹0</span>
                     </div>
+                    <div style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px dashed #cbd5e1; margin-top:4px;">
+                        <span style="font-size:12px; font-weight:700; color:var(--text-main);">Remaining Balance:</span>
+                        <span id="summary-remaining" style="font-size:14px; font-weight:800; color:#22c55e;">₹0</span>
+                    </div>
                 </div>
             </div>
 
@@ -245,13 +249,36 @@
         function updateSummary() {
             if (!currentBuyingProduct) return;
             const total = currentBuyingProduct.price * currentQty;
-            document.getElementById('summary-price').innerText = `₹${total}`;
+            document.getElementById('summary-price').innerText = `₹${total.toLocaleString()}`;
             
-            // Highlight wallets
-            if (userWalletCache < total) {
-                document.getElementById('summary-wallet').style.color = '#ef4444';
+            let remaining = 0;
+            if (userPWalletCache >= total) {
+                // If it can be covered entirely by purchase wallet
+                remaining = userWalletCache + (userPWalletCache - total);
             } else {
-                document.getElementById('summary-wallet').style.color = '#22c55e';
+                // Deduct from main balance
+                remaining = userWalletCache - total;
+            }
+
+            const remEl = document.getElementById('summary-remaining');
+            remEl.innerText = `₹${remaining.toLocaleString()}`;
+            
+            if (remaining < 0) {
+                remEl.style.color = '#ef4444'; // Red if not enough funds
+            } else {
+                remEl.style.color = '#22c55e'; // Green if good
+            }
+            
+            updatePayButtonText(total);
+        }
+
+        function updatePayButtonText(total) {
+            const method = document.getElementById('selected-method').value;
+            const payBtn = document.getElementById('pay-btn');
+            if (method === 'cod') {
+                payBtn.innerText = `Complete Order (COD) - ₹${total}`;
+            } else {
+                payBtn.innerText = `Pay ₹${total.toLocaleString()} with Wallet`;
             }
         }
 
@@ -282,8 +309,13 @@
                 active.querySelector('span').style.color = 'var(--brand-purple)';
             }
 
-            if (method === 'cod') payBtn.innerText = "Complete Order (COD)";
-            else payBtn.innerText = "Pay with Wallet Balance";
+            if (currentBuyingProduct) {
+                const total = currentBuyingProduct.price * currentQty;
+                updatePayButtonText(total);
+            } else {
+                if (method === 'cod') payBtn.innerText = "Complete Order (COD)";
+                else payBtn.innerText = "Pay with Wallet Balance";
+            }
         }
 
         async function submitPurchase() {
@@ -350,7 +382,7 @@
                 if (data.ok) {
                     if (data.cod || data.wallet) {
                         const successMsg = data.wallet ? 
-                            `🎉 Purchase successful using Wallet!\nNew Balance: ₹${data.newBalance}` : 
+                            `🎉 Purchase successful using Wallet!\nMain Balance: ₹${data.newBalance || 0}\nPurchase Wallet: ₹${data.purchaseBalance || 0}` : 
                             "🎉 Order placed successfully via Cash on Delivery!\nOur team will contact you soon.";
                         showSuccessModal(successMsg);
                         fetchProducts(); // Refresh stock
