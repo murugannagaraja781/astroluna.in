@@ -3512,15 +3512,22 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
       return res.json({ ok: true, cod: true });
     }
 
+    const qty = parseInt(req.body.qty) || 1;
+    const totalAmount = product.price * qty;
+
     if (method === 'wallet') {
       const user = await User.findOne({ userId });
       if (!user) return res.json({ ok: false, error: 'User not found' });
-      if (user.walletBalance < product.price) {
-        return res.json({ ok: false, error: `Insufficient balance! Current: ₹${user.walletBalance}. Please recharge.` });
+      
+      // Check which wallet has enough balance
+      if (user.purchaseWalletBalance >= totalAmount) {
+        user.purchaseWalletBalance -= totalAmount;
+      } else if (user.walletBalance >= totalAmount) {
+        user.walletBalance -= totalAmount;
+      } else {
+        return res.json({ ok: false, error: `Insufficient balance! Total required: ₹${totalAmount}. Please recharge.` });
       }
 
-      // Deduct balance
-      user.walletBalance -= product.price;
       await user.save();
 
       // Create Order
@@ -3529,7 +3536,8 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         userId,
         productId,
         productName: product.name,
-        amount: product.price,
+        quantity: qty,
+        amount: totalAmount,
         address,
         phone,
         paymentStatus: 'paid', // Wallet is instant
@@ -3543,7 +3551,7 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         userId: 'admin',
         type: 'product_order',
         title: 'New Product Order (Wallet)',
-        message: `${order.productName} (Wallet) ordered by ${userId}. Check Dashboard.`,
+        message: `${order.productName} (x${qty}) (Wallet) ordered by ${userId}. Check Dashboard.`,
         details: { orderId: order.orderId }
       });
       await adminNotif.save();
@@ -3555,7 +3563,7 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         data: adminNotif.details
       });
 
-      return res.json({ ok: true, wallet: true, newBalance: user.walletBalance });
+      return res.json({ ok: true, wallet: true, newBalance: user.walletBalance, purchaseBalance: user.purchaseWalletBalance });
     }
 
     const amountPaisa = product.price * 100;
