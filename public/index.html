@@ -7378,7 +7378,7 @@
           state.me.walletBalance = data.balance;
           saveSession(state.me);
           updateAuthUI();
-
+          
           // Hide wallet refresh spinner
           const spinner = document.getElementById('walletSpinner');
           const refresh = document.getElementById('walletRefresh');
@@ -7401,12 +7401,14 @@
           // Refresh History
           if (window.fetchTransactionHistory) window.fetchTransactionHistory();
 
-          // Low Balance Warning (e.g., < ₹50)
-          // Check if we are in a session? Maybe not needed, just warn.
+          // Low Balance Warning
           if (data.balance < 50) {
-            // Optional: Check if we haven't shown it recently to avoid spam
             showLowBalanceAlert(data.balance);
           }
+        });
+
+        socket.on('app-notification', (data) => {
+          if (data && data.text) showToast(data.text, data.type || 'success');
         });
 
         // Load Home Slider

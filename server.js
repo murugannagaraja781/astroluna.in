@@ -3452,11 +3452,24 @@ app.post('/api/admin/process-product-order', async (req, res) => {
     order.processedAt = new Date();
     await order.save();
 
+    const targetSId = userSockets.get(order.userId);
+    const user = await User.findOne({ userId: order.userId });
+
     if (action === 'rejected') {
-      const user = await User.findOne({ userId: order.userId });
       if (user) {
         user.purchaseWalletBalance += order.amount;
         await user.save();
+        if (targetSId) {
+          io.to(targetSId).emit('wallet-update', { 
+            balance: user.walletBalance, 
+            purchaseBalance: user.purchaseWalletBalance 
+          });
+          io.to(targetSId).emit('app-notification', { text: `❌ Order Rejected: ${order.productName}. Amount refunded.` });
+        }
+      }
+    } else {
+      if (targetSId) {
+        io.to(targetSId).emit('app-notification', { text: `✅ Order Accepted: ${order.productName}. Your product will be processed.` });
       }
     }
 

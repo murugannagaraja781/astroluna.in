@@ -423,6 +423,16 @@ class HomeActivity : AppCompatActivity() {
             _userSession.value = tokenManager.getUserSession()
         }
 
+        socket?.on("app-notification") { args ->
+            val data = args[0] as JSONObject
+            val text = data.optString("text")
+            if (text.isNotEmpty()) {
+                runOnUiThread {
+                    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         socket?.emit("get-astrologers")
     }
 
