@@ -209,7 +209,7 @@
 
             if (uid) {
                 try {
-                    const r = await fetch(`/api/user/profile/${uid}`);
+                    const r = await fetch(`/api/user/${uid}`);
                     const d = await r.json();
                     console.log("[HandleBuy] Final Balance Sync:", d);
                     
