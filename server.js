@@ -3516,19 +3516,28 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
     }
 
     if (method === 'wallet') {
-      const user = await User.findOne({ userId });
+      let user = await User.findOne({ userId });
       if (!user) return res.json({ ok: false, error: 'User not found' });
       
+      const pWallet = user.purchaseWalletBalance || 0;
+      const mWallet = user.walletBalance || 0;
+
       // Check which wallet has enough balance
-      if (user.purchaseWalletBalance >= totalAmount) {
-        user.purchaseWalletBalance -= totalAmount;
-      } else if (user.walletBalance >= totalAmount) {
-        user.walletBalance -= totalAmount;
+      if (pWallet >= totalAmount) {
+        user = await User.findOneAndUpdate(
+            { userId },
+            { $inc: { purchaseWalletBalance: -totalAmount } },
+            { new: true }
+        );
+      } else if (mWallet >= totalAmount) {
+        user = await User.findOneAndUpdate(
+            { userId },
+            { $inc: { walletBalance: -totalAmount } },
+            { new: true }
+        );
       } else {
         return res.json({ ok: false, error: `Insufficient balance! Total required: ₹${totalAmount}. Please recharge.` });
       }
-
-      await user.save();
 
       // Create Order
       const order = new ProductOrder({
