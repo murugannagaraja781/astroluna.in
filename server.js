@@ -3477,6 +3477,11 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
     const merchantOrderId = 'PROD_' + Date.now();
     const method = paymentMethod || 'online';
     const qty = parseInt(req.body.qty) || 1;
+    
+    if (product.stockQuantity < qty) {
+      return res.json({ ok: false, error: 'Not enough stock available!' });
+    }
+    
     const totalAmount = product.price * qty;
 
     if (method === 'cod') {
@@ -3494,6 +3499,9 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         status: 'pending'
       });
       await order.save();
+      
+      // Deduct Stock
+      await Product.updateOne({ productId }, { $inc: { stockQuantity: -qty } });
 
       // Notify Admin & Save
       const adminNotif = new Notification({
@@ -3554,6 +3562,9 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         status: 'pending'
       });
       await order.save();
+      
+      // Deduct Stock
+      await Product.updateOne({ productId }, { $inc: { stockQuantity: -qty } });
 
       // Notify Admin
       const adminNotif = new Notification({

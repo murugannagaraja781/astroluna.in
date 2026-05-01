@@ -12064,6 +12064,19 @@
         });
       };
 
+      window.acceptProductOrder = function(orderId) {
+        if (!confirm('Accept this order and notify the client?')) return;
+        socket.emit('process-product-order', { orderId, action: 'accepted' }, (res) => {
+          if (res.ok) {
+            alert('✅ Order Accepted!');
+            const el = document.getElementById(`notif-${orderId}`);
+            if (el) el.remove();
+          } else {
+            alert('❌ Error: ' + res.error);
+          }
+        });
+      };
+
       socket.on('admin-notification', (msg) => {
         if (state.me && (state.me.role === 'superadmin' || state.me.role === 'user-manager')) {
           // Create Popup
@@ -12076,7 +12089,8 @@
              ${msg.data && msg.data.withdrawalId ?
               `<button class="approve" onclick="approveWithdrawal('${msg.data.withdrawalId}', ${msg.data.amount})">Accept & Deduct</button>` : ''}
              ${msg.type === 'product_order' ? 
-              `<button class="approve" onclick="showTab('products'); switchProductSubTab('orders'); this.parentElement.remove();">View Orders</button>` : ''}
+              `<button class="approve" onclick="acceptProductOrder('${msg.data.orderId}')">Accept Order</button>
+               <button class="approve" style="background:#64748b; margin-top:5px;" onclick="showTab('products'); switchProductSubTab('orders'); this.parentElement.remove();">View Orders</button>` : ''}
              ${msg.type === 'astrologer_request' ? 
               `<button class="approve" onclick="navAdmin('requests'); this.parentElement.remove();">View Requests</button>` : ''}
              <button class="close" onclick="this.parentElement.remove()">Close</button>
