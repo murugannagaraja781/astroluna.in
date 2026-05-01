@@ -3541,11 +3541,13 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
     // Initiate PhonePe Payment (v2 Standard Checkout)
     const redirectUrl = `https://astroluna.in/payment-status?merchantOrderId=${merchantOrderId}`;
     const payRes = await callPhonePePayV2(merchantOrderId, amountPaisa, redirectUrl, phone);
+    console.log("[Product Purchase] PhonePe Response:", JSON.stringify(payRes));
 
     if (payRes.success) {
       res.json({ ok: true, redirectUrl: payRes.data.redirectUrl });
     } else {
-      res.json({ ok: false, error: 'Payment gateway error: ' + (payRes.data?.message || 'Unknown') });
+      const errMsg = payRes.data?.message || payRes.data?.code || 'Unknown Gateway Error';
+      res.json({ ok: false, error: 'Payment gateway error: ' + errMsg });
     }
   } catch (e) { 
     console.error("Product Purchase Init Error:", e);

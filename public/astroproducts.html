@@ -231,15 +231,16 @@
                 const data = await res.json();
                 if (data.ok) {
                     if (data.cod) {
-                        alert("🎉 Order placed successfully via Cash on Delivery!");
-                        window.location.href = `/payment-status?merchantOrderId=${currentBuyingProduct.name}`;
+                        alert("🎉 Order placed successfully via Cash on Delivery!\nOur team will contact you soon.");
+                        closeModal();
+                        fetchProducts(); // Refresh stock
                     } else if (data.redirectUrl) {
                         window.location.href = data.redirectUrl;
                     }
                 } else {
                     alert("Error: " + (data.error || "Failed to initiate payment"));
                     payBtn.disabled = false;
-                    payBtn.innerText = "Pay with PhonePe";
+                    payBtn.innerText = paymentMethod === 'online' ? "Pay with PhonePe" : "Complete Order (COD)";
                 }
             } catch (e) {
                 alert("Network error. Please try again.");
