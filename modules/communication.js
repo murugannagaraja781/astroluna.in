@@ -487,7 +487,9 @@ module.exports = function(io, shared) {
             birthData: JSON.stringify(birthData || {}),
             iceServers: JSON.stringify(ICE_SERVERS)
           };
-          sendFcmV1Push(toUser.fcmToken, fcmData, { title: '📞 Incoming Call', body: `${fromUser.name} is calling you` });
+          const title = type === 'chat' ? '💬 New Chat Request' : '📞 Incoming Call';
+          const body = type === 'chat' ? `${fromUser.name} wants to chat with you` : `${fromUser.name} is calling you`;
+          sendFcmV1Push(toUser.fcmToken, fcmData, { title, body });
         }
 
         safeAck(cb, { ok: true, sessionId, iceServers: ICE_SERVERS });

@@ -82,6 +82,7 @@
         android:theme="@style/Theme.FCMCallApp"
         android:name=".AstrologerApp"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:extractNativeLibs="false"
         tools:targetApi="35">
 
         <!--
@@ -154,6 +155,9 @@
                 <data android:scheme="astroluna" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.history.ConsultationHistoryActivity"
+            android:theme="@style/Theme.FCMCallApp" />
 
         <!--
             IncomingCallActivity: Full-screen incoming call UI

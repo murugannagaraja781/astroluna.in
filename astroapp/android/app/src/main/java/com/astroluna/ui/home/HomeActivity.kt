@@ -141,6 +141,9 @@ class HomeActivity : AppCompatActivity() {
                             "Profile" -> {
                                 startActivity(Intent(this, com.astroluna.ui.profile.UserProfileActivity::class.java))
                             }
+                            "Recent History" -> {
+                                startActivity(Intent(this, com.astroluna.ui.history.ConsultationHistoryActivity::class.java))
+                            }
                             "Astrologer Registration" -> {
                                 startActivity(Intent(this, com.astroluna.ui.astro.AstrologerRegistrationActivity::class.java))
                             }

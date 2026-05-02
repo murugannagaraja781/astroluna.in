@@ -170,10 +170,9 @@ class FCMService : FirebaseMessagingService() {
                     }
                 }
                 "INCOMING_CHAT" -> {
-                    val callerName = data["callerName"] ?: "Unknown"
-                    val callerId = data["callerId"] ?: ""
-                    val sessionId = data["sessionId"] ?: ""
-                    handleIncomingChat(callerName, callerId, sessionId)
+                    val mutableData = data.toMutableMap()
+                    if (mutableData["callType"] == null) mutableData["callType"] = "chat"
+                    handleIncomingCall(mutableData)
                 }
                 "CHAT_MESSAGE" -> {
                     val text = data["text"] ?: "New message"

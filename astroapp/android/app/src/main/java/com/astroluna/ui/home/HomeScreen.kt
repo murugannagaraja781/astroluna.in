@@ -66,6 +66,7 @@ import com.astroluna.data.model.Banner
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import com.astroluna.data.local.TokenManager
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 
@@ -1035,7 +1036,7 @@ fun AppDrawer(onItemClick: (String) -> Unit, onClose: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Drawer Items
-        val items = listOf("Home", "Profile", "Astrologer Registration", "Terms & Conditions", "Privacy Policy", "Settings", "Logout")
+        val items = listOf("Home", "Profile", "Recent History", "Astrologer Registration", "Terms & Conditions", "Privacy Policy", "Settings", "Logout")
         items.forEach { item ->
             NavigationDrawerItem(
                 label = {

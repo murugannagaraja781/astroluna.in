@@ -98,9 +98,9 @@ const PHONEPE_CLIENT_ID = (process.env.PHONEPE_CLIENT_ID || "").trim();
 const PHONEPE_CLIENT_VERSION = (process.env.PHONEPE_CLIENT_VERSION || "1").trim();
 const PHONEPE_CLIENT_SECRET = (process.env.PHONEPE_CLIENT_SECRET || "").trim();
 // WebRTC TURN Server Config
-const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:139.59.0.107:3478?transport=udp";
-const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:139.59.0.107:3478?transport=tcp";
-const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:139.59.0.107:5349";
+const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:68.183.86.124:3478?transport=udp";
+const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:68.183.86.124:3478?transport=tcp";
+const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:68.183.86.124:5349";
 const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
@@ -333,7 +333,10 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const errorMsg = err.message || '';
     console.error(`[FCM v1] Send error for token ${fcmToken.substring(0, 10)}...:`, errorMsg);
     
-    const isDeadToken = errorMsg.includes('not found') || errorMsg.includes('not registered') || errorMsg.includes('invalid');
+    const isDeadToken = errorMsg.toLowerCase().includes('not found') || 
+                        errorMsg.toLowerCase().includes('not registered') || 
+                        errorMsg.toLowerCase().includes('invalid') ||
+                        errorMsg.toLowerCase().includes('not a valid');
     
     if (isDeadToken) {
       try {
@@ -342,10 +345,10 @@ async function sendFcmV1Push(fcmToken, data, notification) {
       } catch (dbErr) {
         console.error('[FCM] Failed to unset invalid token:', dbErr.message);
       }
-      // Do NOT fallback if the token is known to be dead - it will just fail with 404 in Legacy
       return { success: false, error: 'Token not found' };
     }
 
+    // Only fallback if it's not a dead token and legacy is likely to work
     return await sendFcmLegacy(fcmToken, data, notification);
   }
 }
@@ -591,7 +594,7 @@ app.post('/api/user/upload-photo', photoUpload.single('photo'), async (req, res)
     const user = await User.findOneAndUpdate(
       { userId },
       { image: imageUrl },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!user) {
@@ -3547,13 +3550,13 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
         user = await User.findOneAndUpdate(
             { userId },
             { $inc: { purchaseWalletBalance: -totalAmount } },
-            { new: true }
+            { returnDocument: 'after' }
         );
       } else if (mWallet >= totalAmount) {
         user = await User.findOneAndUpdate(
             { userId },
             { $inc: { walletBalance: -totalAmount } },
-            { new: true }
+            { returnDocument: 'after' }
         );
       } else {
         return res.json({ ok: false, error: `Insufficient balance! Total required: ₹${totalAmount}. Please recharge.` });
