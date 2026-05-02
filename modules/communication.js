@@ -297,6 +297,36 @@ module.exports = function(io, shared) {
       } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
     });
 
+    socket.on('update-order-tracking', async ({ orderId, deliveryStatus, trackingDetails }, cb) => {
+      try {
+        if (socket.role !== 'superadmin' && socket.role !== 'user-manager') {
+          return safeAck(cb, { ok: false, error: 'Unauthorized' });
+        }
+        const order = await ProductOrder.findOne({ orderId });
+        if (!order) return safeAck(cb, { ok: false, error: 'Order not found' });
+
+        order.deliveryStatus = deliveryStatus;
+        order.trackingDetails = trackingDetails;
+        await order.save();
+
+        // Notify User
+        const targetSId = userSockets.get(order.userId);
+        const statusMsg = deliveryStatus === 'shipped' ? '🚀 Your order has been shipped!' : (deliveryStatus === 'delivered' ? '🎁 Your order has been delivered!' : '📦 Order status updated.');
+        
+        if (targetSId) {
+          io.to(targetSId).emit('app-notification', { text: `${statusMsg} ${trackingDetails || ''}` });
+          // Force refresh their orders list if they are online
+          io.to(targetSId).emit('refresh-my-orders');
+        }
+        
+        if (typeof sendFcmV1Push === 'function') {
+           sendFcmV1Push(order.userId, 'Order Update', `${statusMsg} ${trackingDetails || ''}`);
+        }
+
+        safeAck(cb, { ok: true });
+      } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
     // --- Rejoin Session ---
     socket.on('rejoin-session', (data) => {
       try {

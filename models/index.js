@@ -238,6 +238,7 @@ const ProductOrderSchema = new mongoose.Schema({
   paymentStatus: { type: String, default: 'pending' },
   paymentMethod: { type: String, enum: ['online', 'cod', 'wallet'], default: 'online' },
   deliveryStatus: { type: String, enum: ['pending', 'shipped', 'delivered'], default: 'pending' },
+  trackingDetails: String,
   costPrice: { type: Number, default: 0 }, // Snapshot of cost at purchase
   requestedAt: { type: Date, default: Date.now },
   processedAt: Date
