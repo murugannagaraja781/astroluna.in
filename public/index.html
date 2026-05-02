@@ -3968,7 +3968,6 @@
               </div>
             </div>
           </div>
-          </div>
 
           <!-- Product Orders Section -->
           <div style="margin-bottom: 20px;">
@@ -9071,7 +9070,7 @@
                         </div>
                         ${n.type === 'product_order' ? 
                             `<div style="display:flex; flex-direction:column; gap:5px;">
-                                ${n.details && n.details.orderId ? `<button class="btn-admin" style="background:#10b981; padding:5px 12px; font-size:0.8rem;" onclick="acceptProductOrder('${n.details.orderId}')">Accept Order</button>` : ''}
+                                ${n.details && n.details.orderId ? `<button class="btn-admin" style="background:#10b981; padding:5px 12px; font-size:0.8rem;" onclick="processProductOrderAdmin('${n.details.orderId}', 'accepted')">Accept Order</button>` : ''}
                                 <button class="btn-admin" style="background:#7c3aed; padding:5px 12px; font-size:0.8rem;" onclick="navAdmin('products'); switchProductSubTab('orders');">View Orders</button>
                              </div>` : ''}
                     </div>
@@ -12100,11 +12099,12 @@
         });
       };
 
-      window.acceptProductOrder = function(orderId) {
-        if (!confirm('Accept this order and notify the client?')) return;
-        socket.emit('process-product-order', { orderId, action: 'accepted' }, (res) => {
+      window.processProductOrderAdmin = function(orderId, action = 'accepted') {
+        const msg = action === 'accepted' ? 'Accept this order and notify the client?' : 'Reject this order and refund the user?';
+        if (!confirm(msg)) return;
+        socket.emit('process-product-order', { orderId, action }, (res) => {
           if (res.ok) {
-            alert('✅ Order Accepted!');
+            alert(`✅ Order ${action === 'accepted' ? 'Accepted' : 'Rejected'}!`);
             const el = document.getElementById(`notif-${orderId}`);
             if (el) el.remove();
             if (typeof loadAdminProductOrders === 'function') loadAdminProductOrders();
@@ -12127,7 +12127,7 @@
              ${msg.data && msg.data.withdrawalId ?
               `<button class="approve" onclick="approveWithdrawal('${msg.data.withdrawalId}', ${msg.data.amount})">Accept & Deduct</button>` : ''}
              ${msg.type === 'product_order' ? 
-              `<button class="approve" onclick="acceptProductOrder('${msg.data.orderId}')">Accept Order</button>
+              `<button class="approve" onclick="processProductOrderAdmin('${msg.data.orderId}', 'accepted')">Accept Order</button>
                <button class="approve" style="background:#64748b; margin-top:5px;" onclick="showTab('products'); switchProductSubTab('orders'); this.parentElement.remove();">View Orders</button>` : ''}
              ${msg.type === 'astrologer_request' ? 
               `<button class="approve" onclick="navAdmin('requests'); this.parentElement.remove();">View Requests</button>` : ''}
