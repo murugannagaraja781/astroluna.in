@@ -262,7 +262,7 @@ module.exports = function(io, shared) {
         order.processedAt = new Date();
         await order.save();
 
-        if (action === 'rejected') {
+          if (action === 'rejected') {
           // Refund balance
           const user = await User.findOne({ userId: order.userId });
           if (user) {
@@ -277,12 +277,19 @@ module.exports = function(io, shared) {
               });
               io.to(targetSId).emit('app-notification', { text: `❌ Order Rejected: ${order.productName}. Amount refunded.` });
             }
+            if (typeof sendFcmV1Push === 'function') {
+              sendFcmV1Push(order.userId, 'Order Rejected', `Your order for ${order.productName} was rejected. ₹${order.amount} has been refunded.`);
+            }
           }
         } else {
           // Accepted
+          const msg = `✅ Order Accepted: ${order.productName}. Estimated delivery in 5-7 working days.`;
           const targetSId = userSockets.get(order.userId);
           if (targetSId) {
-            io.to(targetSId).emit('app-notification', { text: `✅ Order Accepted: ${order.productName}. Your product will be processed.` });
+            io.to(targetSId).emit('app-notification', { text: msg });
+          }
+          if (typeof sendFcmV1Push === 'function') {
+            sendFcmV1Push(order.userId, 'Order Accepted!', `Your order for ${order.productName} has been accepted. Delivery expected in 5-7 days.`);
           }
         }
 
