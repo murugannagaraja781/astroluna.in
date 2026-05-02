@@ -3312,6 +3312,18 @@ app.get('/api/phonepe/status/:transactionId', async (req, res) => {
           user.purchaseWalletBalance = (user.purchaseWalletBalance || 0) + (payment.amount * 0.02);
           user.hasRecharged = true;
           await user.save();
+          
+          // Record in Ledger
+          await BillingLedger.create({
+            billingId: crypto.randomUUID(),
+            sessionId: payment.paymentId,
+            minuteIndex: 0,
+            chargedToClient: -payment.amount, // Negative debit means credit
+            creditedToAstrologer: 0,
+            adminAmount: -payment.amount,
+            reason: 'wallet_recharge',
+            createdAt: new Date()
+          });
           console.log(`[PhonePe] Wallet Credited: ${user.name} +₹${payment.amount}`);
 
           // Notify via Socket
@@ -3794,6 +3806,18 @@ app.post('/api/admin/process-product-order', async (req, res) => {
       if (user && (order.paymentMethod === 'online' || order.paymentMethod === 'wallet')) {
         user.purchaseWalletBalance += order.amount;
         await user.save();
+
+        // Record Refund in Ledger
+        await BillingLedger.create({
+          billingId: crypto.randomUUID(),
+          sessionId: 'refund_' + order.orderId,
+          minuteIndex: 0,
+          chargedToClient: -order.amount, // Credit back
+          creditedToAstrologer: 0,
+          adminAmount: -order.amount,
+          reason: 'rounded', // Reusing a general reason or we can add 'refund' to enum
+          createdAt: new Date()
+        });
         if (targetSId) {
           io.to(targetSId).emit('wallet-update', { 
             balance: user.walletBalance, 

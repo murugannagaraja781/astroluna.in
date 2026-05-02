@@ -187,6 +187,18 @@ module.exports = function(io, shared) {
           status: 'pending'
         });
         await order.save();
+        
+        // Record in Ledger
+        await BillingLedger.create({
+          billingId: crypto.randomUUID(),
+          sessionId: orderId,
+          minuteIndex: 0,
+          chargedToClient: amount,
+          creditedToAstrologer: 0,
+          adminAmount: amount,
+          reason: 'product_purchase',
+          createdAt: new Date()
+        });
 
         // Notify user
         socket.emit('wallet-update', { 
@@ -762,6 +774,18 @@ module.exports = function(io, shared) {
           amount,
           status: 'pending',
           requestedAt: new Date()
+        });
+
+        // Record in Ledger
+        await BillingLedger.create({
+          billingId: crypto.randomUUID(),
+          sessionId: 'withdrawal_' + withdrawalId,
+          minuteIndex: 0,
+          chargedToClient: amount,
+          creditedToAstrologer: 0,
+          adminAmount: 0,
+          reason: 'payout_withdrawal',
+          createdAt: new Date()
         });
 
         // Notify Admin
