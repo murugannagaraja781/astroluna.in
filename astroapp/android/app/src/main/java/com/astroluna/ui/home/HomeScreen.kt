@@ -855,9 +855,9 @@ fun ReferAndEarnSection(code: String, stats: com.astroluna.data.model.ReferralSt
                         onClick = {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, "Download Astro Luna")
+                                putExtra(Intent.EXTRA_SUBJECT, "Download AstroLuna")
                                 val shareUrl = "https://astroluna.in?ref=$code"
-                                putExtra(Intent.EXTRA_TEXT, "Join me on Astro Luna! Get expert astrology consultations, daily horoscope and more! \n\nRegister via my link to get a join bonus: $shareUrl \n\nReferral Code: $code")
+                                putExtra(Intent.EXTRA_TEXT, "Join me on AstroLuna! Get expert astrology consultations, daily horoscope and more! \n\nRegister via my link to get a join bonus: $shareUrl \n\nReferral Code: $code")
                             }
                             context.startActivity(Intent.createChooser(shareIntent, "Share Referral Code"))
                         },
@@ -1925,7 +1925,7 @@ fun AstroProductsScreen(userId: String) {
                     settings.setSupportZoom(true)
                     settings.builtInZoomControls = true
                     settings.displayZoomControls = false
-                    
+
                     // Inject Bridge for Purchases
                     addJavascriptInterface(object {
                         @android.webkit.JavascriptInterface
@@ -1950,7 +1950,7 @@ fun AstroProductsScreen(userId: String) {
 
                     webViewClient = android.webkit.WebViewClient()
                     webChromeClient = android.webkit.WebChromeClient()
-                    
+
                     loadUrl("https://astroluna.in/astroproducts?userId=$userId")
                 }
             },

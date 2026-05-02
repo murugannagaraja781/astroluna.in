@@ -3773,7 +3773,7 @@ app.post('/api/admin/process-product-order', async (req, res) => {
     const user = await User.findOne({ userId: order.userId });
 
     if (action === 'rejected') {
-      if (user && order.paymentMethod === 'online') {
+      if (user && (order.paymentMethod === 'online' || order.paymentMethod === 'wallet')) {
         user.purchaseWalletBalance += order.amount;
         await user.save();
         if (targetSId) {
