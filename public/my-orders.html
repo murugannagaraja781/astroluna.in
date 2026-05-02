@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - AstroLuna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #7c3aed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+        #ordersList {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 50px;
+        }
+        .order-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-name {
+            font-weight: bold;
+            color: #374151;
+            font-size: 1rem;
+        }
+        .product-qty {
+            color: #7C3AED;
+            font-size: 0.85rem;
+        }
+        .amount {
+            font-weight: bold;
+            color: #10B981;
+        }
+        .tracking-box {
+            margin-top: 10px;
+            padding: 8px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border: 1px solid #bae6fd;
+            font-size: 0.75rem;
+        }
+        .tracking-status {
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 3px;
+        }
+        .tracking-details {
+            color: #0c4a6e;
+        }
+        .footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .meta-info {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+        .meta-item {
+            margin-top: 3px;
+            color: #6B7280;
+        }
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-icon">
+            <i class="fas fa-shopping-bag"></i>
+        </div>
+        <h2>My Orders</h2>
+    </div>
+
+    <div id="ordersList">
+        <div class="loader">
+            <i class="fas fa-circle-notch fa-spin"></i> Loading your orders...
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+
+        async function fetchOrders() {
+            const listEl = document.getElementById('ordersList');
+            if (!userId) {
+                listEl.innerHTML = '<div class="loader">User session not found.</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/products/my-orders?userId=${userId}`);
+                const res = await response.json();
+
+                if (res.ok && res.orders) {
+                    if (res.orders.length === 0) {
+                        listEl.innerHTML = '<div class="loader">No orders placed yet.</div>';
+                        return;
+                    }
+
+                    listEl.innerHTML = res.orders.map(order => {
+                        const date = new Date(order.requestedAt).toLocaleDateString() + ' ' + new Date(order.requestedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        let statusColor = '#D97706'; // pending
+                        let icon = 'fa-clock';
+                        let statusText = 'Pending';
+
+                        if (order.status === 'accepted') {
+                            statusColor = '#059669'; icon = 'fa-check-circle'; statusText = 'Accepted';
+                        } else if (order.status === 'rejected') {
+                            statusColor = '#DC2626'; icon = 'fa-times-circle'; statusText = 'Rejected';
+                        }
+
+                        let trackingHtml = '';
+                        if (order.status === 'accepted' && order.deliveryStatus) {
+                            let trackIcon = 'fa-box';
+                            let trackText = 'Processing';
+                            if (order.deliveryStatus === 'shipped') { trackIcon = 'fa-shipping-fast'; trackText = 'Shipped'; }
+                            if (order.deliveryStatus === 'delivered') { trackIcon = 'fa-gift'; trackText = 'Delivered'; }
+                            
+                            trackingHtml = `
+                                <div class="tracking-box">
+                                    <div class="tracking-status">
+                                        <i class="fas ${trackIcon}"></i> ${trackText}
+                                    </div>
+                                    <div class="tracking-details">${order.trackingDetails || 'Processing your package...'}</div>
+                                </div>
+                            `;
+                        }
+
+                        return `
+                        <div class="order-card">
+                            <div class="order-row">
+                                <div class="product-name">${order.productName} <span class="product-qty">(x${order.quantity})</span></div>
+                                <div class="amount">₹${order.amount}</div>
+                            </div>
+                            
+                            ${trackingHtml}
+
+                            <div class="footer-info">
+                                <div class="meta-info">
+                                    <div><i class="far fa-calendar-alt"></i> ${date}</div>
+                                    <div class="meta-item"><i class="fas ${order.paymentMethod === 'wallet' ? 'fa-wallet' : 'fa-truck'}"></i> ${order.paymentMethod === 'wallet' ? 'Wallet' : 'COD'}</div>
+                                </div>
+                                <div class="status-badge" style="color: ${statusColor};">
+                                    <i class="fas ${icon}"></i> ${statusText}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    listEl.innerHTML = '<div class="loader">Error loading orders.</div>';
+                }
+            } catch (e) {
+                listEl.innerHTML = '<div class="loader">Failed to connect to server.</div>';
+            }
+        }
+
+        fetchOrders();
+    </script>
+</body>
+</html>

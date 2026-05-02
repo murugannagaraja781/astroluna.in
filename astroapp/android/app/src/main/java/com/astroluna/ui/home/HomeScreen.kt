@@ -1913,48 +1913,88 @@ fun StickyFooterButtons(
 @Composable
 fun AstroProductsScreen(userId: String) {
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        AndroidView(
-            factory = { ctx: Context ->
-                android.webkit.WebView(ctx).apply {
-                    settings.javaScriptEnabled = true
-                    settings.loadWithOverviewMode = true
-                    settings.useWideViewPort = true
-                    settings.domStorageEnabled = true
-                    settings.databaseEnabled = true
-                    settings.setSupportZoom(true)
-                    settings.builtInZoomControls = true
-                    settings.displayZoomControls = false
+    var currentUrl by remember { mutableStateOf("https://astroluna.in/astroproducts?userId=$userId") }
+    val isOrdersPage = currentUrl.contains("orders")
 
-                    // Inject Bridge for Purchases
-                    addJavascriptInterface(object {
-                        @android.webkit.JavascriptInterface
-                        fun getUserId(): String = userId
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { 
+                    Text(
+                        if (isOrdersPage) "My Orders" else "Celestial Store",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                },
+                navigationIcon = {
+                    if (isOrdersPage) {
+                        IconButton(onClick = { currentUrl = "https://astroluna.in/astroproducts?userId=$userId" }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    }
+                },
+                actions = {
+                    if (!isOrdersPage) {
+                        IconButton(onClick = { currentUrl = "https://astroluna.in/my-orders.html?userId=$userId" }) {
+                            Icon(Icons.Default.List, contentDescription = "My Orders")
+                            Text("Orders", style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = 4.dp))
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = RoyalMidnightBlue,
+                    actionIconContentColor = RoyalMidnightBlue
+                )
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(padding).background(Color.White)) {
+            AndroidView(
+                factory = { ctx: Context ->
+                    android.webkit.WebView(ctx).apply {
+                        settings.javaScriptEnabled = true
+                        settings.loadWithOverviewMode = true
+                        settings.useWideViewPort = true
+                        settings.domStorageEnabled = true
+                        settings.databaseEnabled = true
+                        settings.setSupportZoom(true)
+                        settings.builtInZoomControls = true
+                        settings.displayZoomControls = false
 
-                        @android.webkit.JavascriptInterface
-                        fun payWithBonusWallet(amount: Double, productName: String) {
-                            com.astroluna.data.remote.SocketManager.purchaseProduct(amount, productName) { response ->
-                                post {
-                                    if (response?.optBoolean("ok") == true) {
-                                        Toast.makeText(context, "Purchase Successful!", Toast.LENGTH_SHORT).show()
-                                        loadUrl("javascript:onPaymentSuccess('$productName')")
-                                    } else {
-                                        val error = response?.optString("error") ?: "Payment Failed"
-                                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-                                        loadUrl("javascript:onPaymentError('$error')")
+                        // Inject Bridge for Purchases
+                        addJavascriptInterface(object {
+                            @android.webkit.JavascriptInterface
+                            fun getUserId(): String = userId
+
+                            @android.webkit.JavascriptInterface
+                            fun payWithBonusWallet(amount: Double, productName: String) {
+                                com.astroluna.data.remote.SocketManager.purchaseProduct(amount, productName) { response ->
+                                    post {
+                                        if (response?.optBoolean("ok") == true) {
+                                            Toast.makeText(context, "Purchase Successful!", Toast.LENGTH_SHORT).show()
+                                            loadUrl("javascript:onPaymentSuccess('$productName')")
+                                        } else {
+                                            val error = response?.optString("error") ?: "Payment Failed"
+                                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                                            loadUrl("javascript:onPaymentError('$error')")
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }, "AndroidBridge")
+                        }, "AndroidBridge")
 
-                    webViewClient = android.webkit.WebViewClient()
-                    webChromeClient = android.webkit.WebChromeClient()
-
-                    loadUrl("https://astroluna.in/astroproducts?userId=$userId")
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
+                        webViewClient = android.webkit.WebViewClient()
+                        webChromeClient = android.webkit.WebChromeClient()
+                        loadUrl(currentUrl)
+                    }
+                },
+                update = { webView ->
+                    if (webView.url != currentUrl) {
+                        webView.loadUrl(currentUrl)
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
