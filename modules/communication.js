@@ -278,7 +278,10 @@ module.exports = function(io, shared) {
               io.to(targetSId).emit('app-notification', { text: `❌ Order Rejected: ${order.productName}. Amount refunded.` });
             }
             if (typeof sendFcmV1Push === 'function') {
-              sendFcmV1Push(order.userId, 'Order Rejected', `Your order for ${order.productName} was rejected. ₹${order.amount} has been refunded.`);
+              const u = await User.findOne({ userId: order.userId }, { fcmToken: 1 });
+              if (u && u.fcmToken) {
+                sendFcmV1Push(u.fcmToken, { type: 'order_rejected', orderId: order.orderId }, { title: 'Order Rejected', body: `Your order for ${order.productName} was rejected. ₹${order.amount} has been refunded.` });
+              }
             }
           }
         } else {
@@ -289,7 +292,10 @@ module.exports = function(io, shared) {
             io.to(targetSId).emit('app-notification', { text: msg });
           }
           if (typeof sendFcmV1Push === 'function') {
-            sendFcmV1Push(order.userId, 'Order Accepted!', `Your order for ${order.productName} has been accepted. Delivery expected in 5-7 days.`);
+            const u = await User.findOne({ userId: order.userId }, { fcmToken: 1 });
+            if (u && u.fcmToken) {
+              sendFcmV1Push(u.fcmToken, { type: 'order_accepted', orderId: order.orderId }, { title: 'Order Accepted!', body: `Your order for ${order.productName} has been accepted. Delivery expected in 5-7 days.` });
+            }
           }
         }
 
@@ -320,7 +326,10 @@ module.exports = function(io, shared) {
         }
         
         if (typeof sendFcmV1Push === 'function') {
-           sendFcmV1Push(order.userId, 'Order Update', `${statusMsg} ${trackingDetails || ''}`);
+          const u = await User.findOne({ userId: order.userId }, { fcmToken: 1 });
+          if (u && u.fcmToken) {
+            sendFcmV1Push(u.fcmToken, { type: 'order_update', orderId: order.orderId }, { title: 'Order Update', body: `${statusMsg} ${trackingDetails || ''}` });
+          }
         }
 
         safeAck(cb, { ok: true });

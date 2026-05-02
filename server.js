@@ -3748,9 +3748,27 @@ app.post('/api/admin/process-product-order', async (req, res) => {
     if (!order) return res.json({ ok: false, error: 'Order not found' });
 
     if (deliveryStatus) {
-       order.deliveryStatus = deliveryStatus;
-       await order.save();
-       return res.json({ ok: true });
+      order.deliveryStatus = deliveryStatus;
+      if (req.body.trackingDetails) order.trackingDetails = req.body.trackingDetails;
+      await order.save();
+
+      // Notify User via Socket
+      const targetSId = userSockets.get(order.userId);
+      const statusMsg = deliveryStatus === 'shipped' ? '🚀 Your order has been shipped!' : (deliveryStatus === 'delivered' ? '🎁 Your order has been delivered!' : '📦 Order status updated.');
+      const trackingMsg = order.trackingDetails ? ` | ${order.trackingDetails}` : '';
+
+      if (targetSId) {
+        io.to(targetSId).emit('app-notification', { text: `${statusMsg}${trackingMsg}` });
+        io.to(targetSId).emit('refresh-my-orders');
+      }
+
+      // Notify User via Push
+      const u = await User.findOne({ userId: order.userId }, { fcmToken: 1 });
+      if (u && u.fcmToken && typeof sendFcmV1Push === 'function') {
+        sendFcmV1Push(u.fcmToken, { type: 'order_update', orderId: order.orderId }, { title: 'Order Update', body: `${statusMsg}${trackingMsg}` });
+      }
+
+      return res.json({ ok: true });
     }
 
     if (order.status !== 'pending') return res.json({ ok: false, error: 'Order already processed' });
@@ -3791,11 +3809,20 @@ app.post('/api/admin/process-product-order', async (req, res) => {
       const dateStr = deliveryDate.toLocaleDateString();
       
       if (targetSId) {
-        io.to(targetSId).emit('app-notification', { 
+        io.to(targetSId).emit('app-notification', {
           title: 'Order Accepted! ✅',
-          text: `Your order for ${order.productName} has been accepted. It will be delivered by ${dateStr}.` 
+          text: `Your order for ${order.productName} has been accepted. It will be delivered by ${dateStr}.`
         });
       }
+
+      // Notify via Push
+      if (user && user.fcmToken && typeof sendFcmV1Push === 'function') {
+        sendFcmV1Push(user.fcmToken, { type: 'order_accepted', orderId: order.orderId }, {
+          title: 'Order Accepted! ✅',
+          body: `Your order for ${order.productName} has been accepted. Delivery by ${dateStr}.`
+        });
+      }
+
       // Also save to notification model
       const notif = new Notification({
         userId: order.userId,
