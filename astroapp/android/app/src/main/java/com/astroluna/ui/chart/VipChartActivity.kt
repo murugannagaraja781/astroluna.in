@@ -55,9 +55,9 @@ val DeepSpaceNavy = Color(0xFF000B18)
 val PremiumBlue = Color(0xFF001F3F)
 val NeonCyan = Color(0xFF7FDBFF)
 val ElectricBlue = Color(0xFF0074D9)
-val TraditionalRed = Color(0xFF8B0000) // Deep Traditional Red
-val GridBg = Color(0xFFF4E1C1) // Parchment Base
-val BorderColor = NeonCyan
+val TraditionalRed = Color(0xFF212121) // Deep Neutral Dark
+val GridBg = Color.White // Professional White Base
+val BorderColor = Color(0xFF333333) // Dark Professional Border
 
 // --- Tamil Translation Constants ---
 val signTamil = mapOf(
@@ -442,10 +442,10 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
             for (i in 1..3) {
                 if (i == 2) {
                     // Skip center 2x2
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(i * cellW, 0f), Offset(i * cellW, cellH), strokeWidth = 1.dp.toPx())
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(i * cellW, 3 * cellH), Offset(i * cellW, h), strokeWidth = 1.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(i * cellW, 0f), Offset(i * cellW, cellH), strokeWidth = 0.5.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(i * cellW, 3 * cellH), Offset(i * cellW, h), strokeWidth = 0.5.dp.toPx())
                 } else {
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(i * cellW, 0f), Offset(i * cellW, h), strokeWidth = 1.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(i * cellW, 0f), Offset(i * cellW, h), strokeWidth = 0.5.dp.toPx())
                 }
             }
 
@@ -453,10 +453,10 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
             for (i in 1..3) {
                 if (i == 2) {
                     // Skip center 2x2
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(0f, i * cellH), Offset(cellW, i * cellH), strokeWidth = 1.dp.toPx())
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(3 * cellW, i * cellH), Offset(w, i * cellH), strokeWidth = 1.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(0f, i * cellH), Offset(cellW, i * cellH), strokeWidth = 0.5.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(3 * cellW, i * cellH), Offset(w, i * cellH), strokeWidth = 0.5.dp.toPx())
                 } else {
-                    drawLine(NeonCyan.copy(alpha=0.3f), Offset(0f, i * cellH), Offset(w, i * cellH), strokeWidth = 1.dp.toPx())
+                    drawLine(BorderColor.copy(alpha=0.2f), Offset(0f, i * cellH), Offset(w, i * cellH), strokeWidth = 0.5.dp.toPx())
                 }
             }
 
@@ -473,11 +473,11 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
             // Draw a subtle background for the center "pillar" area
             drawPath(
                 path = rectPath,
-                brush = Brush.verticalGradient(listOf(Color(0xFFFFF9C4).copy(alpha = 0.5f), Color(0xFFFBC02D).copy(alpha = 0.1f)))
+                brush = Brush.verticalGradient(listOf(Color(0xFFF5F5F5), Color(0xFFEEEEEE)))
             )
 
             // Central Border (Thicker)
-            drawPath(rectPath, NeonCyan, style = Stroke(width = 2.dp.toPx()))
+            drawPath(rectPath, BorderColor, style = Stroke(width = 1.5.dp.toPx()))
         }
 
         // Contents

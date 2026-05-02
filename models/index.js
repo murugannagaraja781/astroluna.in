@@ -67,7 +67,8 @@ const SessionSchema = new mongoose.Schema({
   sessionEndAt: Number,
   status: { type: String, enum: ['active', 'ended'], default: 'active' },
   fromUserId: String, toUserId: String, type: String,
-  duration: Number, totalEarned: Number, totalDeducted: Number
+   duration: Number, totalEarned: Number, totalDeducted: Number,
+   recordingUrl: { type: String, default: null }
 });
 
 const PairMonthSchema = new mongoose.Schema({

@@ -108,4 +108,6 @@ interface ApiInterface {
         @retrofit2.http.Part("userId") userId: okhttp3.RequestBody,
         @retrofit2.http.Part photo: okhttp3.MultipartBody.Part
     ): Response<com.google.gson.JsonObject>
+    @retrofit2.http.GET("api/astrology/history/{userId}")
+    suspend fun getUserHistory(@retrofit2.http.Path("userId") userId: String): Response<com.google.gson.JsonObject>
 }

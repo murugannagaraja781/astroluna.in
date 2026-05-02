@@ -39,6 +39,7 @@ data class ChatMessage(val id: String, val text: String, val isSent: Boolean, va
 
 class ChatActivity : ComponentActivity() {
 
+    private var isHistoryView by mutableStateOf(false)
     private val viewModel: ChatViewModel by viewModels()
     private var toUserId: String? = null
     private var sessionId: String? = null
@@ -50,6 +51,7 @@ class ChatActivity : ComponentActivity() {
     private var timerHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private val timerRunnable = object : Runnable {
         override fun run() {
+            if (isHistoryView) return // No timer in history mode
             chatDurationSeconds++
             val minutes = chatDurationSeconds / 60
             val seconds = chatDurationSeconds % 60
@@ -101,7 +103,7 @@ class ChatActivity : ComponentActivity() {
                 ChatScreen(
                     viewModel = viewModel,
                     sessionDuration = sessionDuration,
-                    title = intent?.getStringExtra("toUserName") ?: "Chat",
+                    title = if (isHistoryView) "Chat History" else (intent?.getStringExtra("toUserName") ?: "Chat"),
                     onBack = { finish() },
                     onEndChat = { endChat() },
                     onEditIntake = {
@@ -127,6 +129,7 @@ class ChatActivity : ComponentActivity() {
                     sessionId = sessionId,
                     remainingTime = remainingTime,
                     clientBirthData = clientBirthData,
+                    isHistoryView = isHistoryView,
                     onCopyText = { text ->
                         val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                         val clip = android.content.ClipData.newPlainText("Chat Message", text)
@@ -172,6 +175,7 @@ class ChatActivity : ComponentActivity() {
     private fun handleIntent(intent: Intent?) {
         toUserId = intent?.getStringExtra("toUserId")
         sessionId = intent?.getStringExtra("sessionId")
+        isHistoryView = intent?.getBooleanExtra("isHistoryView", false) == true
         val birthDataStr = intent?.getStringExtra("birthData")
         if (!birthDataStr.isNullOrEmpty()) {
              try {
@@ -329,6 +333,7 @@ fun ChatScreen(
     sessionId: String?,
     remainingTime: String,
     clientBirthData: JSONObject? = null,
+    isHistoryView: Boolean = false,
     onCopyText: (String) -> Unit
 ) {
     val messages by viewModel.history.observeAsState(emptyList())
@@ -355,18 +360,26 @@ fun ChatScreen(
                 title = {
                     Column {
                         Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp, maxLines = 1)
-                        if (isAstrologer && remainingTime.isNotEmpty() && remainingTime != "00:00") {
-                             Text("Time: $remainingTime", fontSize = 12.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                        if (!isHistoryView) {
+                            if (isAstrologer && remainingTime.isNotEmpty() && remainingTime != "00:00") {
+                                Text("Time: $remainingTime", fontSize = 12.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                            } else {
+                                Text("Online", fontSize = 12.sp, color = Color.White.copy(alpha=0.7f))
+                            }
                         } else {
-                             Text("Online", fontSize = 12.sp, color = Color.White.copy(alpha=0.7f))
+                            Text("Ended Session", fontSize = 12.sp, color = Color.White.copy(alpha=0.7f))
                         }
                     }
                 },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = Color.White) } },
                 actions = {
-                    Text(sessionDuration, color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.padding(end=12.dp))
-                    IconButton(onClick = onEditIntake) { Icon(Icons.Default.Edit, "Intake", tint = Color.White) }
-                    TextButton(onClick = onEndChat) { Text("End", color = Color.Red, fontWeight = FontWeight.Bold) }
+                    if (!isHistoryView) {
+                        Text(sessionDuration, color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.padding(end=12.dp))
+                        IconButton(onClick = onEditIntake) { Icon(Icons.Default.Edit, "Intake", tint = Color.White) }
+                        TextButton(onClick = onEndChat) { Text("End", color = Color.Red, fontWeight = FontWeight.Bold) }
+                    } else {
+                        IconButton(onClick = onViewChart) { Icon(painterResource(R.drawable.ic_chart), "Chart", tint = Color.White) }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF4A148C),
@@ -375,40 +388,42 @@ fun ChatScreen(
             )
         },
         bottomBar = {
-            ChatInputBar(
-                text = inputText,
-                replyingTo = replyingTo,
-                onTextChange = {
-                    inputText = it
-                    if (toUserId != null) viewModel.sendTyping(toUserId)
-                },
-                onCancelReply = { replyingTo = null },
-                onSend = {
-                    if (inputText.isNotBlank() && toUserId != null && sessionId != null) {
-                         var finalText = inputText
-                         if (replyingTo != null) {
-                             // Prepend Reply Quote
-                             val snippet = replyingTo!!.text.take(50).replace("\n", " ")
-                             finalText = "> Replying to: $snippet\n$inputText"
-                         }
+            if (!isHistoryView) {
+                ChatInputBar(
+                    text = inputText,
+                    replyingTo = replyingTo,
+                    onTextChange = {
+                        inputText = it
+                        if (toUserId != null) viewModel.sendTyping(toUserId)
+                    },
+                    onCancelReply = { replyingTo = null },
+                    onSend = {
+                        if (inputText.isNotBlank() && toUserId != null && sessionId != null) {
+                            var finalText = inputText
+                            if (replyingTo != null) {
+                                // Prepend Reply Quote
+                                val snippet = replyingTo!!.text.take(50).replace("\n", " ")
+                                finalText = "> Replying to: $snippet\n$inputText"
+                            }
 
-                         val payload = JSONObject().apply {
-                            put("toUserId", toUserId)
-                            put("sessionId", sessionId)
-                            put("messageId", UUID.randomUUID().toString())
-                            put("timestamp", System.currentTimeMillis())
-                            put("content", JSONObject().put("text", finalText))
-                         }
-                         viewModel.sendMessage(payload)
-                         SoundManager.playSentSound()
-                         inputText = ""
-                         replyingTo = null
-                         viewModel.sendStopTyping(toUserId)
-                    }
-                },
-                onViewChart = if (isAstrologer) onViewChart else null,
-                clientBirthData = clientBirthData
-            )
+                            val payload = JSONObject().apply {
+                                put("toUserId", toUserId)
+                                put("sessionId", sessionId)
+                                put("messageId", UUID.randomUUID().toString())
+                                put("timestamp", System.currentTimeMillis())
+                                put("content", JSONObject().put("text", finalText))
+                            }
+                            viewModel.sendMessage(payload)
+                            SoundManager.playSentSound()
+                            inputText = ""
+                            replyingTo = null
+                            viewModel.sendStopTyping(toUserId)
+                        }
+                    },
+                    onViewChart = if (isAstrologer) onViewChart else null,
+                    clientBirthData = clientBirthData
+                )
+            }
         }
     ) { padding ->
         Box(

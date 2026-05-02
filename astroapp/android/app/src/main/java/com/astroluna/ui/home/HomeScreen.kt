@@ -1,3 +1,4 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package com.astroluna.ui.home
 
 import androidx.compose.foundation.Image
@@ -18,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -265,10 +267,11 @@ fun HomeScreen(
     // Banners & Referral Stats State
     var banners by remember { mutableStateOf<List<Banner>>(emptyList()) }
     var refStats by remember { mutableStateOf<com.astroluna.data.model.ReferralStats?>(null) }
+    var recentSessions by remember { mutableStateOf<List<com.google.gson.JsonObject>>(emptyList()) }
     val tokenManager = remember { com.astroluna.data.local.TokenManager(context) }
     val userId = remember { tokenManager.getUserSession()?.userId ?: "" }
 
-    // Fetch Banners & Stats
+    // Fetch Banners & Stats & History
     LaunchedEffect(Unit) {
         // Initial Fetch
         try {
@@ -280,6 +283,17 @@ fun HomeScreen(
                 val statsRes = ApiClient.api.getReferralStats(userId)
                 if (statsRes.isSuccessful && statsRes.body()?.ok == true) {
                     refStats = statsRes.body()!!.stats
+                }
+                
+                // Fetch Recent History
+                val historyRes = ApiClient.api.getUserHistory(userId)
+                if (historyRes.isSuccessful && historyRes.body()?.get("ok")?.asBoolean == true) {
+                    val sessions = historyRes.body()!!.getAsJsonArray("sessions")
+                    val list = mutableListOf<com.google.gson.JsonObject>()
+                    for (i in 0 until minOf(sessions.size(), 3)) {
+                        list.add(sessions.get(i).asJsonObject)
+                    }
+                    recentSessions = list
                 }
             }
         } catch (e: Exception) {
@@ -354,6 +368,7 @@ fun HomeScreen(
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = selectedTab != 4, 
         drawerContent = {
             AppDrawer(
                 onItemClick = { item ->
@@ -438,7 +453,9 @@ fun HomeScreen(
                             }
                             item { RasiGridSection(onRasiClick) }
                         }
-                        item { CustomerStoriesSection() }
+                        if (selectedTab == 0 && recentSessions.isNotEmpty()) {
+                            item { ChatHistorySection(recentSessions, isTamil) }
+                        }
                         item {
                             val title = when(selectedTab) {
                                 1 -> Localization.get("chat_services", isTamil)
@@ -1094,7 +1111,7 @@ fun HomeTopBar(
              Spacer(modifier = Modifier.width(8.dp))
 
              Text(
-                text = "Astro Luna",
+                text = "AstroLuna",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -1379,7 +1396,7 @@ fun AstrologerCard(
                 ) {
                     AstrologerActionButton(
                         text = "Chat",
-                        icon = Icons.Default.Chat,
+                        icon = Icons.AutoMirrored.Filled.Chat,
                         isBusy = astro.isBusy,
                         isOnline = astro.isChatOnline,
                         baseColor = Color(0xFF0074D9),
@@ -1424,7 +1441,7 @@ fun HomeBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
     ) {
         val items = listOf(
             Triple("Home", androidx.compose.material.icons.Icons.Default.Home, 0),
-            Triple("Chat", androidx.compose.material.icons.Icons.Default.Send, 1),
+            Triple("Chat", androidx.compose.material.icons.Icons.AutoMirrored.Filled.Send, 1),
             Triple("Refer", androidx.compose.material.icons.Icons.Default.Person, 5),
             Triple("Call", androidx.compose.material.icons.Icons.Default.Phone, 3),
             Triple("Products", androidx.compose.material.icons.Icons.Default.ShoppingCart, 4)
@@ -1786,65 +1803,122 @@ fun ServiceItem(name: String, iconRes: Int, onClick: () -> Unit) {
 
 
 @Composable
-fun CustomerStoriesSection() {
-    val stories = listOf(
-        Triple("Akshay Sharma", "Sharjah, Dubai", "I talked to Asha ma'am on Anytime..."),
-        Triple("Priya Singh", "Mumbai, India", "Very accurate prediction about my..."),
-        Triple("Rahul Verma", "Delhi, India", "Helped me resolve my marriage...")
-    )
-
-    Column(modifier = Modifier.padding(vertical = 16.dp)) {
-        Text(
-            text = "Customer Stories",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = Color.Black,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        )
-
+fun ChatHistorySection(sessions: List<com.google.gson.JsonObject>, isTamil: Boolean) {
+    val context = LocalContext.current
+    Column(modifier = Modifier.padding(16.dp)) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            stories.forEach { (name, loc, review) ->
-                CustomerStoryCard(name, loc, review)
+            Text(
+                text = if (isTamil) "சமீபத்திய வரலாறு" else "Recent History",
+                style = MaterialTheme.typography.titleLarge,
+                color = CosmicAppTheme.colors.accent,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(12.dp))
+
+        sessions.forEach { session ->
+            val type = session.get("type")?.asString ?: "chat"
+            val astroName = session.get("clientName")?.asString ?: "Astrologer" // The API returns clientName but we want the other person. 
+            // In the client's view, we should probably show the astrologer's name.
+            // Let's check the API again.
+            
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .clickable {
+                        if (type == "chat") {
+                            val intent = Intent(context, com.astroluna.ui.chat.ChatActivity::class.java)
+                            intent.putExtra("sessionId", session.get("sessionId")?.asString)
+                            intent.putExtra("toUserId", if (session.get("clientId")?.asString == TokenManager(context).getUserSession()?.userId) session.get("astrologerId")?.asString else session.get("clientId")?.asString)
+                            intent.putExtra("toUserName", astroName)
+                            intent.putExtra("isHistoryView", true)
+                            context.startActivity(intent)
+                        } else if (type == "audio" || type == "video") {
+                             // Already has play button, but we can make card click play too
+                             val recordingUrl = session.get("recordingUrl")?.let { if (it.isJsonNull) null else it.asString }
+                             if (recordingUrl != null) {
+                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recordingUrl))
+                                 context.startActivity(intent)
+                             }
+                        }
+                    },
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f)),
+                border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f))
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                when(type) {
+                                    "chat" -> Color(0xFF4CAF50)
+                                    "video" -> Color(0xFFE91E63)
+                                    else -> Color(0xFF2196F3)
+                                },
+                                CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = when(type) {
+                                "chat" -> Icons.AutoMirrored.Filled.Chat
+                                "video" -> Icons.Default.Videocam
+                                else -> Icons.Default.Call
+                            },
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(12.dp))
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(astroName, fontWeight = FontWeight.Bold, color = Color.White)
+                        val duration = session.get("actualDuration")?.asInt ?: 0
+                        val dateStr = session.get("startTime")?.asString?.split("T")?.get(0) ?: ""
+                        Text(
+                            text = "${type.replaceFirstChar { it.uppercase() }} • $duration min • $dateStr",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
+                    }
+
+                    // Recording Play Button
+                    val recordingUrl = session.get("recordingUrl")?.let { if (it.isJsonNull) null else it.asString }
+                    if (recordingUrl != null && (type == "audio" || type == "video")) {
+                        IconButton(onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recordingUrl))
+                            context.startActivity(intent)
+                        }) {
+                            Icon(Icons.Default.PlayArrow, "Play Recording", tint = PeacockGreen)
+                        }
+                    }
+                }
             }
         }
-    }
-}
 
-@Composable
-fun CustomerStoryCard(name: String, loc: String, review: String) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray.copy(alpha=0.5f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = Modifier.width(260.dp)
-    ) {
-        Row(modifier = Modifier.padding(12.dp)) {
-            Image(
-                painter = painterResource(id = com.astroluna.R.drawable.ic_person_placeholder),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        TextButton(
+            onClick = { /* Navigate to full history */ },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = if (isTamil) "மேலும் பார்க்க" else "Read More",
+                color = PeacockGreen,
+                fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(imageVector = Icons.Default.Menu, contentDescription=null, modifier=Modifier.size(16.dp), tint=Color.Gray) // 3-dot placeholder
-                }
-                Text(text = loc, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = review, style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text(text = "more", style = MaterialTheme.typography.labelSmall, color = Color.Red)
-            }
         }
     }
 }
@@ -1875,7 +1949,7 @@ fun StickyFooterButtons(
             modifier = Modifier.weight(1f).height(46.dp),
             contentPadding = PaddingValues(horizontal = 4.dp)
         ) {
-            Icon(imageVector = androidx.compose.material.icons.Icons.Default.Send, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.Black)
+            Icon(imageVector = androidx.compose.material.icons.Icons.AutoMirrored.Filled.Send, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.Black)
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Chat with Astro",
@@ -1910,6 +1984,7 @@ fun StickyFooterButtons(
         }
     }
 }
+
 @Composable
 fun AstroProductsScreen(userId: String) {
     val context = LocalContext.current
@@ -1928,15 +2003,30 @@ fun AstroProductsScreen(userId: String) {
                 navigationIcon = {
                     if (isOrdersPage) {
                         IconButton(onClick = { currentUrl = "https://astroluna.in/astroproducts?userId=$userId" }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     }
                 },
                 actions = {
                     if (!isOrdersPage) {
-                        IconButton(onClick = { currentUrl = "https://astroluna.in/my-orders.html?userId=$userId" }) {
-                            Icon(Icons.Default.List, contentDescription = "My Orders")
-                            Text("Orders", style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = 4.dp))
+                        Row(
+                            modifier = Modifier
+                                .clickable { currentUrl = "https://astroluna.in/my-orders.html?userId=$userId" }
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.CreditCard, 
+                                contentDescription = "My Orders",
+                                tint = RoyalMidnightBlue,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                "Orders", 
+                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                color = RoyalMidnightBlue
+                            )
                         }
                     }
                 },

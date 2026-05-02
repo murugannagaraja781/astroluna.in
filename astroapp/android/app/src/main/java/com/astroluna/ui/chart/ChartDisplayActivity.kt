@@ -147,9 +147,9 @@ class ChartDisplayActivity : ComponentActivity() {
                         display: grid;
                         grid-template-columns: 1fr 1fr 1fr 1fr;
                         grid-template-rows: 1fr 1fr 1fr 1fr;
-                        gap: 2px;
-                        background: #444;
-                        border: 2px solid #333;
+                        gap: 1px;
+                        background: #333;
+                        border: 1.5px solid #000;
                         width: 100%;
                         aspect-ratio: 1 / 1;
                         margin-bottom: 20px;
@@ -160,7 +160,7 @@ class ChartDisplayActivity : ComponentActivity() {
                     .b2 { grid-column: 3; grid-row: 1; }
                     .b3 { grid-column: 4; grid-row: 1; }
                     .b4 { grid-column: 1; grid-row: 2; }
-                    .center-box { grid-column: 2 / span 2; grid-row: 2 / span 2; background: #ffe; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+                    .center-box { grid-column: 2 / span 2; grid-row: 2 / span 2; background: #f9f9f9; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; }
                     .b5 { grid-column: 4; grid-row: 2; }
                     .b6 { grid-column: 1; grid-row: 3; }
                     .b7 { grid-column: 4; grid-row: 3; }
@@ -168,14 +168,14 @@ class ChartDisplayActivity : ComponentActivity() {
                     .b9 { grid-column: 2; grid-row: 4; }
                     .b10 { grid-column: 3; grid-row: 4; }
                     .b11 { grid-column: 4; grid-row: 4; }
-                    .planet { background: #e0f7fa; padding: 1px 3px; margin: 1px; border-radius: 3px; color: #006064; font-weight: bold; }
-                    .planet.lagna { background: #fce4ec; color: #880e4f; }
+                    .planet { background: #f0f0f0; padding: 2px 4px; margin: 1px; border-radius: 2px; color: #000000; font-weight: bold; font-size: 11px; }
+                    .planet.lagna { background: #ffffff; color: #000000; border: 1px solid #000; }
                     .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
                     .info-table td, .info-table th { border: 1px solid #eee; padding: 10px; text-align: left; font-size: 13px; }
-                    .info-table th { background-color: #6200EE; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .info-table th { background-color: #212121; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
                     .info-table tr:nth-child(even) { background-color: #f8f9fa; }
                     .info-table tr:hover { background-color: #f1ecff; }
-                    .kp-header { background: #6200EE; color: white; padding: 8px 15px; border-radius: 5px; margin-top: 30px; display: inline-block; font-size: 14px; }
+                    .kp-header { background: #212121; color: white; padding: 8px 15px; border-radius: 5px; margin-top: 30px; display: inline-block; font-size: 14px; }
                 </style>
             </head>
             <body>

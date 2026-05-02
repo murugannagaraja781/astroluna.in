@@ -1655,8 +1655,8 @@
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(4, 1fr);
       gap: 0;
-      border: 2px solid #D97706;
-      background: #FEF3C7;
+      border: 1.5px solid #333333;
+      background: #ffffff;
       width: 100%;
       aspect-ratio: 1/1;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1834,7 +1834,7 @@
       justify-content: center;
       text-align: center;
       position: relative;
-      border: 1px solid #D97706;
+      border: 0.5px solid #cccccc;
       overflow: hidden;
     }
 
@@ -1849,7 +1849,7 @@
       left: 2px;
       font-size: 0.6rem;
       font-weight: bold;
-      color: #D97706;
+      color: #666666;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       opacity: 0.8;
@@ -6234,6 +6234,20 @@
       </div>
     </div>
 
+    <!-- Chat History Viewer -->
+    <div id="screen-chat-history" class="modal-overlay hidden" style="z-index: 10001;">
+      <div class="premium-modal">
+        <div class="modal-header">
+          <button onclick="document.getElementById('screen-chat-history').classList.add('hidden')" class="close-btn" style="margin-right: 15px;"><i class="fas fa-arrow-left"></i></button>
+          <span>Chat Messages</span>
+          <button onclick="document.getElementById('screen-chat-history').classList.add('hidden')" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="chatHistoryContent" class="modal-list" style="background: #f5f5f5; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+           <!-- Chat messages will render here -->
+        </div>
+      </div>
+    </div>
+
     <style>
       .premium-modal {
         background: var(--secondary-bg);
@@ -7380,7 +7394,7 @@
       } else if (action === 'orders') {
         navSwitch('orders');
       } else if (action === 'history') {
-        navSwitch('dash');
+        showHistory();
       } else if (action === 'referral') {
         openReferralModal();
       }
@@ -8333,13 +8347,14 @@
     }
 
     // History Logic
+    // History Logic
     function showHistory() {
       const modal = document.getElementById('screen-history');
       const list = document.getElementById('historyList');
-      list.innerHTML = '<div style="text-align:center; margin-top:20px;">Loading...</div>';
+      list.innerHTML = '<div style="text-align:center; margin-top:20px; color:white;">Loading...</div>';
       modal.classList.remove('hidden');
 
-      socket.emit('get-history', (res) => {
+      state.socket.emit('get-history', (res) => {
         if (!res.ok || !res.sessions) {
           list.innerHTML = '<div style="text-align:center; color:red;">Failed to load.</div>';
           return;
@@ -8354,8 +8369,8 @@
         res.sessions.forEach(s => {
           const date = new Date(s.startTime).toLocaleString();
 
-          // Format duration as M min S sec
-          let duraText = 'Ongoing/Failed';
+          // Format duration
+          let duraText = 'Ended';
           if (s.duration) {
             const totalSec = Math.floor(s.duration / 1000);
             const m = Math.floor(totalSec / 60);
@@ -8363,33 +8378,78 @@
             duraText = m > 0 ? `${m}m ${s_left}s` : `${s_left}s`;
           }
 
-          const isMe = s.fromUserId === state.me.userId;
-          const otherId = isMe ? s.toUserId : s.fromUserId;
+          const isMe = s.fromUserId === state.me.userId || s.clientId === state.me.userId;
+          const partnerName = s.partnerName || 'Unknown';
 
           const item = document.createElement('div');
-          item.style.cssText = 'background: #f9f9f9; padding: 12px; margin-bottom: 12px; border-radius: 12px; border-left: 5px solid #FFD700; box-shadow: 0 2px 5px rgba(0,0,0,0.05);';
+          item.style.cssText = 'background: white; padding: 15px; margin-bottom: 12px; border-radius: 16px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);';
+          
+          let actionBtn = '';
+          if (s.type === 'chat') {
+            actionBtn = `<button onclick="viewChatMessages('${s.sessionId}')" style="background:var(--brand-purple); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:600; cursor:pointer;">View Chat</button>`;
+          } else if (s.recordingUrl) {
+            actionBtn = `<a href="${s.recordingUrl}" target="_blank" style="background:var(--accent-gold); color:#000; text-decoration:none; padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:600;">Play</a>`;
+          }
+
           item.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
               <div>
-                <div style="font-weight:bold; font-size:1rem; color:#111827;">${s.type.toUpperCase()}</div>
-                <div style="font-size:0.8rem; color:#6B7280; margin-top: 2px;">Partner ID: ${otherId ? otherId.slice(0, 6) : 'Unknown'}</div>
+                <div style="font-weight:800; font-size:0.95rem; color:#111827; display:flex; align-items:center; gap:6px;">
+                   <i class="fas ${s.type === 'chat' ? 'fa-comments' : (s.type === 'video' ? 'fa-video' : 'fa-phone-alt')}" style="color:var(--brand-purple);"></i>
+                   ${s.type.toUpperCase()}
+                </div>
+                <div style="font-size:0.85rem; color:#4B5563; font-weight:600; margin-top:4px;">${partnerName}</div>
               </div>
-              <div style="font-size:0.75rem; color:#9BA3AF; text-align: right;">${date}</div>
+              <div style="font-size:0.7rem; color:#9CA3AF; text-align: right;">${date}</div>
             </div>
-            <div style="font-size:0.9rem; color:#059669; font-weight: 600; padding-top: 5px; border-top: 1px solid #EEE; display: flex; justify-content: space-between; align-items: center; gap: 6px;">
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <i class="fas fa-history" style="font-size: 0.8rem;"></i>
-                <span>Time: ${duraText}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #f3f4f6;">
+              <div style="font-size:0.8rem; color:#6B7280; font-weight:500;">
+                <i class="far fa-clock"></i> ${duraText} • <span style="color:#D97706; font-weight:700;">₹${isMe ? (s.totalDeducted || 0) : (s.totalEarned || 0)}</span>
               </div>
-              <div style="color: #d97706; font-weight: 700;">
-                ₹${isMe ? (s.totalDeducted || 0) : (s.totalEarned || 0)}
-              </div>
+              ${actionBtn}
             </div>
           `;
           list.appendChild(item);
         });
       });
     }
+
+    window.viewChatMessages = function(sessionId) {
+      const modal = document.getElementById('screen-chat-history');
+      const content = document.getElementById('chatHistoryContent');
+      content.innerHTML = '<div style="text-align:center; padding:20px;">Loading messages...</div>';
+      modal.classList.remove('hidden');
+
+      state.socket.emit('get-history', { sessionId }, (res) => {
+        if (!res.ok || !res.messages) {
+          content.innerHTML = '<div style="text-align:center; color:red; padding:20px;">Failed to load messages.</div>';
+          return;
+        }
+
+        if (res.messages.length === 0) {
+          content.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No messages in this session.</div>';
+          return;
+        }
+
+        content.innerHTML = res.messages.map(m => {
+          const isMe = m.fromUserId === state.me.userId;
+          const align = isMe ? 'flex-end' : 'flex-start';
+          const bg = isMe ? 'var(--brand-purple)' : 'white';
+          const color = isMe ? 'white' : '#111827';
+          const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          return `
+            <div style="align-self: ${align}; max-width: 80%; background: ${bg}; color: ${color}; padding: 10px 14px; border-radius: 15px; border-bottom-${isMe?'right':'left'}-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative;">
+               <div style="font-size: 0.95rem; line-height: 1.4;">${m.text}</div>
+               <div style="font-size: 0.65rem; opacity: 0.6; text-align: right; margin-top: 4px;">${time}</div>
+            </div>
+          `;
+        }).join('');
+        
+        // Scroll to bottom
+        setTimeout(() => { content.scrollTop = content.scrollHeight; }, 100);
+      });
+    };
 
     // Session Request Logic
     // Global reference to calling timeout/interval to clear them later
@@ -11737,23 +11797,23 @@
 
         grid.innerHTML = '';
         // Traditional Background
-        grid.style.backgroundColor = '#FCF5E5';
-        grid.style.border = '2px solid #8B0000';
+        grid.style.backgroundColor = '#ffffff';
+        grid.style.border = '1.5px solid #333333';
 
         cellMap.forEach((sign, idx) => {
           const div = document.createElement('div');
           div.className = 'SouthChartBox';
-          div.style.border = '1px solid #8B0000';
+          div.style.border = '0.5px solid #cccccc';
 
           if (!sign) {
             div.setAttribute('data-center', 'true');
             div.style.cssText = 'border: none; background: transparent;';
             if (idx === 5) {
-              div.style.cssText = 'grid-column: 2 / span 2; grid-row: 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fffcf5; border: 2px solid #8B0000; border-radius: 4px; font-size: 0.7rem; color: #8B0000; font-weight: bold; padding: 5px; text-align: center;';
+              div.style.cssText = 'grid-column: 2 / span 2; grid-row: 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 1.5px solid #333333; border-radius: 4px; font-size: 0.7rem; color: #000000; font-weight: bold; padding: 5px; text-align: center;';
               const bDateStr = d.input_date || (d.birth_details ? `${d.birth_details.day}-${d.birth_details.month}-${d.birth_details.year}` : '');
               const bTimeStr = d.input_time || (d.birth_details ? `${d.birth_details.hour}:${d.birth_details.minute}` : '');
               div.innerHTML = `
-                <div style="font-size: 0.6rem; color: #d97706; margin-bottom: 2px;">${chartType.toUpperCase()}</div>
+                <div style="font-size: 0.6rem; color: #666666; margin-bottom: 2px;">${chartType.toUpperCase()}</div>
                 <div style="font-size: 0.75rem; margin-bottom: 2px;">${bDateStr}</div>
                 <div style="font-size: 0.75rem;">${bTimeStr}</div>
               `;

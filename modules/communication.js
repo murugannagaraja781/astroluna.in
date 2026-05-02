@@ -809,8 +809,58 @@ module.exports = function(io, shared) {
         const userId = socketToUser.get(socket.id);
         if (!userId) return safeAck(cb, { ok: false, error: 'Not authenticated' });
         const list = await Withdrawal.find({ astroId: userId }).sort({ requestedAt: -1 }).lean();
-        safeAck(cb, { ok: true, list });
+        safeAck(cb, { ok: true, withdrawals: list });
       } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
+    });
+
+    // --- History Management ---
+    socket.on('get-history', async (data, cb) => {
+      try {
+        // Handle if data is actually the callback (web client case)
+        let actualData = data;
+        let actualCb = cb;
+        if (typeof data === 'function') {
+          actualCb = data;
+          actualData = null;
+        }
+
+        const userId = socketToUser.get(socket.id);
+        if (!userId) return safeAck(actualCb, { ok: false, error: 'Not authenticated' });
+
+        const { sessionId } = actualData || {};
+
+        if (sessionId) {
+          // Return messages for a specific session
+          const messages = await ChatMessage.find({ sessionId }).sort({ timestamp: 1 }).lean();
+          safeAck(actualCb, { ok: true, messages });
+        } else {
+          // Return session list for the user
+          const sessions = await Session.find({
+            $or: [
+              { clientId: userId },
+              { astrologerId: userId },
+              { fromUserId: userId },
+              { toUserId: userId }
+            ],
+            status: 'ended'
+          }).sort({ startTime: -1 }).limit(50).lean();
+
+          // Populate names
+          const populated = await Promise.all(sessions.map(async (s) => {
+            const otherId = s.clientId === userId ? s.astrologerId : (s.astrologerId === userId ? s.clientId : (s.fromUserId === userId ? s.toUserId : s.fromUserId));
+            const other = await User.findOne({ userId: otherId }).select('name').lean();
+            return {
+              ...s,
+              partnerName: other ? other.name : 'Unknown'
+            };
+          }));
+
+          safeAck(actualCb, { ok: true, sessions: populated });
+        }
+      } catch (e) {
+        console.error('get-history error', e);
+        if (typeof cb === 'function') cb({ ok: false, error: 'Server error' });
+      }
     });
 
     socket.on('get-withdrawals', async (data, cb) => {
