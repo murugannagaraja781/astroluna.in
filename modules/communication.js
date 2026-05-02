@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage, Withdrawal, ProductOrder } = require('../models');
+const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage, Withdrawal, ProductOrder, Product } = require('../models');
 
 module.exports = function(io, shared) {
   const { 
@@ -87,9 +87,15 @@ module.exports = function(io, shared) {
           userSockets.set(resolvedUserId, socket.id);
           socketToUser.set(socket.id, resolvedUserId);
           socket.join(resolvedUserId); 
+          
+          // Set role on socket for authorization checks
+          socket.role = user.role;
+          socket.userId = user.userId;
+          socket.userName = user.name;
+
           if (user.role === 'superadmin' || user.role === 'user-manager') {
             socket.join('superadmin');
-            console.log(`[Socket] Admin/Manager ${user.name} joined superadmin room`);
+            console.log(`[Socket] Admin/Manager ${user.name} joined superadmin room (Role: ${socket.role})`);
           }
 
           safeAck(cb, {
@@ -320,7 +326,8 @@ module.exports = function(io, shared) {
         const statusMsg = deliveryStatus === 'shipped' ? '🚀 Your order has been shipped!' : (deliveryStatus === 'delivered' ? '🎁 Your order has been delivered!' : '📦 Order status updated.');
         
         if (targetSId) {
-          io.to(targetSId).emit('app-notification', { text: `${statusMsg} ${trackingDetails || ''}` });
+          const trackingMsg = trackingDetails ? ` | ${trackingDetails}` : '';
+          io.to(targetSId).emit('app-notification', { text: `${statusMsg}${trackingMsg}` });
           // Force refresh their orders list if they are online
           io.to(targetSId).emit('refresh-my-orders');
         }
@@ -328,7 +335,8 @@ module.exports = function(io, shared) {
         if (typeof sendFcmV1Push === 'function') {
           const u = await User.findOne({ userId: order.userId }, { fcmToken: 1 });
           if (u && u.fcmToken) {
-            sendFcmV1Push(u.fcmToken, { type: 'order_update', orderId: order.orderId }, { title: 'Order Update', body: `${statusMsg} ${trackingDetails || ''}` });
+            const trackingMsg = trackingDetails ? ` | ${trackingDetails}` : '';
+            sendFcmV1Push(u.fcmToken, { type: 'order_update', orderId: order.orderId }, { title: 'Order Update', body: `${statusMsg}${trackingMsg}` });
           }
         }
 
