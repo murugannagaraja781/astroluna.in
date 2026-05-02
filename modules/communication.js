@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage, Withdrawal } = require('../models');
+const { User, Session, Notification, PairMonth, BillingLedger, ChatMessage, Withdrawal, ProductOrder } = require('../models');
 
 module.exports = function(io, shared) {
   const { 

@@ -3968,8 +3968,25 @@
               </div>
             </div>
           </div>
+          </div>
 
-
+          <!-- Product Orders Section -->
+          <div style="margin-bottom: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding: 0 5px;">
+              <h3 style="margin:0; font-size:1.1rem; color: var(--accent-gold); font-family: var(--font-heading);">
+                My Orders</h3>
+              <button onclick="fetchMyOrders()" style="background:none; border:none; color: var(--accent-gold); font-weight:600; cursor:pointer;">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+            <div id="myOrdersList" style="display:flex; flex-direction:column; gap:10px;">
+              <!-- Orders will render here -->
+              <div style="text-align:center; padding:30px; color: var(--text-muted); font-size:0.9rem;">
+                <i class="fas fa-box-open" style="font-size: 2rem; opacity: 0.3; display: block; margin-bottom: 10px;"></i>
+                Loading orders...
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -7040,6 +7057,7 @@
 
         // Also fetch transaction history
         if (window.fetchTransactionHistory) window.fetchTransactionHistory();
+        if (window.fetchMyOrders) window.fetchMyOrders();
 
         // Auto-hide spinner after 5 seconds (fallback)
         setTimeout(() => {
@@ -7524,6 +7542,7 @@
 
           // Fetch Payment History
           if (window.fetchTransactionHistory) window.fetchTransactionHistory();
+          if (window.fetchMyOrders) window.fetchMyOrders();
         }
 
         // SHOW GLOBAL FOOTER (Client Nav) - hide if guest
@@ -7599,6 +7618,7 @@
 
           // Refresh History
           if (window.fetchTransactionHistory) window.fetchTransactionHistory();
+          if (window.fetchMyOrders) window.fetchMyOrders();
 
           // Low Balance Warning
           if (data.balance < 50) {
@@ -12374,6 +12394,56 @@
         } catch (e) {
           console.error("History Fetch Error", e);
           listEl.innerHTML = '<div style="text-align:center; padding:10px; color:#EF4444;">Failed to load history.</div>';
+        }
+      };
+
+      window.fetchMyOrders = async function () {
+        if (!state.me || !state.me.userId) return;
+        const listEl = document.getElementById('myOrdersList');
+        if (!listEl) return;
+        try {
+          const res = await fetch(`/api/products/my-orders?userId=${state.me.userId}`).then(r => r.json());
+          if (res.ok && res.orders) {
+            if (res.orders.length === 0) {
+              listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#6B7280; font-size:0.9rem;">No orders placed yet.</div>';
+              return;
+            }
+            listEl.innerHTML = res.orders.map(order => {
+              const date = new Date(order.requestedAt).toLocaleDateString() + ' ' + new Date(order.requestedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              let statusColor = '#D97706'; // pending
+              let icon = 'fa-clock';
+              let statusText = 'Pending';
+              
+              if (order.status === 'accepted') {
+                statusColor = '#059669'; icon = 'fa-check-circle'; statusText = 'Accepted';
+              } else if (order.status === 'rejected') {
+                statusColor = '#DC2626'; icon = 'fa-times-circle'; statusText = 'Rejected';
+              }
+              
+              return `
+            <div style="background:white; padding:15px; border-radius:12px; display:flex; flex-direction:column; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-weight:bold; color:#374151; font-size:1rem;">${order.productName} <span style="color:#7C3AED; font-size:0.85rem;">(x${order.quantity})</span></div>
+                <div style="font-weight:bold; color:#10B981;">₹${order.amount}</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:end;">
+                <div>
+                   <div style="font-size:0.75rem; color:#9CA3AF;"><i class="far fa-calendar-alt"></i> ${date}</div>
+                   <div style="font-size:0.75rem; color:#6B7280; margin-top:3px;"><i class="fas ${order.paymentMethod === 'wallet' ? 'fa-wallet' : 'fa-truck'}"></i> ${order.paymentMethod === 'wallet' ? 'Wallet' : 'COD'}</div>
+                </div>
+                <div style="text-align:right;">
+                   <div style="display:flex; align-items:center; gap:5px; font-size:0.8rem; font-weight:600; color:${statusColor};">
+                     <i class="fas ${icon}"></i> ${statusText}
+                   </div>
+                </div>
+              </div>
+            </div>
+            `;
+            }).join('');
+          }
+        } catch (e) {
+          console.error("My Orders Fetch Error", e);
+          listEl.innerHTML = '<div style="text-align:center; padding:10px; color:#EF4444;">Failed to load orders.</div>';
         }
       };
 

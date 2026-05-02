@@ -3630,6 +3630,19 @@ app.post('/api/products/initiate-purchase', async (req, res) => {
   }
 });
 
+app.get('/api/products/my-orders', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) return res.status(400).json({ ok: false, error: 'User ID missing' });
+
+    const orders = await ProductOrder.find({ userId }).sort({ requestedAt: -1 }).lean();
+    res.json({ ok: true, orders });
+  } catch (e) {
+    console.error("My Orders Error:", e);
+    res.status(500).json({ ok: false, error: 'Failed to load orders' });
+  }
+});
+
 app.get('/payment-status', (req, res) => {
   const { merchantOrderId } = req.query;
   res.send(`

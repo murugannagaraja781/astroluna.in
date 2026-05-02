@@ -70,9 +70,9 @@
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Enter your delivery information for shipping.</p>
             
             <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-                <input type="text" id="ship-name" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
-                <input type="tel" id="ship-phone" placeholder="Mobile Number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
-                <textarea id="ship-address" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
+                <input type="text" id="ship-name" oninput="validateForm()" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <input type="tel" id="ship-phone" oninput="validateForm()" placeholder="Mobile Number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <textarea id="ship-address" oninput="validateForm()" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
             </div>
 
             <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:12px; border-radius:15px;">
@@ -190,6 +190,13 @@
             currentBuyingProduct = { price, name, id };
             currentQty = 1;
             document.getElementById('buy-qty').innerText = "1";
+            
+            // Reset form and disable button
+            document.getElementById('ship-name').value = '';
+            document.getElementById('ship-phone').value = '';
+            document.getElementById('ship-address').value = '';
+            validateForm();
+            
             updateSummary();
             document.getElementById('address-modal').style.display = 'flex';
             
@@ -236,6 +243,23 @@
                 console.warn("[HandleBuy] No User ID found");
                 document.getElementById('summary-wallet').innerText = "Login Required";
                 document.getElementById('summary-p-wallet').innerText = "Login Required";
+            }
+        }
+
+        function validateForm() {
+            const name = document.getElementById('ship-name').value.trim();
+            const phone = document.getElementById('ship-phone').value.trim();
+            const address = document.getElementById('ship-address').value.trim();
+            const payBtn = document.getElementById('pay-btn');
+            
+            if (name && address && phone.length >= 10) {
+                payBtn.disabled = false;
+                payBtn.style.opacity = '1';
+                payBtn.style.cursor = 'pointer';
+            } else {
+                payBtn.disabled = true;
+                payBtn.style.opacity = '0.5';
+                payBtn.style.cursor = 'not-allowed';
             }
         }
 
