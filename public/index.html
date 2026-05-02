@@ -3012,6 +3012,7 @@
           <a href="#" class="main-cta" onclick="switchToApp('home')">Start Consultation</a>
           <a href="#" class="sec-cta" onclick="switchToApp('login')"><i class="fas fa-video"></i> Video Call</a>
           <a href="#" class="sec-cta" onclick="switchToApp('login')"><i class="fas fa-phone-alt"></i> Audio Call</a>
+          <a href="astro-register.html" class="sec-cta" style="border-color: var(--brand-purple); color: var(--brand-purple);"><i class="fas fa-user-plus"></i> Join as Astrologer</a>
         </div>
       </div>
     </header>
@@ -3577,6 +3578,12 @@
               <button onclick="checkGuestAction('video')"
                 style="background: rgba(0,0,0,0.04); color: var(--text-main); border: 1px solid rgba(0,0,0,0.1); padding: 10px 22px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">
                 <i class="fas fa-video" style="margin-right: 6px;"></i>Video
+              </button>
+            </div>
+            <div style="margin-top: 15px;">
+              <button onclick="window.location.href='astro-register.html'"
+                style="background: #fff; color: var(--brand-purple); border: 1px solid var(--brand-purple); padding: 10px 30px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease;">
+                <i class="fas fa-user-plus" style="margin-right: 6px;"></i> Join as Astrologer
               </button>
             </div>
           </div>
@@ -9118,6 +9125,7 @@
       }
 
       function loadAdminDash(user) {
+        if (!user) user = state.me || {};
         enterApp(); // Ensure mobile-view is displayed
         hideAllScreens();
         sAdmin.classList.remove('hidden');
@@ -9132,7 +9140,7 @@
         if (afoot) afoot.classList.add('show');
 
         // Role-based UI adjustments for Managers & Staff
-        const role = state.me.role;
+        const role = user.role || 'client';
         const isAdmin = role === 'superadmin';
         const isManager = role === 'user-manager';
         const isStaff = role === 'staff';
