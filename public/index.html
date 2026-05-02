@@ -3499,6 +3499,7 @@
         <a href="#" onclick="drawerNav('horoscope')"><i class="fas fa-sun"></i> Horoscope</a>
         <a href="#" onclick="drawerNav('call')"><i class="fas fa-phone-alt"></i> Call</a>
         <a href="#" onclick="drawerNav('chat')"><i class="fas fa-comments"></i> Chat</a>
+        <a href="#" onclick="drawerNav('orders')"><i class="fas fa-shopping-bag"></i> My Orders</a>
         <a href="#" onclick="drawerNav('history')"><i class="fas fa-history"></i> History</a>
         <a href="#" onclick="drawerNav('referral')"><i class="fas fa-users-viewfinder"></i> Refer & Earn</a>
         <div class="drawer-divider"></div>
@@ -7298,8 +7299,10 @@
           navSwitch('call');
         } else if (action === 'chat') {
           navSwitch('chat');
+        } else if (action === 'orders') {
+          navSwitch('orders');
         } else if (action === 'history') {
-          navSwitch('history');
+          navSwitch('dash');
         } else if (action === 'referral') {
           openReferralModal();
         }
