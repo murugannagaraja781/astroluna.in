@@ -98,9 +98,16 @@ const PHONEPE_CLIENT_ID = (process.env.PHONEPE_CLIENT_ID || "").trim();
 const PHONEPE_CLIENT_VERSION = (process.env.PHONEPE_CLIENT_VERSION || "1").trim();
 const PHONEPE_CLIENT_SECRET = (process.env.PHONEPE_CLIENT_SECRET || "").trim();
 // WebRTC TURN Server Config
-const TURN_SERVER_URL = process.env.TURN_SERVER_URL || "turn:68.183.86.124:3478?transport=udp";
-const TURN_SERVER_URL_TCP = process.env.TURN_SERVER_URL_TCP || "turn:68.183.86.124:3478?transport=tcp";
-const TURN_SERVER_URL_TLS = process.env.TURN_SERVER_URL_TLS || "turns:68.183.86.124:5349";
+// WebRTC TURN Server Config
+const rawTurnIp = process.env.TURN_SERVER_URL || "68.183.86.124";
+const TURN_SERVER_URL = rawTurnIp.startsWith("turn:") ? rawTurnIp : `turn:${rawTurnIp}:3478?transport=udp`;
+
+const rawTurnIpTcp = process.env.TURN_SERVER_URL_TCP || "68.183.86.124";
+const TURN_SERVER_URL_TCP = rawTurnIpTcp.startsWith("turn:") ? rawTurnIpTcp : `turn:${rawTurnIpTcp}:3478?transport=tcp`;
+
+const rawTurnIpTls = process.env.TURN_SERVER_URL_TLS || "68.183.86.124";
+const TURN_SERVER_URL_TLS = rawTurnIpTls.startsWith("turns:") ? rawTurnIpTls : `turns:${rawTurnIpTls}:5349`;
+
 const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || "webrtcuser";
 const TURN_SERVER_PASSWORD = process.env.TURN_SERVER_PASSWORD || "strongpassword123";
 
@@ -295,11 +302,16 @@ try {
 }
 
 
-// Send FCM v1 Push Notification (Using Firebase Admin SDK) with Legacy Fallback
+// Send FCM v1 Push Notification (Using Firebase Admin SDK)
 async function sendFcmV1Push(fcmToken, data, notification) {
   if (!callApp) {
-    console.warn('[FCM] Firebase Admin not initialized - trying legacy fallback');
-    return await sendFcmLegacy(fcmToken, data, notification);
+    console.warn('[FCM] Firebase Admin not initialized.');
+    return { success: false, error: 'Firebase not initialized' };
+  }
+
+  if (!fcmToken || fcmToken.length < 60) {
+    console.warn(`[FCM] Skipping push: Token looks invalid (length ${fcmToken?.length || 0}): ${fcmToken?.substring(0, 10)}...`);
+    return { success: false, error: 'Invalid token format' };
   }
 
   try {
@@ -329,7 +341,7 @@ async function sendFcmV1Push(fcmToken, data, notification) {
     const result = await callApp.messaging().send(message);
     console.log(`[FCM v1] Push sent to ${fcmToken.substring(0, 10)}... | Result:`, result);
     return { success: true, messageId: result };
-    } catch (err) {
+  } catch (err) {
     const errorMsg = err.message || '';
     console.error(`[FCM v1] Send error for token ${fcmToken.substring(0, 10)}...:`, errorMsg);
     
@@ -348,56 +360,12 @@ async function sendFcmV1Push(fcmToken, data, notification) {
       return { success: false, error: 'Token not found' };
     }
 
-    // Only fallback if it's not a dead token and legacy is likely to work
-    return await sendFcmLegacy(fcmToken, data, notification);
+    return { success: false, error: errorMsg };
   }
 }
 
-// Legacy FCM logic (FCM v1 Fallback)
-async function sendFcmLegacy(token, data, notification) {
-  const SERVER_KEY = process.env.FCM_SERVER_KEY;
-  if (!SERVER_KEY) {
-    console.warn('[FCM Legacy] Missing SERVER_KEY in .env');
-    return { success: false, error: 'Missing Server Key' };
-  }
-  try {
-    const payload = {
-      to: token,
-      data: data,
-      priority: 'high'
-    };
-    if (notification) {
-      payload.notification = notification;
-    }
-    const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `key=${SERVER_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+// REMOVED: sendFcmLegacy (Deprecated and 404ing)
 
-    const text = await response.text();
-    if (!response.ok) {
-      console.error(`[FCM Legacy] HTTP Error ${response.status}:`, text.substring(0, 200));
-      return { success: false, error: `HTTP ${response.status}` };
-    }
-
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch (parseErr) {
-      console.error('[FCM Legacy] Non-JSON response received:', text.substring(0, 100));
-      return { success: false, error: 'Non-JSON response' };
-    }
-    console.log('[FCM Legacy] Sent successfully:', result);
-    return { success: true, result };
-  } catch (err) {
-    console.error('[FCM Legacy] Error:', err.message);
-    return { success: false, error: err.message };
-  }
-}
 
 
 const app = express();
@@ -3439,7 +3407,11 @@ app.post('/api/admin/config/update', async (req, res) => {
   try {
     const { config } = req.body;
     for (const key in config) {
-      await GlobalConfig.findOneAndUpdate({ key }, { value: config[key] }, { upsert: true });
+      await GlobalConfig.findOneAndUpdate(
+        { key }, 
+        { value: config[key] }, 
+        { upsert: true, returnDocument: 'after' }
+      );
     }
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ ok: false }); }
@@ -3959,18 +3931,23 @@ app.post('/call', async (req, res) => {
   console.log(`[Mobile] Sending call: ${callerId} → ${calleeId} (callId: ${callId})`);
 
   try {
-    const response = await callApp.messaging().send(message);
-    console.log(`[Mobile] Call notification sent: ${response}`);
-    res.json({ success: true, callId, message: 'Call sent' });
-  } catch (error) {
-    console.error('[Mobile] FCM Error:', error.message);
-    if (error.code === 'messaging/invalid-registration-token' ||
-      error.code === 'messaging/registration-token-not-registered') {
-      // Remove invalid token from DB
-      await User.updateOne({ userId: calleeId }, { $unset: { fcmToken: 1 } });
-      console.log(`[Mobile] Invalid token removed for user ${calleeId}`);
+    const fcmResult = await sendFcmV1Push(fcmToken, {
+      type: 'INCOMING_CALL',
+      callId: callId,
+      callerId: callerId,
+      callerName: callerName || callerId,
+      timestamp: Date.now().toString()
+    }, { title: 'Incoming Call', body: `Call from ${callerName || callerId}` });
+
+    if (fcmResult.success) {
+      console.log(`[Mobile] Call notification sent: ${fcmResult.messageId}`);
+      res.json({ success: true, callId, message: 'Call sent' });
+    } else {
+      console.error('[Mobile] FCM Send Failed:', fcmResult.error);
+      res.status(500).json({ success: false, error: fcmResult.error });
     }
-    // Return 500 only for actual sending errors, not config errors
+  } catch (error) {
+    console.error('[Mobile] Call Error:', error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -3992,7 +3969,7 @@ app.post('/api/admin/config/update', async (req, res) => {
     await GlobalConfig.findOneAndUpdate(
       { key },
       { value, updatedAt: new Date() },
-      { upsert: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     // Refresh cache

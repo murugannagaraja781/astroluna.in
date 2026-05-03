@@ -1121,6 +1121,20 @@ fun HomeTopBar(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Language Toggle
+            TextButton(
+                onClick = onToggleLanguage,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text(
+                    text = if (isTamil) "English" else "தமிழ்",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            }
         }
 
         // RIGHT: Wallet (Premium Look)
@@ -1255,9 +1269,6 @@ fun AstrologerCard(
     selectedTab: Int
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    val showChat = (selectedTab == 0 || selectedTab == 1)
-    val showVideo = (selectedTab == 0 || selectedTab == 2 || selectedTab == 3)
-    val showCall = (selectedTab == 0 || selectedTab == 3)
 
     Card(
         modifier = Modifier

@@ -92,7 +92,7 @@ android {
     packaging {
         jniLibs {
             // 16KB page alignment support for Android 15+
-            useLegacyPackaging = true
+            useLegacyPackaging = false
         }
     }
 }
