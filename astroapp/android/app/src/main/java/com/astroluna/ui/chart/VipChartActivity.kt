@@ -50,14 +50,15 @@ import com.astroluna.ui.intake.IntakeActivity
 import org.json.JSONObject
 import androidx.annotation.Keep
 
-// --- Aesthetic Constants (Premium Blue) ---
-val DeepSpaceNavy = Color(0xFF000B18)
-val PremiumBlue = Color(0xFF001F3F)
-val NeonCyan = Color(0xFF7FDBFF)
-val ElectricBlue = Color(0xFF0074D9)
-val TraditionalRed = Color(0xFF212121) // Deep Neutral Dark
-val GridBg = Color.White // Professional White Base
-val BorderColor = Color(0xFF333333) // Dark Professional Border
+// --- Aesthetic Constants (Professional Light Theme) ---
+val LightGrayBg = Color(0xFFF8F9FA)
+val PureWhite = Color(0xFFFFFFFF)
+val ProfessionalBlue = Color(0xFF1976D2)
+val DarkText = Color(0xFF202124)
+val SubtitleText = Color(0xFF5F6368)
+val TraditionalRed = Color(0xFFD32F2F) 
+val GridBg = Color.White 
+val BorderColor = Color(0xFFE0E0E0) 
 
 // --- Tamil Translation Constants ---
 val signTamil = mapOf(
@@ -225,7 +226,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
     val (chartState, setChartState) = remember { mutableStateOf<ChartData?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
 
     val editLauncher = rememberLauncherForActivityResult(
@@ -291,19 +292,19 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                         Text(
                             "ராசி & நவாம்ச கட்டங்கள்",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
-                            color = NeonCyan
+                            color = ProfessionalBlue
                         )
                         Text(
                             birthData.optString("name", "User"),
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White.copy(alpha = 0.6f)
+                            color = SubtitleText
                         )
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = NeonCyan) }
+                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back", tint = ProfessionalBlue) }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = PureWhite)
             )
         }
     ) { padding ->
@@ -311,7 +312,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
             .padding(padding)
             .fillMaxSize()
             .navigationBarsPadding()
-            .background(Brush.verticalGradient(listOf(DeepSpaceNavy, PremiumBlue)))) {
+            .background(LightGrayBg)) {
 
             // --- New Client Info Header ---
             ClientInfoHeader(birthData) {
@@ -324,7 +325,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
 
             if (isLoading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = NeonCyan)
+                    CircularProgressIndicator(color = ProfessionalBlue)
                 }
             } else if (chartState == null) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -353,21 +354,21 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                                     isLoading = false
                                 }
                             }
-                        }, colors = ButtonDefaults.buttonColors(containerColor = NeonCyan)) {
-                            Text("Retry / மீண்டும் முயற்சி செய்", color = Color.Black)
+                        }, colors = ButtonDefaults.buttonColors(containerColor = ProfessionalBlue)) {
+                            Text("Retry / மீண்டும் முயற்சி செய்", color = Color.White)
                         }
                     }
                 }
             } else {
                 ScrollableTabRow(
                     selectedTabIndex = selectedTab,
-                    containerColor = Color.Transparent,
+                    containerColor = PureWhite,
                     edgePadding = 16.dp,
-                    divider = {},
+                    divider = { Divider(color = BorderColor) },
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                            color = NeonCyan
+                            color = ProfessionalBlue
                         )
                     }
                 ) {
@@ -381,7 +382,7 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
                                     title,
                                     fontSize = 13.sp,
                                     fontWeight = if(selectedTab == index) FontWeight.ExtraBold else FontWeight.Medium,
-                                    color = if(selectedTab == index) NeonCyan else Color.White.copy(alpha = 0.6f)
+                                    color = if(selectedTab == index) ProfessionalBlue else SubtitleText
                                 )
                             }
                         )
@@ -404,13 +405,13 @@ fun VipChartScreen(birthData: JSONObject, onBack: () -> Unit) {
 fun ChartsTab(data: ChartData, birthData: JSONObject) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
 
-        Text("ராசி கட்டம் (Rasi Chart)", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = NeonCyan)
+        Text("ராசி கட்டம் (Rasi Chart)", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = ProfessionalBlue)
         Spacer(Modifier.height(12.dp))
         SouthIndianGridEnhanced(data.planets ?: emptyList(), data.houses?.ascendantDetails?.signName ?: "", "Rasi", birthData, data.panchanga?.nakshatra?.name ?: "")
 
         Spacer(Modifier.height(32.dp))
 
-        Text("நவாம்ச கட்டம் (Navamsa - D9)", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = NeonCyan)
+        Text("நவாம்ச கட்டம் (Navamsa - D9)", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = ProfessionalBlue)
         Spacer(Modifier.height(12.dp))
         SouthIndianGridEnhanced(data.navamsa?.planets ?: emptyList(), data.navamsa?.ascendantSign ?: "", "Navamsa", birthData, "")
 
@@ -429,7 +430,7 @@ fun SouthIndianGridEnhanced(planets: List<Planet>, ascSign: String, title: Strin
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(GridBg, RoundedCornerShape(8.dp))
-            .border(2.dp, NeonCyan, RoundedCornerShape(8.dp))
+            .border(1.dp, ProfessionalBlue.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
     ) {
         // Decorative Borders for boxes
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -575,7 +576,7 @@ fun PlanetGridTab(data: ChartData) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF2E7D32), RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)) // Green Background
+                .background(ProfessionalBlue, RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)) 
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -633,7 +634,7 @@ fun PlanetGridTab(data: ChartData) {
                         }
                     }
 
-                    val detailStyle = TextStyle(color = Color.Blue, fontSize = 11.sp, textAlign = TextAlign.Center, fontWeight = FontWeight.Medium)
+                    val detailStyle = TextStyle(color = ProfessionalBlue, fontSize = 11.sp, textAlign = TextAlign.Center, fontWeight = FontWeight.Medium)
 
                     // Degree (Blue)
                     Text(text = formatDegreeOnly(p.degreeFormatted), modifier = Modifier.weight(2.5f), style = detailStyle)
@@ -672,10 +673,10 @@ fun PlanetsTab(data: ChartData) {
 
 @Composable
 fun DashaListTab(mahadashas: List<DashaPeriod>) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().background(PureWhite)) {
         item {
-            Box(Modifier.fillMaxWidth().background(ElectricBlue.copy(alpha = 0.2f)).padding(16.dp)) {
-                Text("விம்ஷோத்தரி தசா புக்தி விபரங்கள்", color = NeonCyan, fontWeight = FontWeight.ExtraBold)
+            Box(Modifier.fillMaxWidth().background(ProfessionalBlue.copy(alpha = 0.05f)).padding(16.dp)) {
+                Text("விம்ஷோத்தரி தசா புக்தி விபரங்கள்", color = ProfessionalBlue, fontWeight = FontWeight.ExtraBold)
             }
         }
         items(mahadashas) { md ->
@@ -726,19 +727,20 @@ fun DashaNodeInternal(period: DashaPeriod) {
                         else -> "சிக்ஷ்ம"
                     },
                     fontWeight = if(period.level == 1) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = if(period.level == 1) 16.sp else 14.sp
+                    fontSize = if(period.level == 1) 16.sp else 14.sp,
+                    color = DarkText
                 )
                 val dateRange = if (period.start != null && period.end != null) {
                     "${period.start!!.take(10).replace("-", ".")} - ${period.end!!.take(10).replace("-", ".")}"
                 } else "Date Unknown"
-                Text(dateRange, fontSize = 11.sp, color = Color.Gray)
+                Text(dateRange, fontSize = 11.sp, color = SubtitleText)
             }
 
             if (hasSub) {
                 Icon(
-                    if (expanded) Icons.Default.ArrowBack else Icons.Default.ArrowBack,
+                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = Color.Gray
+                    tint = SubtitleText
                 )
             }
         }
@@ -747,10 +749,10 @@ fun DashaNodeInternal(period: DashaPeriod) {
             period.subPeriods?.forEach { child ->
                 DashaNodeInternal(child)
             }
-            Divider(Modifier.padding(start = ((period.level) * 20).dp), color = Color.White.copy(alpha = 0.05f))
+            Divider(Modifier.padding(start = ((period.level) * 20).dp), color = BorderColor)
         }
         if (period.level == 1) {
-            Divider(color = Color.White.copy(alpha = 0.1f))
+            Divider(color = BorderColor)
         }
     }
 }
@@ -814,8 +816,9 @@ fun ClientInfoHeader(birthData: JSONObject, onEdit: () -> Unit) {
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.08f)),
-        border = BorderStroke(1.dp, NeonCyan.copy(alpha = 0.3f))
+        colors = CardDefaults.cardColors(containerColor = PureWhite),
+        elevation = CardDefaults.cardElevation(2.dp),
+        border = BorderStroke(1.dp, BorderColor)
     ) {
         Row(
             modifier = Modifier
@@ -828,7 +831,7 @@ fun ClientInfoHeader(birthData: JSONObject, onEdit: () -> Unit) {
                 Text(
                     text = birthData.optString("name", "User Details"),
                     style = MaterialTheme.typography.titleLarge,
-                    color = NeonCyan,
+                    color = ProfessionalBlue,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(4.dp))
@@ -840,25 +843,25 @@ fun ClientInfoHeader(birthData: JSONObject, onEdit: () -> Unit) {
                 Text(
                     text = "$dob | $tob | $gender",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = DarkText.copy(alpha = 0.8f)
                 )
                 Text(
                     text = place,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = SubtitleText
                 )
             }
 
             IconButton(
                 onClick = onEdit,
                 modifier = Modifier
-                    .background(NeonCyan.copy(alpha = 0.2f), CircleShape)
+                    .background(ProfessionalBlue.copy(alpha = 0.1f), CircleShape)
                     .size(40.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit Details",
-                    tint = NeonCyan,
+                    tint = ProfessionalBlue,
                     modifier = Modifier.size(20.dp)
                 )
             }
