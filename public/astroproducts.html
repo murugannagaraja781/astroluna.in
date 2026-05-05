@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Astrohark — Celestial Store</title>
+    <title>AstroLuna — Celestial Store</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -16,37 +18,151 @@
             --text-muted: #64748b;
             --bg: #f8fafc;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text-main); padding: 16px; padding-bottom: 80px; }
-        
-        .header { margin-bottom: 24px; }
-        .header h1 { font-size: 24px; font-weight: 800; color: var(--brand-purple); }
-        .header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-        
-        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-        @media (min-width: 480px) { .grid { grid-template-columns: 1fr 1fr; } }
-        
-        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
-        .product-card:active { transform: scale(0.98); }
-        
-        .product-img { width: 100%; height: 180px; object-fit: cover; background: #f1f5f9; }
-        .product-content { padding: 16px; }
-        .product-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
-        .product-desc { font-size: 12px; color: var(--text-muted); margin: 6px 0 12px 0; line-height: 1.4; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        
-        .product-footer { display: flex; justify-content: space-between; align-items: center; }
-        .product-price { font-size: 18px; font-weight: 800; color: var(--brand-purple); }
-        
-        .buy-btn { background: var(--brand-purple); color: white; border: none; padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-        .buy-btn:hover { background: #6D28D9; }
-        
-        .loading { text-align: center; padding: 50px; color: var(--text-muted); }
-        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--brand-purple);
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s;
+        }
+
+        .product-card:active {
+            transform: scale(0.98);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .product-content {
+            padding: 16px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .product-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 6px 0 12px 0;
+            line-height: 1.4;
+            height: 34px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--brand-purple);
+        }
+
+        .buy-btn {
+            background: var(--brand-purple);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .buy-btn:hover {
+            background: #6D28D9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-muted);
+        }
+
         /* Skeleton Animation */
-        .skeleton { background: #e2e8f0; height: 200px; border-radius: 20px; margin-bottom: 16px; animation: pulse 1.5s infinite ease-in-out; }
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        .skeleton {
+            background: #e2e8f0;
+            height: 200px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Celestial Store</h1>
@@ -61,37 +177,53 @@
     </div>
 
     <!-- Address Modal -->
-    <div id="address-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; flex-direction:column; padding:0;">
+    <div id="address-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; flex-direction:column; padding:0;">
         <!-- Full Screen Header -->
-        <div style="padding:20px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:15px; background:white;">
-            <button onclick="closeModal()" style="border:none; background:none; font-size:20px; color:#111; cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+        <div
+            style="padding:20px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:15px; background:white;">
+            <button onclick="closeModal()"
+                style="border:none; background:none; font-size:20px; color:#111; cursor:pointer;"><i
+                    class="fas fa-arrow-left"></i></button>
             <h2 style="font-size:18px; font-weight:800; color:var(--brand-purple); margin:0;">Shipping Details</h2>
         </div>
 
         <div style="flex:1; padding:24px; overflow-y:auto;">
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Enter your delivery information for shipping.</p>
-            
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Enter your delivery information for
+                shipping.</p>
+
             <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-                <input type="text" id="ship-name" oninput="validateForm()" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
-                <input type="tel" id="ship-phone" oninput="validateForm()" placeholder="Mobile Number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
-                <textarea id="ship-address" oninput="validateForm()" placeholder="Full Address (House No, Area, Pincode)" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
+                <input type="text" id="ship-name" oninput="validateForm()" placeholder="Full Name"
+                    style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <input type="tel" id="ship-phone" oninput="validateForm()" placeholder="Mobile Number"
+                    style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; font-size:14px; outline:none;">
+                <textarea id="ship-address" oninput="validateForm()"
+                    placeholder="Full Address (House No, Area, Pincode)"
+                    style="width:100%; padding:12px; border-radius:12px; border:1px solid #e2e8f0; height:100px; font-family:inherit; font-size:14px; resize:none; outline:none;"></textarea>
             </div>
 
-            <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:12px; border-radius:15px;">
+            <div
+                style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:12px; border-radius:15px;">
                 <span style="font-size:14px; font-weight:700; color:var(--text-main);">Quantity:</span>
                 <div style="display:flex; align-items:center; gap:15px;">
-                    <button onclick="changeQty(-1)" style="width:32px; height:32px; border-radius:10px; border:1px solid #cbd5e1; background:white; font-weight:bold; cursor:pointer;">-</button>
-                    <span id="buy-qty" style="font-size:16px; font-weight:800; min-width:20px; text-align:center;">1</span>
-                    <button onclick="changeQty(1)" style="width:32px; height:32px; border-radius:10px; border:1px solid #cbd5e1; background:white; font-weight:bold; cursor:pointer;">+</button>
+                    <button onclick="changeQty(-1)"
+                        style="width:32px; height:32px; border-radius:10px; border:1px solid #cbd5e1; background:white; font-weight:bold; cursor:pointer;">-</button>
+                    <span id="buy-qty"
+                        style="font-size:16px; font-weight:800; min-width:20px; text-align:center;">1</span>
+                    <button onclick="changeQty(1)"
+                        style="width:32px; height:32px; border-radius:10px; border:1px solid #cbd5e1; background:white; font-weight:bold; cursor:pointer;">+</button>
                 </div>
             </div>
 
-            <div id="checkout-summary" style="background:#f8fafc; border-radius:15px; padding:15px; margin-bottom:20px; border:1px solid #e2e8f0;">
+            <div id="checkout-summary"
+                style="background:#f8fafc; border-radius:15px; padding:15px; margin-bottom:20px; border:1px solid #e2e8f0;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
                     <span style="font-size:13px; color:var(--text-muted);">Total Price:</span>
-                    <span id="summary-price" style="font-size:16px; font-weight:800; color:var(--brand-purple);">₹0</span>
+                    <span id="summary-price"
+                        style="font-size:16px; font-weight:800; color:var(--brand-purple);">₹0</span>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:8px; padding-top:10px; border-top:1px dashed #cbd5e1;">
+                <div
+                    style="display:flex; flex-direction:column; gap:8px; padding-top:10px; border-top:1px dashed #cbd5e1;">
                     <div style="display:flex; justify-content:space-between;">
                         <span style="font-size:12px; color:var(--text-muted);">Main Balance:</span>
                         <span id="summary-wallet" style="font-size:13px; font-weight:700; color:#22c55e;">₹0</span>
@@ -100,7 +232,8 @@
                         <span style="font-size:12px; color:var(--text-muted);">Purchase Wallet:</span>
                         <span id="summary-p-wallet" style="font-size:13px; font-weight:700; color:#0ea5e9;">₹0</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px dashed #cbd5e1; margin-top:4px;">
+                    <div
+                        style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px dashed #cbd5e1; margin-top:4px;">
                         <span style="font-size:12px; font-weight:700; color:var(--text-main);">Remaining Balance:</span>
                         <span id="summary-remaining" style="font-size:14px; font-weight:800; color:#22c55e;">₹0</span>
                     </div>
@@ -108,36 +241,51 @@
             </div>
 
             <div style="margin-bottom:20px;">
-                <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment Method:</p>
+                <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Select Payment
+                    Method:</p>
                 <div style="display:flex; gap:8px;">
-                    <div id="method-wallet" onclick="setPaymentMethod('wallet')" style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer; background:#f5f3ff;">
-                        <i class="fas fa-wallet" style="display:block; margin-bottom:4px; color:var(--brand-purple); font-size:14px;"></i>
+                    <div id="method-wallet" onclick="setPaymentMethod('wallet')"
+                        style="flex:1; border:2px solid var(--brand-purple); border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer; background:#f5f3ff;">
+                        <i class="fas fa-wallet"
+                            style="display:block; margin-bottom:4px; color:var(--brand-purple); font-size:14px;"></i>
                         <span style="font-size:11px; font-weight:700; color:var(--brand-purple);">Wallet Pay</span>
                     </div>
-                    <div id="method-cod" onclick="setPaymentMethod('cod')" style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer;">
-                        <i class="fas fa-truck" style="display:block; margin-bottom:4px; color:#64748b; font-size:14px;"></i>
+                    <div id="method-cod" onclick="setPaymentMethod('cod')"
+                        style="flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:10px 5px; text-align:center; cursor:pointer;">
+                        <i class="fas fa-truck"
+                            style="display:block; margin-bottom:4px; color:#64748b; font-size:14px;"></i>
                         <span style="font-size:11px; font-weight:700; color:#64748b;">COD</span>
                     </div>
                 </div>
             </div>
             <input type="hidden" id="selected-method" value="wallet">
-            
+
             <div style="display:flex; gap:10px;">
-                <button onclick="closeModal()" style="flex:1; padding:14px; border-radius:14px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer; font-size:14px;">Cancel</button>
-                <button onclick="submitPurchase()" id="pay-btn" style="flex:2; padding:16px; border-radius:16px; border:none; background:var(--brand-purple); color:white; font-weight:800; cursor:pointer; font-size:15px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Pay with Wallet Balance</button>
+                <button onclick="closeModal()"
+                    style="flex:1; padding:14px; border-radius:14px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer; font-size:14px;">Cancel</button>
+                <button onclick="submitPurchase()" id="pay-btn"
+                    style="flex:2; padding:16px; border-radius:16px; border:none; background:var(--brand-purple); color:white; font-weight:800; cursor:pointer; font-size:15px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Pay
+                    with Wallet Balance</button>
             </div>
         </div>
     </div>
 
     <!-- Success Modal -->
-    <div id="success-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center; padding: 20px;">
-        <div style="background:white; width:100%; max-width:350px; border-radius:24px; padding:32px; text-align:center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-            <div style="width:80px; height:80px; background:#f0fdf4; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+    <div id="success-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center; padding: 20px;">
+        <div
+            style="background:white; width:100%; max-width:350px; border-radius:24px; padding:32px; text-align:center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div
+                style="width:80px; height:80px; background:#f0fdf4; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
                 <i class="fas fa-check" style="color:#22c55e; font-size:40px;"></i>
             </div>
             <h2 style="font-size:24px; font-weight:800; color:#111; margin-bottom:12px;">Order Successful!</h2>
-            <p id="success-msg" style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:24px; white-space: pre-wrap;"></p>
-            <button onclick="closeSuccessModal()" style="width:100%; padding:14px; border-radius:14px; border:none; background:var(--brand-purple); color:white; font-weight:700; cursor:pointer; font-size:15px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Continue Shopping</button>
+            <p id="success-msg"
+                style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:24px; white-space: pre-wrap;">
+            </p>
+            <button onclick="closeSuccessModal()"
+                style="width:100%; padding:14px; border-radius:14px; border:none; background:var(--brand-purple); color:white; font-weight:700; cursor:pointer; font-size:15px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Continue
+                Shopping</button>
         </div>
     </div>
 
@@ -172,15 +320,16 @@
                         </div>
                         <div class="product-footer">
                             <div class="product-price">₹${p.price}</div>
-                            <button class="buy-btn" 
-                                ${outOfStock ? 'disabled style="background:#cbd5e1; cursor:not-allowed;"' : ''} 
+                            <button class="buy-btn"
+                                ${outOfStock ? 'disabled style="background:#cbd5e1; cursor:not-allowed;"' : ''}
                                 onclick="handleBuy(${p.price}, '${p.name.replace(/'/g, "\\'")}', '${p.productId}')">
                                 ${outOfStock ? 'Out of Stock' : 'Buy Now'}
                             </button>
                         </div>
                     </div>
                 </div>
-            `;}).join('');
+            `;
+            }).join('');
         }
 
         let currentBuyingProduct = null;
@@ -192,16 +341,16 @@
             currentBuyingProduct = { price, name, id };
             currentQty = 1;
             document.getElementById('buy-qty').innerText = "1";
-            
+
             // Reset form and disable button
             document.getElementById('ship-name').value = '';
             document.getElementById('ship-phone').value = '';
             document.getElementById('ship-address').value = '';
             validateForm();
-            
+
             updateSummary();
             document.getElementById('address-modal').style.display = 'flex';
-            
+
             // Default wallet display
             document.getElementById('summary-wallet').innerText = "Loading...";
             document.getElementById('summary-p-wallet').innerText = "Loading...";
@@ -225,18 +374,18 @@
                     const r = await fetch(`/api/user/${uid}`);
                     const d = await r.json();
                     console.log("[HandleBuy] Final Balance Sync:", d);
-                    
+
                     if (d.ok || d.userId) { // Handle variations in API response
                         userWalletCache = d.walletBalance !== undefined ? d.walletBalance : (d.user ? d.user.walletBalance : 0);
                         userPWalletCache = d.purchaseWalletBalance !== undefined ? d.purchaseWalletBalance : (d.user ? d.user.purchaseWalletBalance : 0);
-                        
+
                         document.getElementById('summary-wallet').innerText = `₹${Number(userWalletCache).toLocaleString()}`;
                         document.getElementById('summary-p-wallet').innerText = `₹${Number(userPWalletCache).toLocaleString()}`;
                         updateSummary();
                     } else {
                         document.getElementById('summary-wallet').innerText = "Sync Error";
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error("[HandleBuy] Fetch Error:", e);
                     document.getElementById('summary-wallet').innerText = "Offline";
                     document.getElementById('summary-p-wallet').innerText = "Offline";
@@ -253,7 +402,7 @@
             const phone = document.getElementById('ship-phone').value.trim();
             const address = document.getElementById('ship-address').value.trim();
             const payBtn = document.getElementById('pay-btn');
-            
+
             if (name && address && phone.length >= 10) {
                 payBtn.disabled = false;
                 payBtn.style.opacity = '1';
@@ -276,7 +425,7 @@
             if (!currentBuyingProduct) return;
             const total = currentBuyingProduct.price * currentQty;
             document.getElementById('summary-price').innerText = `₹${total.toLocaleString()}`;
-            
+
             let remaining = 0;
             if (userPWalletCache >= total) {
                 // If it can be covered entirely by purchase wallet
@@ -288,13 +437,13 @@
 
             const remEl = document.getElementById('summary-remaining');
             remEl.innerText = `₹${remaining.toLocaleString()}`;
-            
+
             if (remaining < 0) {
                 remEl.style.color = '#ef4444'; // Red if not enough funds
             } else {
                 remEl.style.color = '#22c55e'; // Green if good
             }
-            
+
             updatePayButtonText(total);
         }
 
@@ -355,7 +504,7 @@
                 alert("Please enter both recipient name and full delivery address.");
                 return;
             }
-            
+
             if (phone.length < 10) {
                 alert("Please enter a valid 10-digit phone number.");
                 return;
@@ -364,18 +513,18 @@
             // Get userId from URL or Parent or LocalStorage
             const urlParams = new URLSearchParams(window.location.search);
             let userId = urlParams.get('userId');
-            
+
             if (userId === 'null' || userId === 'undefined') userId = null;
 
             if (!userId && window.parent && window.parent.currentUser) {
                 userId = window.parent.currentUser.userId;
             }
-            
+
             if (!userId) {
                 // Try one more place - many webviews store it in localStorage
                 userId = localStorage.getItem('userId');
             }
-            
+
             if (!userId && typeof AndroidBridge !== 'undefined' && AndroidBridge.getUserId) {
                 userId = AndroidBridge.getUserId();
                 if (userId === 'null' || userId === 'undefined') userId = null;
@@ -407,8 +556,8 @@
                 const data = await res.json();
                 if (data.ok) {
                     if (data.cod || data.wallet) {
-                        const successMsg = data.wallet ? 
-                            `🎉 Purchase successful using Wallet!\nMain Balance: ₹${data.newBalance || 0}\nPurchase Wallet: ₹${data.purchaseBalance || 0}` : 
+                        const successMsg = data.wallet ?
+                            `🎉 Purchase successful using Wallet!\nMain Balance: ₹${data.newBalance || 0}\nPurchase Wallet: ₹${data.purchaseBalance || 0}` :
                             "🎉 Order placed successfully via Cash on Delivery!\nOur team will contact you soon.";
                         showSuccessModal(successMsg);
                         fetchProducts(); // Refresh stock
@@ -441,15 +590,16 @@
         }
 
         // Functions called by Android/Web to update UI
-        window.onPaymentSuccess = function(productName) {
+        window.onPaymentSuccess = function (productName) {
             alert("Order Requested Successfully: " + productName + "\nWait for Admin approval.");
         };
 
-        window.onPaymentError = function(error) {
+        window.onPaymentError = function (error) {
             alert("Payment Failed: " + error);
         };
 
         fetchProducts();
     </script>
 </body>
+
 </html>
