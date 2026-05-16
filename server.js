@@ -203,7 +203,7 @@ async function getValidPhonePeToken() {
   return phonepeTokenStore.accessToken;
 }
 
-// ===== PhonePe Standard Checkout v2 =====
+// ===== PhonePe Custom Checkout v1 =====
 async function callPhonePePayV1(merchantOrderId, amount, redirectUrl, userMobile) {
   const saltKey = process.env.PHONEPE_SALT_KEY || "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
   const saltIndex = process.env.PHONEPE_SALT_INDEX || "1";
@@ -247,6 +247,95 @@ async function callPhonePePayV1(merchantOrderId, amount, redirectUrl, userMobile
     return { success: false, data: { message: data.message || "Gateway Error" } };
   } catch (e) {
     return { success: false, data: { message: e.message } };
+  }
+}
+
+// ===== PhonePe Standard Checkout v2 =====
+async function callPhonePePayV2(merchantOrderId, amount, redirectUrl, userMobile) {
+  const endpoint = "https://api.phonepe.com/apis/pg/checkout/v2/pay";
+
+  // Get OAuth token
+  const oauthToken = await getValidPhonePeToken();
+  if (!oauthToken) {
+    console.error("[PhonePe v2] Failed to get OAuth token");
+    return { success: false, data: { message: "OAuth token generation failed" }, status: 401 };
+  }
+
+  // Standard Checkout v2 payload
+  const payload = {
+    merchantOrderId: merchantOrderId,
+    amount: amount, // amount in paisa
+    expireAfter: 1200, // 20 minutes
+    metaInfo: {
+      udf1: userMobile || "9999999999"
+    },
+    paymentFlow: {
+      type: "PG_CHECKOUT",
+      merchantUrls: {
+        redirectUrl: redirectUrl
+      }
+    }
+  };
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `O-Bearer ${oauthToken}`,
+    'accept': 'application/json'
+  };
+
+  console.log(`[PhonePe v2] Requesting: ${endpoint}`);
+  console.log(`[PhonePe v2] OrderId: ${merchantOrderId}, Amount: ${amount} paisa`);
+
+  let response, data;
+  try {
+    response = await fetch(endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    });
+    const text = await response.text();
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("[PhonePe v2] Non-JSON Response:", text.substring(0, 500));
+      return { success: false, data: { message: "External API returned invalid response" }, status: response.status };
+    }
+  } catch (err) {
+    console.error("[PhonePe v2] Fetch Error:", err.message);
+    return { success: false, data: { message: "Failed to connect to PhonePe" }, status: 500 };
+  }
+
+  return { success: response.ok, data: data, status: response.status };
+}
+
+// ===== PhonePe SDK Pay (Dynamic Payload) =====
+async function callPhonePePay(payload) {
+  const saltKey = process.env.PHONEPE_SALT_KEY || "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+  const saltIndex = process.env.PHONEPE_SALT_INDEX || "1";
+  const baseUrl = process.env.PHONEPE_API_URL || "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+
+  const base64Payload = Buffer.from(JSON.stringify(payload)).toString('base64');
+  const checksum = crypto.createHash('sha256').update(base64Payload + "/pg/v1/pay" + saltKey).digest('hex') + "###" + saltIndex;
+
+  try {
+    const response = await fetch(baseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-VERIFY': checksum,
+        'accept': 'application/json'
+      },
+      body: JSON.stringify({ request: base64Payload })
+    });
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { 
+        return { success: false, data: { message: "Invalid JSON from PhonePe" }, status: response.status }; 
+    }
+    
+    return { success: response.ok && data.success, data: data, status: response.status };
+  } catch (e) {
+    return { success: false, data: { message: e.message }, status: 500 };
   }
 }
 
