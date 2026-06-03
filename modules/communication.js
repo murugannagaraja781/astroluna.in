@@ -1119,6 +1119,70 @@ module.exports = function(io, shared) {
       } catch (e) { safeAck(cb, { ok: false, error: 'Server error' }); }
     });
 
+    // --- Admin: Get Dashboard/Ledger Stats ---
+    socket.on('admin-get-ledger-stats', async (cb) => {
+      try {
+        const adminId = socketToUser.get(socket.id);
+        const admin = await User.findOne({ userId: adminId });
+        const isAuthorized = admin && (admin.role === 'superadmin' || admin.role === 'user-manager');
+        if (!isAuthorized) return safeAck(cb, { ok: false, error: 'Unauthorized' });
+
+        // 1. Fetch all ledger entries
+        const ledger = await BillingLedger.find().sort({ createdAt: -1 }).lean();
+        
+        // 2. Fetch user counts
+        const totalUsers = await User.countDocuments({});
+
+        // 3. Compute stats
+        let totalRevenue = 0;
+        let astroPayout = 0;
+        let adminProfit = 0;
+        let totalDuration = 0; // in seconds
+
+        ledger.forEach(l => {
+          totalRevenue += (l.chargedToClient || 0);
+          astroPayout += (l.creditedToAstrologer || 0);
+          adminProfit += (l.adminAmount || 0);
+        });
+
+        // Count active sessions from memory
+        const activeSessionsCount = activeSessions ? activeSessions.size : 0;
+
+        // Total billed duration can be computed from sessions in the database
+        const endedSessions = await Session.find({ status: 'ended' }).select('duration').lean();
+        endedSessions.forEach(s => {
+          totalDuration += (s.duration || 0);
+        });
+
+        const stats = {
+          totalRevenue,
+          astroPayout,
+          totalAstroPayout: astroPayout, // For test script compatibility
+          adminProfit,
+          totalDuration, // in seconds (frontend does Math.round(totalDuration / 60))
+          totalUsers,
+          activeSessions: activeSessionsCount
+        };
+
+        // Map ledger records to match what the frontend expects (l.type & l.amount)
+        const mappedLedger = ledger.map(l => ({
+          ...l,
+          type: l.reason || 'consultation',
+          amount: l.chargedToClient || 0
+        }));
+
+        safeAck(cb, {
+          ok: true,
+          stats,
+          fullLedger: mappedLedger,
+          breakdown: mappedLedger
+        });
+      } catch (err) {
+        console.error('get-ledger-stats error:', err);
+        safeAck(cb, { ok: false, error: 'Server error' });
+      }
+    });
+
     socket.on('disconnect', () => {
       const userId = socketToUser.get(socket.id);
       if (userId) {
