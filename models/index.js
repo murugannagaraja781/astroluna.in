@@ -39,6 +39,7 @@ const UserSchema = new mongoose.Schema({
   referralEarnings: { type: Number, default: 0 },
   referralWithdrawn: { type: Number, default: 0 },
   astrologerRequestStatus: { type: String, enum: ['none', 'pending', 'approved', 'rejected'], default: 'none' },
+  approvalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   astrologerRequestedAt: Date,
   astrologerExperience: String,
   astrologerAbout: String,

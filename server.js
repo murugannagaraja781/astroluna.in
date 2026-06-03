@@ -738,6 +738,10 @@ app.post('/api/admin/astrologer/process-application', async (req, res) => {
         user.isDocumentVerified = true;
         user.documentStatus = 'verified';
         user.astrologerRequestStatus = 'approved';
+        user.approvalStatus = 'approved';
+        if (!user.referralCode) {
+          user.referralCode = await generateReferralCode(user.name || 'Astrologer');
+        }
         await user.save();
         console.log(`[Admin] Approved application: User ${user.userId} promoted to Astrologer`);
       } else {
@@ -752,7 +756,9 @@ app.post('/api/admin/astrologer/process-application', async (req, res) => {
           skills: [application.profession || 'Astrology'],
           experience: parseInt(application.astrologyExperience) || 0,
           walletBalance: appConfig.initial_wallet_amount || 108, // Dynamic bonus
-          astrologerRequestStatus: 'approved'
+          astrologerRequestStatus: 'approved',
+          approvalStatus: 'approved',
+          referralCode: await generateReferralCode(application.realName || 'Astrologer')
         });
         console.log(`[Admin] Approved application: New Astrologer created: ${user.phone}`);
       }

@@ -11,12 +11,14 @@ plugins {
 android {
     namespace = "com.astroluna"
     compileSdk = 35
+    ndkVersion = "27.1.12297006"
+
     defaultConfig {
         applicationId = "com.astroluna"
         minSdk = 21
         targetSdk = 35
-        versionCode = 2
-        versionName = "2.0"
+        versionCode = 5
+        versionName = "5.0"
         multiDexEnabled = false
 
         ndk {
@@ -137,10 +139,10 @@ dependencies {
     implementation("io.socket:socket.io-client:2.1.0")
 
     // WebRTC
-    implementation("io.getstream:stream-webrtc-android:1.2.2")
+    implementation("io.getstream:stream-webrtc-android:1.3.10")
 
     // PhonePe (Keep slightly older or check compatibility)
-    implementation("phonepe.intentsdk.android.release:IntentSDK:5.3.0")
+    implementation("phonepe.intentsdk.android.release:IntentSDK:5.3.2")
 
     // Icons (Using core + extended)
     implementation("androidx.compose.material:material-icons-core:1.6.8")
