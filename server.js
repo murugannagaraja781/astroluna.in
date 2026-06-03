@@ -772,7 +772,11 @@ app.post('/api/admin/astrologer/add-direct', async (req, res) => {
 // Admin processing logic
 app.post('/api/admin/astrologer/process-application', async (req, res) => {
   try {
-    const { applicationId, status, notes } = req.body; // status: 'approved' or 'rejected'
+    const { applicationId, notes } = req.body;
+    let status = req.body.status || req.body.action; // status: 'approved' or 'rejected', action: 'approve' or 'reject'
+    if (status === 'approve') status = 'approved';
+    if (status === 'reject') status = 'rejected';
+    
     const adminId = 'superadmin';
 
     const application = await AstrologerApplication.findOne({ applicationId });
