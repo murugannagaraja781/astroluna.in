@@ -4996,6 +4996,7 @@
             <option value="user-manager">User Manager (Astro Only)</option>
             <option value="staff">Staff (Content Only)</option>
             <option value="superadmin">Super Admin (Full Access)</option>
+            <option value="astrologer">Astrologer</option>
           </select>
         </div>
 
@@ -5705,10 +5706,15 @@
 
         <!-- Tab 3: Payouts (Send Money) -->
         <div id="admin-sect-payouts" class="admin-tab-section">
-          <h2
-            style="margin:0 0 15px 0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
-            <i class="fas fa-paper-plane" style="color:#1e3a8a;"></i> Astrologer Payouts
-          </h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0; color:#1F2937; font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-paper-plane" style="color:#1e3a8a;"></i> Astrologer Payouts
+            </h2>
+            <!-- Added by Antigravity: Button to trigger manual astrologer creation -->
+            <button class="cosmic-btn" style="padding: 8px 16px; font-size:0.9rem;" onclick="openAdminCreateAstrologer()">
+              <i class="fas fa-plus"></i> New Astrologer
+            </button>
+          </div>
 
           <!-- Pending Withdrawals -->
           <div id="adminWithdrawalsSection" style="margin-bottom: 20px; display: none;">
@@ -10050,6 +10056,14 @@
       document.getElementById('adminCreateName').value = '';
       document.getElementById('adminCreatePhone').value = '';
       document.getElementById('adminCreateRole').value = 'user-manager';
+      document.getElementById('adminCreateUserModal').classList.remove('hidden');
+    };
+
+    // Added by Antigravity: Opens the user creation modal with the 'astrologer' role pre-selected
+    window.openAdminCreateAstrologer = () => {
+      document.getElementById('adminCreateName').value = '';
+      document.getElementById('adminCreatePhone').value = '';
+      document.getElementById('adminCreateRole').value = 'astrologer';
       document.getElementById('adminCreateUserModal').classList.remove('hidden');
     };
 
