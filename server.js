@@ -716,7 +716,60 @@ app.get('/api/admin/astrologer-applications', async (req, res) => {
   }
 });
 
-// Admin: Approve/Reject Astrologer Application
+// Admin: Approve/Reject Astrologer// Direct add and approve astrologer
+app.post('/api/admin/astrologer/add-direct', async (req, res) => {
+  try {
+    const data = req.body;
+    const phone = data.cellNumber1 || data.phone;
+    const name = data.realName || data.name || data.displayName;
+    
+    if (!name || !phone) {
+      return res.status(400).json({ ok: false, error: 'Name and primary mobile number are required' });
+    }
+
+    const finalPhone = phone.replace(/\D/g, '').slice(-10);
+    let user = await User.findOne({ phone: new RegExp(finalPhone + "$") });
+
+    if (user) {
+      user.role = 'astrologer';
+      user.name = name;
+      user.skills = [data.profession || 'Astrology'];
+      user.experience = parseInt(data.astrologyExperience) || 0;
+      user.isDocumentVerified = true;
+      user.documentStatus = 'verified';
+      user.astrologerRequestStatus = 'approved';
+      user.approvalStatus = 'approved';
+      if (!user.referralCode) {
+        user.referralCode = await generateReferralCode(user.name || 'Astrologer');
+      }
+      await user.save();
+    } else {
+      const crypto = require('crypto');
+      const userId = crypto.randomUUID();
+      user = await User.create({
+        userId,
+        phone,
+        name,
+        role: 'astrologer',
+        isDocumentVerified: true,
+        documentStatus: 'verified',
+        skills: [data.profession || 'Astrology'],
+        experience: parseInt(data.astrologyExperience) || 0,
+        walletBalance: appConfig.initial_wallet_amount || 108,
+        astrologerRequestStatus: 'approved',
+        approvalStatus: 'approved',
+        referralCode: await generateReferralCode(name || 'Astrologer')
+      });
+    }
+
+    res.json({ ok: true, message: 'Astrologer added and approved successfully' });
+  } catch (error) {
+    console.error('Error adding direct astrologer:', error);
+    res.status(500).json({ ok: false, error: 'Failed to add astrologer' });
+  }
+});
+
+// Admin processing logic
 app.post('/api/admin/astrologer/process-application', async (req, res) => {
   try {
     const { applicationId, status, notes } = req.body; // status: 'approved' or 'rejected'

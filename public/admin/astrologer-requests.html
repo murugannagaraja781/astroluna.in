@@ -491,7 +491,7 @@
             btn.textContent = 'Adding...';
 
             try {
-                const response = await fetch('/api/astrologer/register', {
+                const response = await fetch('/api/admin/astrologer/add-direct', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -505,9 +505,9 @@
                 const data = await response.json();
 
                 if (data.ok) {
-                    alert('Expert added successfully to the Pending list! You can now approve them.');
+                    alert('Expert added and approved successfully! They are now active.');
                     closeAddModal();
-                    document.getElementById('statusFilter').value = 'pending';
+                    document.getElementById('statusFilter').value = 'approved';
                     loadApplications();
                 } else {
                     alert('Error: ' + data.error);
