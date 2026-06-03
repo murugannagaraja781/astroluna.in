@@ -44,6 +44,18 @@
             font-weight: 600;
         }
 
+        .add-btn {
+            padding: 10px 20px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+
         .filters {
             background: white;
             padding: 20px;
@@ -225,7 +237,10 @@
     <div class="container">
         <div class="header">
             <h1>Expert Registration Requests</h1>
-            <button class="refresh-btn" onclick="loadApplications()">Refresh List</button>
+            <div>
+                <button class="add-btn" onclick="openAddModal()">+ Add Expert</button>
+                <button class="refresh-btn" onclick="loadApplications()">Refresh List</button>
+            </div>
         </div>
 
         <div class="filters">
@@ -269,6 +284,24 @@
             <div class="modal-actions">
                 <button class="action-btn btn-cancel" onclick="closeModal()">Cancel</button>
                 <button id="confirmBtn" class="action-btn">Confirm Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Expert -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h3>Add New Expert</h3>
+            <p style="margin-bottom: 15px; font-size: 13px; color: #7f8c8d;">This will create a pending application that you can approve immediately.</p>
+            
+            <input type="text" id="addName" placeholder="Real Name (Required)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <input type="text" id="addPhone" placeholder="Mobile Number (Required)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <input type="number" id="addExperience" placeholder="Experience in Years" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <input type="text" id="addProfession" placeholder="Skills (e.g., Vedic, Tarot)" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;">
+            
+            <div class="modal-actions">
+                <button class="action-btn btn-cancel" onclick="closeAddModal()">Cancel</button>
+                <button id="submitAddBtn" class="action-btn btn-approve" onclick="submitAddExpert()">Add Expert</button>
             </div>
         </div>
     </div>
@@ -429,6 +462,63 @@
                 btn.disabled = false;
             }
         };
+
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('addName').value = '';
+            document.getElementById('addPhone').value = '';
+            document.getElementById('addExperience').value = '';
+            document.getElementById('addProfession').value = '';
+        }
+
+        async function submitAddExpert() {
+            const name = document.getElementById('addName').value.trim();
+            const phone = document.getElementById('addPhone').value.trim();
+            const experience = document.getElementById('addExperience').value.trim();
+            const profession = document.getElementById('addProfession').value.trim();
+
+            if (!name || !phone) {
+                alert('Name and Phone are required!');
+                return;
+            }
+
+            const btn = document.getElementById('submitAddBtn');
+            btn.disabled = true;
+            btn.textContent = 'Adding...';
+
+            try {
+                const response = await fetch('/api/astrologer/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        realName: name,
+                        cellNumber1: phone,
+                        astrologyExperience: experience,
+                        profession: profession
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert('Expert added successfully to the Pending list! You can now approve them.');
+                    closeAddModal();
+                    document.getElementById('statusFilter').value = 'pending';
+                    loadApplications();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Add Expert';
+            }
+        }
 
         // Initialize display
         loadApplications();
