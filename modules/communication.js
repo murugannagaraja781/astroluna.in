@@ -951,7 +951,10 @@ module.exports = function(io, shared) {
         const users = await User.find({}, {
           userId: 1, name: 1, phone: 1, role: 1, walletBalance: 1,
           totalEarnings: 1, isOnline: 1, isAvailable: 1, isBanned: 1,
-          isVerified: 1, isDocVerified: 1, joinedAt: 1, lastSeen: 1, image: 1
+          isVerified: 1, isDocVerified: 1, joinedAt: 1, lastSeen: 1, image: 1,
+          gender: 1, birthDetails: 1, bankDetails: 1, documentStatus: 1,
+          skills: 1, experience: 1, referredBy: 1, approvalStatus: 1,
+          astrologerRequestStatus: 1
         }).sort({ _id: -1 }).lean();
 
         safeAck(cb, { ok: true, users });

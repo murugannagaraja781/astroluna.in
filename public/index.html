@@ -6185,6 +6185,26 @@
       </div>
     </div>
 
+    <!-- Screen: Admin View Astrologer Application/User Details Modal -->
+    <div id="screen-admin-astro-detail-modal" class="modal-overlay hidden" style="align-items: center; justify-content: center; z-index: 10005;">
+      <div style="background: white; width: 90%; max-width: 600px; padding: 25px; border-radius: 20px; position:relative; max-height: 85vh; overflow-y: auto; color: #333; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+          <h3 style="margin: 0; color: #1e3a8a; font-size: 1.3rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-user-astronaut" style="color: #d97706;"></i> Astrologer Details
+          </h3>
+          <button onclick="document.getElementById('screen-admin-astro-detail-modal').classList.add('hidden')" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #999;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div id="adminAstroDetailContent" style="display: flex; flex-direction: column; gap: 15px; font-size: 0.95rem;">
+          <!-- Content populated via Javascript -->
+        </div>
+
+        <div style="margin-top: 25px; text-align: right; border-top: 1px solid #eee; padding-top: 15px;">
+          <button onclick="document.getElementById('screen-admin-astro-detail-modal').classList.add('hidden')" style="padding: 10px 25px; border: none; background: #f3f4f6; color: #333; border-radius: 10px; font-weight: 700; cursor: pointer;">Close</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Screen: Incoming Call Modal -->
     <div id="screen-incoming" class="modal-overlay hidden" style="background: rgba(5, 5, 16, 0.9);">
       <div class="call-popup"
@@ -10207,6 +10227,9 @@
               </div>
             </div>
             <div class="admin-actions">
+               <button class="btn-admin btn-role" onclick="viewAstroUserDetails('${u.userId}')" title="View Details" style="background: #e0e7ff; color: #4338ca;">
+                 <i class="fas fa-eye"></i> View
+               </button>
                <button class="btn-admin btn-wallet" onclick="adminWallet('${u.userId}')" title="Manage Wallet">
                  <i class="fas fa-wallet"></i> Wallet
                </button>
@@ -10668,6 +10691,7 @@
         const res = await fetch('/api/admin/astrologer-requests');
         const data = await res.json();
         if (data.ok) {
+          window.adminAstroRequestsCache = data.requests || [];
           renderAstrologerRequests(data.requests || []);
           // Update badge
           const badge = document.getElementById('badge-requests');
@@ -10735,6 +10759,13 @@
             ${req.astrologyExperience}
           </div>` : ''}
 
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <button onclick="viewAstroRequestDetails('${appId}')"
+              style="flex:1; padding:10px; border:1px solid #7C3AED; border-radius:10px; background:white; color:#7C3AED; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <i class="fas fa-eye"></i> View Details
+            </button>
+          </div>
+
           <div style="display:flex; gap:10px;">
             <button onclick="approveAstrologer('${appId}')"
               style="flex:1; padding:10px; border:none; border-radius:10px; background:linear-gradient(135deg, #22c55e, #16a34a); color:white; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -10790,6 +10821,146 @@
           alert('Error: ' + (data.error || 'Failed'));
         }
       } catch (e) { alert('Network Error'); }
+    };
+
+    window.viewAstroRequestDetails = (appId) => {
+      const app = (window.adminAstroRequestsCache || []).find(r => (r.id === appId || r.applicationId === appId || r.userId === appId));
+      if (!app) {
+        alert("Application details not found in cache!");
+        return;
+      }
+      
+      const contentEl = document.getElementById('adminAstroDetailContent');
+      if (!contentEl) return;
+      
+      const appliedDate = app.appliedAt ? new Date(app.appliedAt).toLocaleString('en-IN') : 'Unknown';
+      
+      contentEl.innerHTML = `
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <span>👤 Basic Information</span>
+            <span style="font-size:0.75rem; background:#7C3AED; color:white; padding:3px 8px; border-radius:12px;">Request Application</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">REAL NAME</b><span>${app.realName || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">DISPLAY NAME</b><span>${app.displayName || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">GENDER</b><span>${app.gender || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">APPLIED DATE</b><span>${appliedDate}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">🔮 Birth Details</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">DOB</b><span>${app.dob || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">TOB</b><span>${app.tob || '-'}</span></div>
+            <div style="grid-column: span 2;"><b style="color:#64748b; font-size:0.8rem; display:block;">POB</b><span>${app.pob || '-'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">📞 Contact Details</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">PRIMARY PHONE</b><span>${app.cellNumber1 || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">WHATSAPP PHONE</b><span>${app.whatsAppNumber || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">ALTERNATIVE PHONE</b><span>${app.cellNumber2 || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">EMAIL ID</b><span>${app.email || '-'}</span></div>
+            <div style="grid-column: span 2;"><b style="color:#64748b; font-size:0.8rem; display:block;">ADDRESS</b><span>${app.address || '-'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">💼 Experience & Skills</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">EXPERIENCE</b><span>${app.astrologyExperience || '0'} Years</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">PROFESSION</b><span>${app.profession || '-'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">💳 KYC & Banking Information</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">AADHAR CARD</b><span>${app.aadharNumber || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">PAN CARD</b><span>${app.panNumber || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">UPI NAME</b><span>${app.upiName || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">UPI ID / NUMBER</b><span>${app.upiNumber || '-'}</span></div>
+            <div style="grid-column: span 2;"><b style="color:#64748b; font-size:0.8rem; display:block;">BANK ACCOUNT DETAILS</b><span>${app.bankDetails || '-'}</span></div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('screen-admin-astro-detail-modal').classList.remove('hidden');
+    };
+
+    window.viewAstroUserDetails = (userId) => {
+      const u = (adminUsersCache || []).find(user => user.userId === userId);
+      if (!u) {
+        alert("Astrologer details not found!");
+        return;
+      }
+      
+      const contentEl = document.getElementById('adminAstroDetailContent');
+      if (!contentEl) return;
+      
+      const joinedDate = u.joinedAt ? new Date(u.joinedAt).toLocaleDateString('en-IN') : 'Unknown';
+      const birth = u.birthDetails || {};
+      const bank = u.bankDetails || {};
+      
+      contentEl.innerHTML = `
+        <div style="background:#f0fdf4; border-radius:12px; padding:15px; border:1px solid #bbf7d0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#166534; font-size:1.05rem; border-bottom:1px solid #bbf7d0; padding-bottom:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <span>👤 Active Astrologer</span>
+            <span style="font-size:0.75rem; background:#16a34a; color:white; padding:3px 8px; border-radius:12px;">Approved User</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#166534; font-size:0.8rem; display:block;">NAME</b><span>${u.name || '-'}</span></div>
+            <div><b style="color:#166534; font-size:0.8rem; display:block;">PHONE</b><span>${u.phone || '-'}</span></div>
+            <div><b style="color:#166534; font-size:0.8rem; display:block;">ROLE</b><span>${u.role || '-'}</span></div>
+            <div><b style="color:#166534; font-size:0.8rem; display:block;">JOINED AT</b><span>${joinedDate}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">💼 Verification & Financials</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">WALLET BALANCE</b><span style="color:#059669; font-weight:700;">₹${u.walletBalance || 0}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">TOTAL EARNINGS</b><span style="color:#059669; font-weight:700;">₹${u.totalEarnings || 0}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">VERIFIED BLUE TICK</b><span>${u.isVerified ? '✅ Yes' : '❌ No'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">DOCUMENT STATUS</b><span>${u.documentStatus || 'none'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">🔮 Birth Details</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">GENDER</b><span>${u.gender || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">DOB</b><span>${birth.dob || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">TOB</b><span>${birth.tob || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">POB</b><span>${birth.pob || '-'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">💼 Professional Details</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">EXPERIENCE</b><span>${u.experience || '0'} Years</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">SKILLS</b><span>${(u.skills || []).join(', ') || '-'}</span></div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; margin-bottom:10px;">
+          <div style="font-weight:700; color:#1e293b; font-size:1.05rem; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">💳 Bank Account Details</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">ACCOUNT HOLDER</b><span>${bank.accountHolder || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">ACCOUNT NUMBER</b><span>${bank.accountNumber || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">BANK NAME</b><span>${bank.bankName || '-'}</span></div>
+            <div><b style="color:#64748b; font-size:0.8rem; display:block;">IFSC CODE</b><span>${bank.ifscCode || '-'}</span></div>
+            <div style="grid-column: span 2;"><b style="color:#64748b; font-size:0.8rem; display:block;">UPI ID</b><span>${bank.upiId || '-'}</span></div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('screen-admin-astro-detail-modal').classList.remove('hidden');
     };
 
     // Load request count on admin startup
